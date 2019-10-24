@@ -1,0 +1,76 @@
+cmake_minimum_required(VERSION 3.14)
+project(fouche_r_chess)
+
+if (NOT CMAKE_BUILD_TYPE)
+    message("set to release mode")
+    set(CMAKE_BUILD_TYPE "Release")
+endif ()
+
+
+# C++ standard version
+set(CMAKE_CXX_STANDARD 17)
+# General flags
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+# Release flags only
+# Maybe consider: -funroll-loops -fisolate-erroneous-paths-attribute
+# -fipa-pta : Perform interprocedural pointer analysis and interprocedural modification and reference analysis.
+# -ftree-loop-if-convert : Attempt to transform conditional jumps in the innermost loops to branch-less equivalents.
+
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Ofast -march=native -fipa-pta -ftree-loop-linear -floop-strip-mine -floop-block -ftree-loop-if-convert -ftree-parallelize-loops=8")
+# Debug flags only (inside cmake-build-debug)
+# -pg : analyse time per functions
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
+
+# There should not be files after chessengine. If so -> move it to target sources.
+add_executable(chessengine)
+
+target_sources(chessengine PRIVATE
+        src/adapter/pgn-exception.cc
+        src/adapter/pgn-move.cc
+        src/adapter/pgn-parser.cc
+        src/ia/uci.cc
+        src/listener/moveprinter.cc
+        src/board/board.cc
+        src/board/move.cc
+        src/board/rules.cc
+        src/adapter/adapter.cc
+        src/perft/perft.cc
+        src/board/movemanager.cc
+        src/adapter/convertion.cc
+        src/adapter/listenerCalls.cc
+        src/ia/ia.cc
+        src/main.cc
+        src/magic/generate.cc
+        src/ia/evaluation/evalutation.cc
+        src/ia/search-moves/min_max.cc
+        src/board/moves_capture.cc
+        src/board/moves_capture.cc
+        src/ia/time_management.cc
+        src/ia/search-moves/move_ordering.cc
+        src/ia/search-moves/transposition_table.cc
+)
+
+target_include_directories(chessengine
+        PRIVATE src/includes)
+target_link_libraries(chessengine
+        PRIVATE pthread boost_system boost_program_options dl)
+target_compile_options(chessengine
+        PRIVATE -Wall -Wextra -pedantic -Werror)
+
+
+message(
+"
+                           *~! $$$$$$$$$$$$$$ .
+                 .:!:.     .: e$$$$$$$$$$$$$ ~  `
+               '    `~!!!!!!~:$$$$$$$$$$$$* :*    :!       ......
+            ::::::..   ~!!!` $$$$$$$$$$$$:!~  :!!` `  .!!!!!!!!!!
+           -~!!!!!!!!::..!! 8$$$$$$$$$$*.!!!..!!~ ..- :!!!!!!!~!!!~
+         '     ~~!!!!!!!!! #$$$$$$$$*(!!!!!!!!!.+!~ :!!!!!~`- -`!
+        '           `!!!!!!!.*$$** ``````!!!!!!! !!!!!~
+                 ..  .!!!!!~~`               `!!!!`:!!!`        '
+       `.:!!!!!!!!!!!!!!~:                     !!!!!!!~       '
+        ~!!!!!!!~~`~!!!!!!:::                  ~!!!!!!      '
+                 .:!!!!!!!!!!!!:                `!!!!!_  '
+               :::::::!?!!!!!!!!!
+            :!!!!!!!!!!!!!!!!!!~
+            `~!!!!!!!!!!!!!~~")
