@@ -46,4 +46,4 @@ function negamax(node, depth, α, β, color) is
 
 - No color management in search.
 - If possible not calling function for the search
-
+- Gérer les répétitions proprement
