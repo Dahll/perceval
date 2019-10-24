@@ -5,7 +5,9 @@ TODO : Rewrite and refactor the search of the IA.
 The code need to be as close as possible of the pseudo code + add opening window
 ----------------------------------------------------------------------------------------------------------------------------
 
+
 function negamax(node, depth, α, β, color) is
+
     alphaOrig := α
     (* Transposition Table Lookup; node is the lookup key for ttEntry *)
     ttEntry := transpositionTableLookup(node)
