@@ -136,20 +136,6 @@ namespace ai
         return ret;
     }
 
-    /*int IA::evaluate_mm() const
-    {
-        const chessBoard::enumPiece& not_color = boardM.other_color(boardM.color);
-        const chessBoard::enumPiece& color_ = boardM.color;
-        int ret = 0;
-        ret += eval_queen(color_, not_color);
-        ret += eval_rook(color_, not_color);
-        ret += eval_bishop(color_, not_color);
-        ret += eval_knight(color_, not_color);
-        ret += eval_pawn(color_, not_color);
-        ret += eval_king(color_, not_color);
-        return ret;
-    }*/
-
     int IA::test_mini_max() const
     {
         auto str = boardM.to_perft();

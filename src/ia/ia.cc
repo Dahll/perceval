@@ -6,7 +6,6 @@
 #include <strings.h>
 #include <x86intrin.h>
 #include "ia.hh"
-#include "hash.hh"
 
 #define TURN_CAP_EARLYGAME 7 /* 7 */
 #define TURN_CAP_LATEGAME 10 /* 10 */
@@ -14,23 +13,6 @@
 
 namespace ai
 {
-    /*
-     uint64 zobrist_apply(const chessBoard::Move& m, const chessBoard::enumPiece& color, uint64 board_hash)
-    {
-        // FIXME move this to apply_move and have apply_move return an uint64 instead of nothing
-        // FIXME so en passant, captures and castlings can be handled easily
-        if (color == chessBoard::nWhite)
-        {
-  //          uint64 new_board = board_hash ^ (position_value[ffsll(m.from_get()) + m.piece_get() * 65]);
-        }
-        else {
-    //        uint64 new_board = board_hash ^(position_value[ffsll(m.from_get()) + m.piece_get() * 65]);
-        }
-        return 0;
-    }
-     */
-
-
     chessBoard::Board d_copy_board(const chessBoard::Board& b)
     {
         chessBoard::Board n;
@@ -108,26 +90,6 @@ namespace ai
         return input_vect[0];
     }
 
-    /*bool IA::find_opening_move(std::ifstream& ifs)
-    {
-        for (std::string s; std::getline(ifs, s);)
-        {
-            std::string current_board = boardM.to_perft();
-            current_board = current_board.substr(0, current_board.length() - 5);
-            std::string::size_type fen_limit = s.find_last_of(' ');
-            if (current_board == s.substr(0, fen_limit))
-            {
-                std::string move = s.substr(fen_limit + 1, s.length());
-                /// apply move
-                boardM.ia_apply_move(string_to_move(move), boardM.color);
-                play_move(move);
-                return true;
-            }
-        }
-        is_opening = false;
-        return false;
-    }*/
-
     int IA::give_time(int time_left)
     {
         auto number_of_turn = boardM.turn_count_ * 2;
@@ -196,37 +158,4 @@ namespace ai
 
         }
     }
-
-    /*
-    std::array<uint64, 911> position_value;
-    for (int i = 0; i < 65 * 2; ++i)
-        position_value[i] = 0;
-    std::random_device rd;  //Will be used to obtain a seed for the random number engine
-    std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-    std::uniform_int_distribution<unsigned long long> dis(1, UINT64_MAX);
-    for (int i = 0; i < 911; ++i)
-    {
-        position_value[i] = dis(gen);
-        bool t = true;
-        while(t)
-        {
-            int j = 0;
-            for (j = 0; j < i; j++)
-            {
-                if (position_value[i] == position_value[j])
-                {
-                    position_value[i] = dis(gen);
-                    break;
-                }
-            }
-            if (j == i)
-                t = false;
-        }
-    }
-    position_value[0] = 0ull;
-    position_value[65] = 0ull;
-    std::cout << print_list_zobrist(position_value);
-    }*/
-    /// position value de 0 et de 65 = 0 ou tout explose
-    /// verifier qu'il y a pas 2 fois la meme valeur ?
 }
