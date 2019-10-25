@@ -5,6 +5,7 @@
 #include <chessBoard.hh>
 #include <strings.h>
 #include <x86intrin.h>
+#include <uci.hh>
 #include "ia.hh"
 
 #define TURN_CAP_EARLYGAME 7 /* 7 */
@@ -48,48 +49,6 @@ namespace ai
         }
     }
 
-    std::optional<chessBoard::Move> IA::iterative_deepening(int max_time /* milliseconds */, uint64 hash)
-    {
-        //Initialisation des variables
-        max_time += 1;
-        int i = 1;
-        //const int& max_depth = val_max_depth();
-        const auto& start = system_clock::now();
-        transposition_table = new std::unordered_map<uint64 , Data>();
-        transposition_table_quiescence = new std::unordered_map<uint64 , Data>();
-
-        input_vect = std::vector<chessBoard::Move>();
-        auto output_vect = std::vector<chessBoard::Move>();
-        act_start = system_clock::now();
-        auto output_vect_quiescence = std::vector<chessBoard::Move>();
-        input_vect_quiescence = std::vector<chessBoard::Move>();
-        auto move = 0;
-
-        while (/*(i <= max_depth) &&*/(std::chrono::duration_cast<std::chrono::milliseconds>(act_start-start).count() * 6 < max_time ))
-        {
-
-            start_depth = i;
-            move = caller_alphabeta(i, output_vect, output_vect_quiescence, hash);
-            input_vect = output_vect;
-            input_vect_quiescence = output_vect_quiescence;
-            output_vect_quiescence.resize(0);
-            output_vect.resize(0);
-            if (move == INT32_MAX)
-            {
-                delete(transposition_table_quiescence);
-                delete(transposition_table);
-                return input_vect[0];
-            }
-            act_start = system_clock::now();
-            /// This prints the time spend for this depth
-            std::cout << duration_cast<milliseconds>(act_start-start).count() << std::endl;
-            ++i;
-        }
-        delete(transposition_table);
-        delete(transposition_table_quiescence);
-        return input_vect[0];
-    }
-
     int IA::give_time(int time_left)
     {
         auto number_of_turn = boardM.turn_count_ * 2;
@@ -130,7 +89,7 @@ namespace ai
                 if (s != "")
                 {
                     next_token(s);
-                    hash = apply_all_moves(s, boardM, boardM.color, vectBoard);
+                    hash = helpers::apply_all_moves(s, boardM, boardM.color, vectBoard);
                 }
             }
             else
@@ -138,7 +97,7 @@ namespace ai
                 boardM = chessBoard::Board();
                 next_token(s);
                 if (next_token(s) != "") {
-                    hash = apply_all_moves(s, boardM, chessBoard::nWhite, vectBoard);
+                    hash = helpers::apply_all_moves(s, boardM, chessBoard::nWhite, vectBoard);
                 }
 
             }

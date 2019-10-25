@@ -1,6 +1,7 @@
 //
 // Created by adrien on 30/05/19.
 //
+#include <uci.hh>
 #include "ia.hh"
 
 namespace ai
@@ -36,7 +37,7 @@ namespace ai
 
         //test if the board exist in the hash map and if depth left == depth stocked
         const auto& mov = boardM.generate_moves(colo_act);
-        auto moves = remove_move_repetition(mov, boardM,  vectBoard, hash);
+        auto moves = helpers::remove_move_repetition(mov, boardM,  vectBoard, hash);
         if (moves.empty())
             return INT32_MIN + 1;
         auto sorted_moves = moves_set_values(moves, std::nullopt, depth, hash);

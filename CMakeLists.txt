@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(fouche_r_chess)
+project(perceval)
 
 if (NOT CMAKE_BUILD_TYPE)
     message("set to release mode")
@@ -25,6 +25,9 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
 add_executable(chessengine)
 
 target_sources(chessengine PRIVATE
+        src/includes/helper.hh
+        src/ia/helpers/helper.cc
+        src/ia/iterative_deepening.cc
         src/adapter/pgn-exception.cc
         src/adapter/pgn-move.cc
         src/adapter/pgn-parser.cc
