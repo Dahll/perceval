@@ -25,6 +25,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
 add_executable(chessengine)
 
 target_sources(chessengine PRIVATE
+        src/ia/search-moves/quiescence.cc
         src/includes/helper.hh
         src/ia/helpers/helper.cc
         src/ia/iterative_deepening.cc

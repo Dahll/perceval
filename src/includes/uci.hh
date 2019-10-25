@@ -1,7 +1,6 @@
 #pragma once
 
-//#include "board.hh"
-#include "ia.hh"
+#include "board.hh"
 #include <string>
 
 namespace ai

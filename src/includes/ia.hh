@@ -7,7 +7,7 @@
 #include "perft.hh"
 #include "stock.hh"
 #include <helper.hh>
-//#include <uci.hh>
+#include <uci.hh>
 #include <board.hh>
 #include <map>
 #include <chrono>
