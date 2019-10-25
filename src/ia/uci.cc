@@ -271,7 +271,6 @@ namespace ai
 
     uint64 apply_all_moves(std::string& s, chessBoard::Board& board, chessBoard::enumPiece color_, std::vector<std::pair<uint64, int>>& vecBoard)
     {
-        // FIXME zobrist
         uint64 hash = zobrist(board);
         std::string ret = "";
         int i =0;
@@ -298,32 +297,6 @@ namespace ai
     std::string pop_fen(std::string& s)
     {
         std::string ret = "";
-        /*
-        while (s[0] != '-')
-        {
-            ret.push_back(s.at(0));
-            s.erase(0, 1);
-        }
-        ret.push_back(s.at(0));
-        s.erase(0, 1);
-        ret.push_back(s.at(0));
-        s.erase(0, 1);
-        ret.push_back(s.at(0));
-        s.erase(0, 1);
-        ret.push_back(s.at(0));
-        s.erase(0, 1);
-        ret.push_back(s.at(0));
-        s.erase(0, 1);
-        if (s != "")
-        {
-            ret.push_back(s.at(0));
-            s.erase(0, 1);
-        }
-
-        while (s != "" && (s[0] == ' ' || s[0] == '\t' || s[0] == '\n' || s[0] == '\0'))
-        {
-            s.erase(0, 1);
-        }*/
         ret += next_token(s);
         ret += " ";
         ret += next_token(s);

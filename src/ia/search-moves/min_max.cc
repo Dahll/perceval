@@ -51,7 +51,7 @@ namespace ai
             {
                 output_vect[0] = move.second;
                 merge_vect(output_vect, actual_vect);
-                //if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
+                if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
                     update_transposition_table(output_vect[0], score, depth, hash, -1);
                 return score;
             }
@@ -67,7 +67,7 @@ namespace ai
             }
             actual_vect.resize(0);
         }
-        //if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
+        if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
         {
             if (best <= save_alpha)
             {
@@ -138,7 +138,7 @@ namespace ai
             {
                 merge_vect(prev_vect_move, actual_vect);
                 prev_vect_move[0] = move.second;
-                //if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
+                if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
                     update_transposition_table(move.second, score, depth, hash, -1);
                 return score;
             }
@@ -153,7 +153,7 @@ namespace ai
             actual_vect.resize(0);
         }
 
-        //if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
+        if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
         {
             if (best <= save_alpha)
             {

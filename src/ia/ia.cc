@@ -142,11 +142,6 @@ namespace ai
                 }
 
             }
-            //std::cout << boardM.to_perft();
-            //auto move = best_move(-1);
-            //auto move = caller_search(5);
-    //        vectBoard = vectBoard1;
-            //auto move = caller_alphabeta(IA_DEPTH);
             const auto& time_to_play = give_time(max_time);
             const auto& move = iterative_deepening(time_to_play * 1000 /* millisecond */, hash);
             if (!move.has_value())
