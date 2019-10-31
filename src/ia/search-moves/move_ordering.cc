@@ -5,6 +5,7 @@
 #include <strings.h>
 #include <chessBoard.hh>
 #include "ia.hh"
+#include "ia_env.hh"
 
 namespace ai
 {
@@ -67,18 +68,18 @@ namespace ai
         {
             ret += 1001;
         }
-        if (input_vect_quiescence.size() > depth)
+        if (env::input_vect_quiescence.size() > depth)
         {
-            const chessBoard::Move& opti_move = input_vect_quiescence.at(depth);
+            const chessBoard::Move& opti_move = env::input_vect_quiescence.at(depth);
             if ((move.piece_get() == opti_move.piece_get()) && (move.to_get() == opti_move.to_get()) &&
                 (move.from_get() == opti_move.from_get()))
             {
                 ret += 30000;
             }
         }
-        const auto& transp = transposition_table_quiescence->find(hash);
+        const auto& transp = env::transposition_table_quiescence->find(hash);
 
-        if (transp != transposition_table_quiescence->end() && transp->second.move_has_value())
+        if (transp != env::transposition_table_quiescence->end() && transp->second.move_has_value())
         {
             if (transp->second.move_get().from_get() == move.from_get() && transp->second.move_get().to_get() == move.to_get() &&
             transp->second.move_get().piece_get() == move.piece_get())
@@ -154,9 +155,9 @@ namespace ai
             }
 
         }
-        if (input_vect.size() > start_depth - act_depth)
+        if (env::input_vect.size() > env::start_depth - act_depth)
         {
-            const chessBoard::Move& opti_move = input_vect.at(start_depth - act_depth);
+            const chessBoard::Move& opti_move = env::input_vect.at(env::start_depth - act_depth);
             if ((move.piece_get() == opti_move.piece_get()) && (move.to_get() == opti_move.to_get()) &&
                 (move.from_get() == opti_move.from_get()))
             {
@@ -164,9 +165,9 @@ namespace ai
             }
         }
 
-        const auto transp = transposition_table->find(hash);
+        const auto transp = env::transposition_table->find(hash);
 
-        if (transp != transposition_table->end() && transp->second.move_has_value())
+        if (transp != env::transposition_table->end() && transp->second.move_has_value())
         {
             if (transp->second.move_get().from_get() == move.from_get() && transp->second.move_get().to_get() == move.to_get() &&
                 transp->second.move_get().piece_get() == move.piece_get())

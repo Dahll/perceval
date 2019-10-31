@@ -2,6 +2,7 @@
 // Created by adrien on 30/05/19.
 //
 #include "ia.hh"
+#include "ia_env.hh"
 
 namespace ai
 {
@@ -12,8 +13,8 @@ namespace ai
         int alpha = INT32_MIN + 1;
         int beta = INT32_MAX;
         auto save_alpha = alpha;
-        auto transpo = transposition_table->find(hash);
-        if (transpo != transposition_table->end() && transpo->second.depth_get() >= depth)
+        auto transpo = env::transposition_table->find(hash);
+        if (transpo != env::transposition_table->end() && transpo->second.depth_get() >= depth)
         {
             if (transpo->second.is_cut_off_get() == 0)
                 return transpo->second.score_get();
@@ -31,12 +32,12 @@ namespace ai
 
         auto actual_vect = std::vector<chessBoard::Move>();
         int best = INT32_MIN + 1;
-        const auto& inv_color = boardM.other_color(boardM.color);
-        const auto& colo_act = boardM.color;
+        const auto& inv_color = env::boardM.other_color(env::boardM.color);
+        const auto& colo_act = env::boardM.color;
 
         //test if the board exist in the hash map and if depth left == depth stocked
-        const auto& mov = boardM.generate_moves(colo_act);
-        auto moves = helpers::remove_move_repetition(mov, boardM,  vectBoard, hash);
+        const auto& mov = env::boardM.generate_moves(colo_act);
+        auto moves = helpers::remove_move_repetition(mov, env::boardM,  env::vectBoard, hash);
         if (moves.empty())
             return INT32_MIN + 1;
         auto sorted_moves = moves_set_values(moves, std::nullopt, depth, hash);
@@ -44,14 +45,14 @@ namespace ai
         int score = 0;
         for (const auto& move : sorted_moves)
         {
-            const uint64& next_hash = boardM.apply_move(move.second, colo_act, hash);
+            const uint64& next_hash = env::boardM.apply_move(move.second, colo_act, hash);
             score = -alphabeta(inv_color, depth - 1, -beta, -alpha, move.second, actual_vect, output_vect_quiescence, next_hash);
-            boardM.revert_move(move.second, colo_act);
+            env::boardM.revert_move(move.second, colo_act);
             if (score >= beta)
             {
                 output_vect[0] = move.second;
                 merge_vect(output_vect, actual_vect);
-                if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
+                if (transpo == env::transposition_table->end() || transpo->second.depth_get() < depth)
                     update_transposition_table(output_vect[0], score, depth, hash, -1);
                 return score;
             }
@@ -67,7 +68,7 @@ namespace ai
             }
             actual_vect.resize(0);
         }
-        if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
+        if (transpo == env::transposition_table->end() || transpo->second.depth_get() < depth)
         {
             if (best <= save_alpha)
             {
@@ -94,9 +95,9 @@ namespace ai
     {
 
         //test if the board exist in the hash map and if depth left == depth stocked
-        auto transpo = transposition_table->find(hash);
+        auto transpo = env::transposition_table->find(hash);
         auto save_alpha = alpha;
-        if (transpo != transposition_table->end() && transpo->second.depth_get() >= depth)
+        if (transpo != env::transposition_table->end() && transpo->second.depth_get() >= depth)
         {
             if (transpo->second.is_cut_off_get() == 0)
                 return transpo->second.score_get();
@@ -118,27 +119,27 @@ namespace ai
 
         auto actual_vect = chessBoard::MOVES_T();
         int best = INT32_MIN + 1;
-        const auto &moves = boardM.generate_moves(colo_act);
+        const auto &moves = env::boardM.generate_moves(colo_act);
         if (moves.empty())
         {
-            if (!boardM.player_is_check(colo_act))
+            if (!env::boardM.player_is_check(colo_act))
                 return 0;
             return best;
         }
         const auto &sorted_moves = moves_set_values(moves, prev_move, depth, hash);//give hash
-        const auto &inv_color = boardM.other_color(colo_act);
+        const auto &inv_color = env::boardM.other_color(colo_act);
         prev_vect_move.push_back(sorted_moves[0].second);
         for (const auto &move : sorted_moves)
         {
-            uint64 next_hash = boardM.apply_move(move.second, colo_act, hash);
+            uint64 next_hash = env::boardM.apply_move(move.second, colo_act, hash);
             int score = -alphabeta(inv_color, depth - 1, -beta, -alpha, move.second, actual_vect,
                                    prev_vect_move_quiescence, next_hash);
-            boardM.revert_move(move.second, colo_act);
+            env::boardM.revert_move(move.second, colo_act);
             if (score >= beta)
             {
                 merge_vect(prev_vect_move, actual_vect);
                 prev_vect_move[0] = move.second;
-                if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
+                if (transpo == env::transposition_table->end() || transpo->second.depth_get() < depth)
                     update_transposition_table(move.second, score, depth, hash, -1);
                 return score;
             }
@@ -153,7 +154,7 @@ namespace ai
             actual_vect.resize(0);
         }
 
-        if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
+        if (transpo == env::transposition_table->end() || transpo->second.depth_get() < depth)
         {
             if (best <= save_alpha)
             {

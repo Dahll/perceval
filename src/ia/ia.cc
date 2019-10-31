@@ -7,6 +7,7 @@
 #include <x86intrin.h>
 #include <uci.hh>
 #include "ia.hh"
+#include "ia_env.hh"
 
 #define TURN_CAP_EARLYGAME 7 /* 7 */
 #define TURN_CAP_LATEGAME 10 /* 10 */
@@ -37,7 +38,7 @@ namespace ai
 
     int IA::val_max_depth()
     {
-        uint64 piece = boardM.pieceBB[3] | boardM.pieceBB[4] |boardM.pieceBB[5] |boardM.pieceBB[6];
+        uint64 piece = env::boardM.pieceBB[3] | env::boardM.pieceBB[4] | env::boardM.pieceBB[5] | env::boardM.pieceBB[6];
         int a = _popcnt64(piece);
         if (a <= 4)
         {
@@ -51,8 +52,8 @@ namespace ai
 
     int IA::give_time(int time_left)
     {
-        auto number_of_turn = boardM.turn_count_ * 2;
-        if (boardM.color == chessBoard::nWhite)
+        auto number_of_turn = env::boardM.turn_count_ * 2;
+        if (env::boardM.color == chessBoard::nWhite)
             number_of_turn += 1;
         const auto& boost_factor = get_boost_factor(number_of_turn);
         int base_time = 0;
@@ -69,7 +70,7 @@ namespace ai
 
     void IA::play_chess()
     {
-        init(my_name);
+        init(env::my_name);
         int max_time = 300;
    //     std::ifstream ifs;
         while (true)
@@ -79,25 +80,25 @@ namespace ai
             //aa << s << '\n';
             TimePoint act_time = std::chrono::system_clock::now();
             next_token(s);
-            vectBoard.clear();
+            env::vectBoard.clear();
             uint64 hash = 0;
             if (s[0] == 'f' && s[1] == 'e' && s[2] == 'n')
             {
                 next_token(s);
                 std::string fen = pop_fen(s);
-                boardM = Perft::parse(fen);
+                env::boardM = Perft::parse(fen);
                 if (s != "")
                 {
                     next_token(s);
-                    hash = helpers::apply_all_moves(s, boardM, boardM.color, vectBoard);
+                    hash = helpers::apply_all_moves(s, env::boardM, env::boardM.color, env::vectBoard);
                 }
             }
             else
             {
-                boardM = chessBoard::Board();
+                env::boardM = chessBoard::Board();
                 next_token(s);
                 if (next_token(s) != "") {
-                    hash = helpers::apply_all_moves(s, boardM, chessBoard::nWhite, vectBoard);
+                    hash = helpers::apply_all_moves(s, env::boardM, chessBoard::nWhite, env::vectBoard);
                 }
 
             }

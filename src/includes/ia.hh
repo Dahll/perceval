@@ -4,6 +4,7 @@
 
 #pragma once
 
+//#include "ia_env.hh"
 #include "perft.hh"
 #include "stock.hh"
 #include <helper.hh>
@@ -92,22 +93,7 @@ namespace ai
 
     class IA
     {
-    private:
-        chessBoard::Board boardM;
-
-        std::vector<chessBoard::Move> input_vect;
-        std::vector<chessBoard::Move> input_vect_quiescence;
-
-        std::unordered_map<uint64, Data>* transposition_table;
-        std::unordered_map<uint64, Data>* transposition_table_quiescence;
-
-        TimePoint act_start;
-        int start_depth;
-
-        const std::string my_name = "Perceval";
-        bool is_opening = true;
     public:
-        std::vector<std::pair<uint64, int>> vectBoard;
         void play_chess();
         int test_mini_max() const;
         int eval_queen(const chessBoard::enumPiece& color,
