@@ -17,7 +17,7 @@ namespace transposition_table
         void score_set(int score);
 
         chessBoard::Move move_get();
-        void move_set(std::optional<chessBoard::Move> move);
+        void move_set(std::optional<chessBoard::Move> move); 
 
         int depth_get();
         void depth_set(int depth);

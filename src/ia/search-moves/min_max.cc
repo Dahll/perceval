@@ -6,7 +6,7 @@
 
 namespace ai
 {
-    int IA::caller_alphabeta(int depth,
+    int caller_alphabeta(int depth,
             chessBoard::MOVES_T& output_vect,
             chessBoard::MOVES_T& output_vect_quiescence, uint64 hash)
     {
@@ -40,7 +40,7 @@ namespace ai
         auto moves = helpers::remove_move_repetition(mov, env::boardM,  env::vectBoard, hash);
         if (moves.empty())
             return INT32_MIN + 1;
-        auto sorted_moves = moves_set_values(moves, std::nullopt, depth, hash);
+        auto sorted_moves = ordering::moves_set_values(moves, std::nullopt, depth, hash);
         output_vect.push_back(sorted_moves[0].second);
         int score = 0;
         for (const auto& move : sorted_moves)
@@ -88,7 +88,7 @@ namespace ai
     }
 
 
-    int IA::alphabeta(const chessBoard::enumPiece& colo_act,
+    int alphabeta(const chessBoard::enumPiece& colo_act,
             int depth ,int alpha, int beta, const chessBoard::Move& prev_move,
             chessBoard::MOVES_T& prev_vect_move,
             chessBoard::MOVES_T& prev_vect_move_quiescence, uint64 hash)
@@ -126,7 +126,7 @@ namespace ai
                 return 0;
             return best;
         }
-        const auto &sorted_moves = moves_set_values(moves, prev_move, depth, hash);//give hash
+        const auto &sorted_moves = ordering::moves_set_values(moves, prev_move, depth, hash);//give hash
         const auto &inv_color = env::boardM.other_color(colo_act);
         prev_vect_move.push_back(sorted_moves[0].second);
         for (const auto &move : sorted_moves)

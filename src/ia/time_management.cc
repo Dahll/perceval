@@ -22,7 +22,7 @@ using namespace std::chrono;
 namespace ai
 {
     /// Returns a boost factor between 0-100
-    int IA::get_boost_factor(int nb_turns) const
+    int get_boost_factor(int nb_turns)
     {
         if (nb_turns < 3)
             return nb_turns;
@@ -38,7 +38,7 @@ namespace ai
     /* r2qkb1r/1pp2ppp/p1n5/3n1b2/3Pp3/N3P3/PP1BBPPP/R2QK1NR b KQkq - 1 9 */
 
     /* Result in millisecond */
-    int IA::approx_next_time(const chessBoard::Board& cur_b, int depth) const
+    int approx_next_time(const chessBoard::Board& cur_b, int depth)
     {
         if (depth <= DEPTH_IGNORE)
             return 0;
@@ -52,8 +52,8 @@ namespace ai
 
     }
 
-    bool IA::approx_enough_time(const TimePoint& act_start_,
-            const TimePoint& start, int max_time, size_t /* depth */) const
+    bool approx_enough_time(const TimePoint& act_start_,
+            const TimePoint& start, int max_time, size_t /* depth */)
     {
         int time_prev/* millisecond */ = duration_cast<milliseconds>(act_start_ - start).count();
         return time_prev * TIME_PREV_FACTOR < max_time;

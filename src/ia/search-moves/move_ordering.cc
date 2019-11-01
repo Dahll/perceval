@@ -4,13 +4,14 @@
 
 #include <strings.h>
 #include <chessBoard.hh>
+#include "move_ordering.hh"
 #include "ia.hh"
 #include "ia_env.hh"
 
-namespace ai
+namespace ai::ordering
 {
 
-    int IA::quiescence_calc_move(const chessBoard::Move& move,
+    int quiescence_calc_move(const chessBoard::Move& move,
             const std::optional<chessBoard::Move>& prev_move, size_t depth, uint64 hash)
     {
         int ret = 0;
@@ -68,18 +69,18 @@ namespace ai
         {
             ret += 1001;
         }
-        if (env::input_vect_quiescence.size() > depth)
+        if (ai::env::input_vect_quiescence.size() > depth)
         {
-            const chessBoard::Move& opti_move = env::input_vect_quiescence.at(depth);
+            const chessBoard::Move& opti_move = ai::env::input_vect_quiescence.at(depth);
             if ((move.piece_get() == opti_move.piece_get()) && (move.to_get() == opti_move.to_get()) &&
                 (move.from_get() == opti_move.from_get()))
             {
                 ret += 30000;
             }
         }
-        const auto& transp = env::transposition_table_quiescence->find(hash);
+        const auto& transp = ai::env::transposition_table_quiescence->find(hash);
 
-        if (transp != env::transposition_table_quiescence->end() && transp->second.move_has_value())
+        if (transp != ai::env::transposition_table_quiescence->end() && transp->second.move_has_value())
         {
             if (transp->second.move_get().from_get() == move.from_get() && transp->second.move_get().to_get() == move.to_get() &&
             transp->second.move_get().piece_get() == move.piece_get())
@@ -92,7 +93,7 @@ namespace ai
 
 
 
-    int IA::calc_move(const chessBoard::Move& move, size_t act_depth,
+    int calc_move(const chessBoard::Move& move, size_t act_depth,
             const std::optional<chessBoard::Move>& prev_move, uint64 hash)
     {
         int ret = 0;
@@ -155,9 +156,9 @@ namespace ai
             }
 
         }
-        if (env::input_vect.size() > env::start_depth - act_depth)
+        if (ai::env::input_vect.size() > ai::env::start_depth - act_depth)
         {
-            const chessBoard::Move& opti_move = env::input_vect.at(env::start_depth - act_depth);
+            const chessBoard::Move& opti_move = ai::env::input_vect.at(ai::env::start_depth - act_depth);
             if ((move.piece_get() == opti_move.piece_get()) && (move.to_get() == opti_move.to_get()) &&
                 (move.from_get() == opti_move.from_get()))
             {
@@ -165,9 +166,9 @@ namespace ai
             }
         }
 
-        const auto transp = env::transposition_table->find(hash);
+        const auto transp = ai::env::transposition_table->find(hash);
 
-        if (transp != env::transposition_table->end() && transp->second.move_has_value())
+        if (transp != ai::env::transposition_table->end() && transp->second.move_has_value())
         {
             if (transp->second.move_get().from_get() == move.from_get() && transp->second.move_get().to_get() == move.to_get() &&
                 transp->second.move_get().piece_get() == move.piece_get())
@@ -183,7 +184,7 @@ namespace ai
         return pair1.first > pair2.first;
     }
 
-    VECTOR_PAIR IA::moves_set_values(const chessBoard::MOVES_T& vect,
+    VECTOR_PAIR moves_set_values(const chessBoard::MOVES_T& vect,
             const std::optional<chessBoard::Move>& prev_move, int depth, uint64 hash)
     {
         VECTOR_PAIR ret;
@@ -195,7 +196,7 @@ namespace ai
         return ret;
     }
 
-    VECTOR_PAIR IA::moves_set_values_quiescence(const chessBoard::MOVES_T& vect,
+    VECTOR_PAIR moves_set_values_quiescence(const chessBoard::MOVES_T& vect,
             const std::optional<chessBoard::Move>& prev_move, int depth, uint64 hash)
     {
         VECTOR_PAIR ret;
@@ -208,14 +209,7 @@ namespace ai
         return ret;
     }
 
-    void merge_vect(chessBoard::MOVES_T& vect1, chessBoard::MOVES_T& vect2)
-    {
-        vect1.resize(1);
-        for (const auto move : vect2)
-        {
-            vect1.push_back(move);
-        }
-    }
+
 
 
     /*void IA::add_transposition_table(const chessBoard::Board& board)

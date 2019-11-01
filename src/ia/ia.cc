@@ -15,6 +15,15 @@
 
 namespace ai
 {
+    void merge_vect(chessBoard::MOVES_T& vect1, chessBoard::MOVES_T& vect2)
+    {
+        vect1.resize(1);
+        for (const auto move : vect2)
+        {
+            vect1.push_back(move);
+        }
+    }
+
     chessBoard::Board d_copy_board(const chessBoard::Board& b)
     {
         chessBoard::Board n;
@@ -36,7 +45,7 @@ namespace ai
     }
 
 
-    int IA::val_max_depth()
+    int val_max_depth()
     {
         uint64 piece = env::boardM.pieceBB[3] | env::boardM.pieceBB[4] | env::boardM.pieceBB[5] | env::boardM.pieceBB[6];
         int a = _popcnt64(piece);
@@ -50,7 +59,7 @@ namespace ai
         }
     }
 
-    int IA::give_time(int time_left)
+    int give_time(int time_left)
     {
         auto number_of_turn = env::boardM.turn_count_ * 2;
         if (env::boardM.color == chessBoard::nWhite)
@@ -68,7 +77,7 @@ namespace ai
         }
     }
 
-    void IA::play_chess()
+    void play_chess()
     {
         init(env::my_name);
         int max_time = 300;

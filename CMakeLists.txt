@@ -25,6 +25,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
 add_executable(chessengine)
 
 target_sources(chessengine PRIVATE
+        src/includes/move_ordering.hh
         src/includes/transposition_table.hh
         src/includes/evaluation.hh
         src/includes/ia_env.hh

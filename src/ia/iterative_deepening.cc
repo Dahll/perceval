@@ -7,7 +7,7 @@
 
 namespace ai
 {
-    std::optional<chessBoard::Move> IA::iterative_deepening(int max_time , uint64 hash) // max_time in milliseconds
+    std::optional<chessBoard::Move> iterative_deepening(int max_time , uint64 hash) // max_time in milliseconds
     {
         //Initialisation des variables
         max_time += 1;

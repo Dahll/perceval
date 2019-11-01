@@ -6,7 +6,7 @@
 
 namespace ai
 {
-    int IA::quiesce(const chessBoard::enumPiece& color_act,
+    int quiesce(const chessBoard::enumPiece& color_act,
                     int alpha, int beta, const chessBoard::Move& prev_move, int depth,
                     chessBoard::MOVES_T& prev_vect_move_quiescence, uint64 hash)
     {
@@ -44,7 +44,7 @@ namespace ai
             alpha = stand_pat;
         const auto& inv_color = env::boardM.other_color(color_act);
         const auto& moves = env::boardM.generate_capture_moves(color_act);
-        const auto& sorted_moves = moves_set_values_quiescence(moves, prev_move, depth, hash);//give hash
+        const auto& sorted_moves = ordering::moves_set_values_quiescence(moves, prev_move, depth, hash);//give hash
         if (moves.empty())
         {
             transposition_table::update_transposition_table_quiescence(std::nullopt, alpha, hash, -1);

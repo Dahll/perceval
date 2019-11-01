@@ -69,8 +69,7 @@ int main(int argc, const char *argv[])
         }
         else
         {
-            ai::IA perceval_le_con;
-            perceval_le_con.play_chess();
+            ai::play_chess();
         }
     }
     catch (const error &ex)
