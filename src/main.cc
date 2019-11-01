@@ -18,8 +18,8 @@ chessBoard::Board ai::env::boardM = chessBoard::Board();
 std::vector<chessBoard::Move> ai::env::input_vect = std::vector<chessBoard::Move>();
 std::vector<chessBoard::Move> ai::env::input_vect_quiescence = std::vector<chessBoard::Move>();
 
-std::unordered_map<uint64, ai::Data>* ai::env::transposition_table = nullptr;
-std::unordered_map<uint64, ai::Data>* ai::env::transposition_table_quiescence = nullptr;
+std::unordered_map<uint64, transposition_table::Data>* ai::env::transposition_table = nullptr;
+std::unordered_map<uint64, transposition_table::Data>* ai::env::transposition_table_quiescence = nullptr;
 
 TimePoint ai::env::act_start = system_clock::now();
 int ai::env::start_depth = 0;

@@ -53,7 +53,7 @@ namespace ai
                 output_vect[0] = move.second;
                 merge_vect(output_vect, actual_vect);
                 if (transpo == env::transposition_table->end() || transpo->second.depth_get() < depth)
-                    update_transposition_table(output_vect[0], score, depth, hash, -1);
+                    transposition_table::update_transposition_table(output_vect[0], score, depth, hash, -1);
                 return score;
             }
             if (score > best)
@@ -72,16 +72,16 @@ namespace ai
         {
             if (best <= save_alpha)
             {
-                update_transposition_table(output_vect[0], best, depth, hash, 1);
+                transposition_table::update_transposition_table(output_vect[0], best, depth, hash, 1);
             }
             else if (best >= beta)
             {
-                    update_transposition_table(output_vect[0], best, depth, hash, -1);
+                    transposition_table::update_transposition_table(output_vect[0], best, depth, hash, -1);
             }
             else
             {
                 //if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
-                    update_transposition_table(output_vect[0], best, depth, hash, 0);
+                    transposition_table::update_transposition_table(output_vect[0], best, depth, hash, 0);
             }
         }
         return best;
@@ -140,7 +140,7 @@ namespace ai
                 merge_vect(prev_vect_move, actual_vect);
                 prev_vect_move[0] = move.second;
                 if (transpo == env::transposition_table->end() || transpo->second.depth_get() < depth)
-                    update_transposition_table(move.second, score, depth, hash, -1);
+                    transposition_table::update_transposition_table(move.second, score, depth, hash, -1);
                 return score;
             }
             if (score > best)
@@ -158,16 +158,16 @@ namespace ai
         {
             if (best <= save_alpha)
             {
-                update_transposition_table(prev_vect_move[0], best, depth, hash, 1);
+                transposition_table::update_transposition_table(prev_vect_move[0], best, depth, hash, 1);
             }
             else if (best >= beta)
             {
-                update_transposition_table(prev_vect_move[0], best, depth, hash, -1);
+                transposition_table::update_transposition_table(prev_vect_move[0], best, depth, hash, -1);
             }
             else
             {
                 //if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
-                    update_transposition_table(prev_vect_move[0], best, depth, hash, 0);
+                    transposition_table::update_transposition_table(prev_vect_move[0], best, depth, hash, 0);
             }
         }
         return best;

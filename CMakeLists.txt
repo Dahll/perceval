@@ -25,6 +25,8 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
 add_executable(chessengine)
 
 target_sources(chessengine PRIVATE
+        src/includes/transposition_table.hh
+        src/includes/evaluation.hh
         src/includes/ia_env.hh
         src/ia/search-moves/quiescence.cc
         src/includes/helper.hh
@@ -45,7 +47,7 @@ target_sources(chessengine PRIVATE
         src/ia/ia.cc
         src/main.cc
         src/magic/generate.cc
-        src/ia/evaluation/evalutation.cc
+        src/ia/evaluation/evaluation.cc
         src/ia/search-moves/min_max.cc
         src/board/moves_capture.cc
         src/board/moves_capture.cc

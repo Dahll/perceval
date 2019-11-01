@@ -32,12 +32,12 @@ namespace ai
 
             }
         }*/
-        const int& stand_pat = evaluate(color_act);
+        const int& stand_pat = evaluation::evaluate(color_act);
         auto actual_vect = std::vector<chessBoard::Move>();
         if (stand_pat >= beta)
         {
 
-            update_transposition_table_quiescence(std::nullopt, beta, hash, 1);
+            transposition_table::update_transposition_table_quiescence(std::nullopt, beta, hash, 1);
             return beta;
         }
         if (alpha < stand_pat)
@@ -47,7 +47,7 @@ namespace ai
         const auto& sorted_moves = moves_set_values_quiescence(moves, prev_move, depth, hash);//give hash
         if (moves.empty())
         {
-            update_transposition_table_quiescence(std::nullopt, alpha, hash, -1);
+            transposition_table::update_transposition_table_quiescence(std::nullopt, alpha, hash, -1);
             return alpha;
         }
         actual_vect.emplace_back(sorted_moves[0].second);
@@ -61,7 +61,7 @@ namespace ai
                 merge_vect(prev_vect_move_quiescence, actual_vect);
                 prev_vect_move_quiescence[0] = move.second;
                 //if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
-                update_transposition_table_quiescence(move.second, beta, hash, 1);
+                transposition_table::update_transposition_table_quiescence(move.second, beta, hash, 1);
                 return beta;
             }
             if (score > alpha)
@@ -75,9 +75,9 @@ namespace ai
         //if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
         //{
         if (prev_vect_move_quiescence.empty())
-            update_transposition_table_quiescence(std::nullopt, alpha, hash, 0);
+            transposition_table::update_transposition_table_quiescence(std::nullopt, alpha, hash, 0);
         else
-            update_transposition_table_quiescence(prev_vect_move_quiescence[0], alpha, hash, 0);
+            transposition_table::update_transposition_table_quiescence(prev_vect_move_quiescence[0], alpha, hash, 0);
         //}
         return alpha;
     }

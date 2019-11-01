@@ -14,8 +14,8 @@ namespace ai
         int i = 1;
         //const int& max_depth = val_max_depth();
         const auto& start = system_clock::now();
-        env::transposition_table = new std::unordered_map<uint64 , Data>();
-        env::transposition_table_quiescence = new std::unordered_map<uint64 , Data>();
+        env::transposition_table = new std::unordered_map<uint64 , transposition_table::Data>();
+        env::transposition_table_quiescence = new std::unordered_map<uint64 , transposition_table::Data>();
 
         env::input_vect = std::vector<chessBoard::Move>();
         auto output_vect = std::vector<chessBoard::Move>();

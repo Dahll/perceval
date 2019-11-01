@@ -1,10 +1,10 @@
 //
 // Created by adrien on 07/06/19.
 //
-#include "ia.hh"
+#include "transposition_table.hh"
 #include "ia_env.hh"
 
-namespace ai
+namespace transposition_table
 {
 
     chessBoard::Move Data::move_get()
@@ -54,10 +54,10 @@ namespace ai
 
 
 
-    void IA::update_transposition_table(const std::optional<chessBoard::Move>& move, int score, int depth, uint64 hash, int is_cut_off)
+    void update_transposition_table(const std::optional<chessBoard::Move>& move, int score, int depth, uint64 hash, int is_cut_off)
     {
-        auto a = env::transposition_table->find(hash);
-        if (a != env::transposition_table->end())
+        auto a = ai::env::transposition_table->find(hash);
+        if (a != ai::env::transposition_table->end())
         {
             // need to change and overload =
             a->second.move_set(move);
@@ -68,15 +68,15 @@ namespace ai
         else
         {
             auto data = Data(move, score, depth, is_cut_off);
-            env::transposition_table->insert({hash, data});
+            ai::env::transposition_table->insert({hash, data});
         }
 
     }
 
-    void IA::update_transposition_table_quiescence(const std::optional<chessBoard::Move>& move, int score, uint64 hash, int is_cut_off)
+    void update_transposition_table_quiescence(const std::optional<chessBoard::Move>& move, int score, uint64 hash, int is_cut_off)
     {
-        auto a = env::transposition_table_quiescence->find(hash);
-        if (a != env::transposition_table_quiescence->end())
+        auto a = ai::env::transposition_table_quiescence->find(hash);
+        if (a != ai::env::transposition_table_quiescence->end())
         {
             // need to change and overload =
             //a->second.move_set(move);
@@ -87,7 +87,7 @@ namespace ai
         else
         {
             auto data = Data(move, score, 0, is_cut_off);
-            env::transposition_table_quiescence->insert({hash, data});
+            ai::env::transposition_table_quiescence->insert({hash, data});
         }
     }
 

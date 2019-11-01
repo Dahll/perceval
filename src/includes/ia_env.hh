@@ -10,7 +10,9 @@
 #include <chrono>
 #include "chessBoard.hh"
 #include "board.hh"
-#include "ia.hh"
+#include "transposition_table.hh"
+#include "evaluation.hh"
+//#include "ia.hh"
 
 //#include "ia.hh" // TODO
 
@@ -26,8 +28,8 @@ namespace ai::env
     extern std::vector<chessBoard::Move> input_vect;
     extern std::vector<chessBoard::Move> input_vect_quiescence;
 
-    extern std::unordered_map<uint64, ai::Data>* transposition_table;
-    extern std::unordered_map<uint64, ai::Data>* transposition_table_quiescence;
+    extern std::unordered_map<uint64, transposition_table::Data>* transposition_table;
+    extern std::unordered_map<uint64, transposition_table::Data>* transposition_table_quiescence;
 
     extern TimePoint act_start;
     extern int start_depth;
