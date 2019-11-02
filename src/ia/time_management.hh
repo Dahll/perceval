@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <chrono>
 #include <board.hh>
 #include "ia_env.hh"
 #include <x86intrin.h>
@@ -14,7 +13,7 @@ using Clock = std::chrono::high_resolution_clock;
 using TimePoint = std::chrono::time_point<Clock>;
 
 
-namespace time_management
+namespace ai::time_management
 {
     int get_boost_factor(int nb_turns);
     int approx_next_time(const chessBoard::Board& cur_b, int depth);

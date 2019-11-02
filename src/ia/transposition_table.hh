@@ -6,7 +6,7 @@
 
 #include "board.hh"
 
-namespace transposition_table
+namespace ai::transposition_table
 {
     class Data
     {

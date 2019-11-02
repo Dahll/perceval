@@ -4,8 +4,12 @@
 
 #pragma once
 
+
+#include <chrono>
+#include <vector>
+#include <algorithm>
+
 #include "time_management.hh"
-#include "move_ordering.hh"
 #include "transposition_table.hh"
 #include "evaluation/evaluation.hh"
 #include "perft.hh"
@@ -13,21 +17,13 @@
 #include "helpers/helper.hh"
 #include "uci.hh"
 #include "board.hh"
-#include <chrono>
-#include <vector>
-#include <algorithm>
 
 using namespace std::chrono;
 
 namespace ai
 {
 
-    #define QUEEN 900
-    #define ROOKS 500
-    #define BISHOP 330
-    #define KNIGHT 320
-    #define PAWN 100
-    #define KING 20000
+
 
     void play_chess();
 

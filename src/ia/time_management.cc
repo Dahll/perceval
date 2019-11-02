@@ -26,7 +26,7 @@ using namespace std::chrono;
 #define TURN_CAP_LATEGAME 10 /* 10 */
 #define BASE_TIME 5 /* 5 */
 
-namespace time_management
+namespace ai::time_management
 {
     /// Returns a boost factor between 0-100
 

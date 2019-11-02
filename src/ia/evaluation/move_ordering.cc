@@ -2,11 +2,7 @@
 // Created by adrien on 06/06/19.
 //
 
-#include <strings.h>
-#include <chessBoard.hh>
-#include "move_ordering.hh"
-#include "../ia.hh"
-#include "../ia_env.hh"
+#include "evaluation.hh"
 
 namespace ai::ordering
 {
@@ -23,19 +19,19 @@ namespace ai::ordering
         }
         else if (type_piece == 3)
         {
-            ret -= KNIGHT;
+            ret -= VAL_KNIGHT;
         }
         else if (type_piece == 4)
         {
-            ret -= BISHOP;
+            ret -= VAL_BISHOP;
         }
         else if (type_piece == 5)
         {
-            ret -= ROOKS;
+            ret -= VAL_ROOKS;
         }
         else if (type_piece == 6)
         {
-            ret -= QUEEN;
+            ret -= VAL_QUEEN;
         }
         else if (type_piece == 7)
         {
@@ -47,19 +43,19 @@ namespace ai::ordering
         }
         else if (type_capture == 3)
         {
-            ret += KNIGHT;
+            ret += VAL_KNIGHT;
         }
         else if (type_capture == 4)
         {
-            ret += BISHOP;
+            ret += VAL_BISHOP;
         }
         else if (type_capture == 5)
         {
-            ret += ROOKS;
+            ret += VAL_ROOKS;
         }
         else if (type_capture == 6)
         {
-            ret += QUEEN;
+            ret += VAL_QUEEN;
         }
         else if (type_capture == 7)
         {
@@ -107,19 +103,19 @@ namespace ai::ordering
             }
             else if (type_piece == 3)
             {
-                ret -= KNIGHT;
+                ret -= VAL_KNIGHT;
             }
             else if (type_piece == 4)
             {
-                ret -= BISHOP;
+                ret -= VAL_BISHOP;
             }
             else if (type_piece == 5)
             {
-                ret -= ROOKS;
+                ret -= VAL_ROOKS;
             }
             else if (type_piece == 6)
             {
-                ret -= QUEEN;
+                ret -= VAL_QUEEN;
             }
             else if (type_piece == 7)
             {
@@ -131,19 +127,19 @@ namespace ai::ordering
             }
             else if (type_capture == 3)
             {
-                ret += KNIGHT;
+                ret += VAL_KNIGHT;
             }
             else if (type_capture == 4)
             {
-                ret += BISHOP;
+                ret += VAL_BISHOP;
             }
             else if (type_capture == 5)
             {
-                ret += ROOKS;
+                ret += VAL_ROOKS;
             }
             else if (type_capture == 6)
             {
-                ret += QUEEN;
+                ret += VAL_QUEEN;
             }
             else if (type_capture == 7)
             {
@@ -208,17 +204,4 @@ namespace ai::ordering
         std::sort(ret.begin(), ret.end(), cmp_pair);
         return ret;
     }
-
-
-
-
-    /*void IA::add_transposition_table(const chessBoard::Board& board)
-    {
-
-    }
-
-    void IA::add_transposition_table_quiescence(, const chessBoard::Move& move, int value)
-    {
-
-    }*/
 }

@@ -7,7 +7,7 @@
 using namespace ai;
 
 
-namespace helpers
+namespace ai::helpers
 {
 
     bool board_is_false(const std::vector<chessBoard::Board> &vecBoard, const std::vector<int> &vecint,

@@ -12,9 +12,8 @@
 #include "board.hh"
 #include "transposition_table.hh"
 #include "evaluation/evaluation.hh"
-//#include "ia.hh"
 
-//#include "ia.hh" // TODO
+
 
 using Clock = std::chrono::high_resolution_clock;
 using TimePoint = std::chrono::time_point<Clock>;
@@ -35,7 +34,6 @@ namespace ai::env
     extern int start_depth;
 
     extern const std::string my_name;
-    extern bool is_opening;
 
     extern std::vector<std::pair<uint64, int>> vectBoard;
 }

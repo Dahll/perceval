@@ -4,7 +4,7 @@
 #include "transposition_table.hh"
 #include "ia_env.hh"
 
-namespace transposition_table
+namespace ai::transposition_table
 {
 
     chessBoard::Move Data::move_get()

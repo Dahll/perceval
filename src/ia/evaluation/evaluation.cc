@@ -7,7 +7,7 @@
 #include "../ia_env.hh"
 #include "../ia.hh"
 #define EARLY_GAME 0
-namespace evaluation
+namespace ai::evaluation
 {
     namespace
     {
@@ -22,13 +22,13 @@ namespace evaluation
         uint64 mask_color = ai::env::boardM.pieceBB[enumPiece::nKing] & ai::env::boardM.pieceBB[color_];
         if ((index = chessBoard::split_index(mask_color)) != 0)
         {
-            ret += KING;
+            ret += VAL_KING;
             ret += chessBoard::board_king[color_][index];
         }
         uint64 mask_no_color = ai::env::boardM.pieceBB[enumPiece::nKing] & ai::env::boardM.pieceBB[not_color_];
         if ((index = chessBoard::split_index(mask_no_color)) != 0)
         {
-            ret -= KING;
+            ret -= VAL_KING;
             ret -= chessBoard::board_king[not_color_][index];
         }
         return ret;
@@ -41,12 +41,12 @@ namespace evaluation
         uint64 mask = ai::env::boardM.pieceBB[enumPiece::nQueen] & ai::env::boardM.pieceBB[color_];
         int index = 0;
         while ((index = chessBoard::split_index(mask)) != 0) {
-            ret += QUEEN;
+            ret += VAL_QUEEN;
             ret += chessBoard::board_queen[color_][index];
         }
         uint64 mask_no = ai::env::boardM.pieceBB[enumPiece::nQueen] & ai::env::boardM.pieceBB[not_color_];
         while ((index = chessBoard::split_index(mask_no)) != 0) {
-            ret -= QUEEN;
+            ret -= VAL_QUEEN;
             ret -= chessBoard::board_queen[not_color_][index];
         }
         return ret;
@@ -59,12 +59,12 @@ namespace evaluation
         uint64 mask = ai::env::boardM.pieceBB[enumPiece::nRook] & ai::env::boardM.pieceBB[color_];
         int index = 0;
         while ((index = chessBoard::split_index(mask)) != 0) {
-            ret += ROOKS;
+            ret += VAL_ROOKS;
             ret += chessBoard::board_rooks[color_][index];
         }
         uint64 mask_no = ai::env::boardM.pieceBB[enumPiece::nRook] & ai::env::boardM.pieceBB[not_color_];
         while ((index = chessBoard::split_index(mask_no)) != 0) {
-            ret -= ROOKS;
+            ret -= VAL_ROOKS;
             ret -= chessBoard::board_rooks[not_color_][index];
         }
         return ret;
@@ -77,12 +77,12 @@ namespace evaluation
         uint64 mask = ai::env::boardM.pieceBB[enumPiece::nBishop] & ai::env::boardM.pieceBB[color_];
         int index = 0;
         while ((index = chessBoard::split_index(mask)) != 0) {
-            ret += BISHOP;
+            ret += VAL_BISHOP;
             ret += chessBoard::board_bishop[color_][index];
         }
         uint64 mask_no = ai::env::boardM.pieceBB[enumPiece::nBishop] & ai::env::boardM.pieceBB[not_color_];
         while ((index = chessBoard::split_index(mask_no)) != 0) {
-            ret -= BISHOP;
+            ret -= VAL_BISHOP;
             ret -= chessBoard::board_bishop[not_color_][index];
         }
         return ret;
@@ -96,12 +96,12 @@ namespace evaluation
         uint64 mask = ai::env::boardM.pieceBB[enumPiece::nKnight] & ai::env::boardM.pieceBB[color_];
         int index = 0;
         while ((index = chessBoard::split_index(mask)) != 0) {
-            ret += KNIGHT;
+            ret += VAL_KNIGHT;
             ret += chessBoard::board_knight[color_][index];
         }
         uint64 mask_no = ai::env::boardM.pieceBB[enumPiece::nKnight] & ai::env::boardM.pieceBB[not_color_];
         while ((index = chessBoard::split_index(mask_no)) != 0) {
-            ret -= KNIGHT;
+            ret -= VAL_KNIGHT;
             ret -= chessBoard::board_knight[not_color_][index];
         }
         return ret;
@@ -115,12 +115,12 @@ namespace evaluation
         uint64 mask = ai::env::boardM.pieceBB[enumPiece::nPawn] & ai::env::boardM.pieceBB[color_];
         int index = 0;
         while ((index = chessBoard::split_index(mask)) != 0) {
-            ret += PAWN;
+            ret += VAL_PAWN;
             ret += chessBoard::board_pawn[color_][index];
         }
         uint64 mask_no = ai::env::boardM.pieceBB[enumPiece::nPawn] & ai::env::boardM.pieceBB[not_color_];
         while ((index = chessBoard::split_index(mask_no)) != 0) {
-            ret -= PAWN;
+            ret -= VAL_PAWN;
             ret -= chessBoard::board_pawn[not_color_][index];
         }
         return ret;
