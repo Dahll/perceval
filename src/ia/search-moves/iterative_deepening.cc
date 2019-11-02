@@ -2,8 +2,8 @@
 // Created by adrien on 25/10/19.
 //
 
-#include "ia.hh"
-#include "ia_env.hh"
+#include "../ia.hh"
+#include "../ia_env.hh"
 
 namespace ai
 {

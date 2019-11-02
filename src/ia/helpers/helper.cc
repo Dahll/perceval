@@ -2,7 +2,7 @@
 // Created by adrien on 25/10/19.
 //
 
-#include <uci.hh>
+#include "../uci.hh"
 #include "helper.hh"
 using namespace ai;
 
@@ -209,5 +209,14 @@ namespace helpers
             return vec;
         }
         return ret;
+    }
+
+    void merge_vect(chessBoard::MOVES_T& vect1, chessBoard::MOVES_T& vect2)
+    {
+        vect1.resize(1);
+        for (const auto move : vect2)
+        {
+            vect1.push_back(move);
+        }
     }
 }

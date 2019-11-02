@@ -25,14 +25,9 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
 add_executable(chessengine)
 
 target_sources(chessengine PRIVATE
-        src/includes/move_ordering.hh
-        src/includes/transposition_table.hh
-        src/includes/evaluation.hh
-        src/includes/ia_env.hh
         src/ia/search-moves/quiescence.cc
-        src/includes/helper.hh
         src/ia/helpers/helper.cc
-        src/ia/iterative_deepening.cc
+        src/ia/search-moves/iterative_deepening.cc
         src/adapter/pgn-exception.cc
         src/adapter/pgn-move.cc
         src/adapter/pgn-parser.cc
@@ -53,8 +48,8 @@ target_sources(chessengine PRIVATE
         src/board/moves_capture.cc
         src/board/moves_capture.cc
         src/ia/time_management.cc
-        src/ia/search-moves/move_ordering.cc
-        src/ia/search-moves/transposition_table.cc
+        src/ia/evaluation/move_ordering.cc
+        src/ia/transposition_table.cc
 )
 
 target_include_directories(chessengine

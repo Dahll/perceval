@@ -2,7 +2,9 @@
 // Created by fouche_r on 6/6/19.
 //
 
-#include "ia.hh"
+#include "time_management.hh"
+
+
 using namespace std::chrono;
 
 #define TIME_PREV_FACTOR 7
@@ -19,9 +21,33 @@ using namespace std::chrono;
 #define DEPTH_IGNORE 0
 #define DEPTH_BASE -1
 
-namespace ai
+
+#define TURN_CAP_EARLYGAME 7 /* 7 */
+#define TURN_CAP_LATEGAME 10 /* 10 */
+#define BASE_TIME 5 /* 5 */
+
+namespace time_management
 {
     /// Returns a boost factor between 0-100
+
+    int give_time(int time_left)
+    {
+        auto number_of_turn = ai::env::boardM.turn_count_ * 2;
+        if (ai::env::boardM.color == chessBoard::nWhite)
+            number_of_turn += 1;
+        const auto& boost_factor = get_boost_factor(number_of_turn);
+        int base_time = 0;
+        if (time_left < 120)
+        {
+            return 1;
+        }
+        else
+        {
+            base_time = BASE_TIME + (2 * boost_factor / 100);
+            return base_time;
+        }
+    }
+
     int get_boost_factor(int nb_turns)
     {
         if (nb_turns < 3)
@@ -57,5 +83,19 @@ namespace ai
     {
         int time_prev/* millisecond */ = duration_cast<milliseconds>(act_start_ - start).count();
         return time_prev * TIME_PREV_FACTOR < max_time;
+    }
+
+    int val_max_depth()
+    {
+        uint64 piece = ai::env::boardM.pieceBB[3] | ai::env::boardM.pieceBB[4] | ai::env::boardM.pieceBB[5] | ai::env::boardM.pieceBB[6];
+        int a = _popcnt64(piece);
+        if (a <= 4)
+        {
+            return TURN_CAP_LATEGAME;
+        }
+        else
+        {
+            return TURN_CAP_EARLYGAME;
+        }
     }
 }

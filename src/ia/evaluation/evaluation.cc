@@ -4,8 +4,8 @@
 
 #include <stock.hh>
 #include "evaluation.hh"
-#include "ia_env.hh"
-#include "ia.hh"
+#include "../ia_env.hh"
+#include "../ia.hh"
 #define EARLY_GAME 0
 namespace evaluation
 {

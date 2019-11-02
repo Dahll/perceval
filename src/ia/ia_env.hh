@@ -11,7 +11,7 @@
 #include "chessBoard.hh"
 #include "board.hh"
 #include "transposition_table.hh"
-#include "evaluation.hh"
+#include "evaluation/evaluation.hh"
 //#include "ia.hh"
 
 //#include "ia.hh" // TODO

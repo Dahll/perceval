@@ -5,8 +5,8 @@
 #include <strings.h>
 #include <chessBoard.hh>
 #include "move_ordering.hh"
-#include "ia.hh"
-#include "ia_env.hh"
+#include "../ia.hh"
+#include "../ia_env.hh"
 
 namespace ai::ordering
 {

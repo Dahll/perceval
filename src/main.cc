@@ -2,8 +2,8 @@
 // Created by fouche_r on 5/16/19.
 //
 
-#include "ia.hh"
-#include "ia_env.hh"
+#include "ia/ia.hh"
+#include "ia/ia_env.hh"
 #include "perft.hh"
 #include <boost/program_options.hpp>
 #include <iostream>

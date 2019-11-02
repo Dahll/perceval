@@ -5,88 +5,21 @@
 #include <chessBoard.hh>
 #include <strings.h>
 #include <x86intrin.h>
-#include <uci.hh>
+#include "uci.hh"
 #include "ia.hh"
 #include "ia_env.hh"
 
-#define TURN_CAP_EARLYGAME 7 /* 7 */
-#define TURN_CAP_LATEGAME 10 /* 10 */
-#define BASE_TIME 5 /* 5 */
+
 
 namespace ai
 {
-    void merge_vect(chessBoard::MOVES_T& vect1, chessBoard::MOVES_T& vect2)
-    {
-        vect1.resize(1);
-        for (const auto move : vect2)
-        {
-            vect1.push_back(move);
-        }
-    }
-
-    chessBoard::Board d_copy_board(const chessBoard::Board& b)
-    {
-        chessBoard::Board n;
-        n.pieceBB[0] = b.pieceBB[0];
-        n.pieceBB[1] = b.pieceBB[1];
-        n.pieceBB[2] = b.pieceBB[2];
-        n.pieceBB[3] = b.pieceBB[3];
-        n.pieceBB[4] = b.pieceBB[4];
-        n.pieceBB[5] = b.pieceBB[5];
-        n.pieceBB[6] = b.pieceBB[6];
-        n.pieceBB[7] = b.pieceBB[7];
-        n.castlings = b.castlings;
-        n.special_moves = b.special_moves;
-        n.color = b.color;
-        n.mat = n.mat;
-        n.check = b.check;
-        n.pat = b.pat;
-        return n;
-    }
-
-
-    int val_max_depth()
-    {
-        uint64 piece = env::boardM.pieceBB[3] | env::boardM.pieceBB[4] | env::boardM.pieceBB[5] | env::boardM.pieceBB[6];
-        int a = _popcnt64(piece);
-        if (a <= 4)
-        {
-            return TURN_CAP_LATEGAME;
-        }
-        else
-        {
-            return TURN_CAP_EARLYGAME;
-        }
-    }
-
-    int give_time(int time_left)
-    {
-        auto number_of_turn = env::boardM.turn_count_ * 2;
-        if (env::boardM.color == chessBoard::nWhite)
-            number_of_turn += 1;
-        const auto& boost_factor = get_boost_factor(number_of_turn);
-        int base_time = 0;
-        if (time_left < 120)
-        {
-            return 1;
-        }
-        else
-        {
-            base_time = BASE_TIME + (2 * boost_factor / 100);
-            return base_time;
-        }
-    }
-
     void play_chess()
     {
         init(env::my_name);
         int max_time = 300;
-   //     std::ifstream ifs;
         while (true)
         {
             std::string s = get_board();
-            //std::ofstream aa("lol.txt", std::ios::app);
-            //aa << s << '\n';
             TimePoint act_time = std::chrono::system_clock::now();
             next_token(s);
             env::vectBoard.clear();
@@ -111,7 +44,7 @@ namespace ai
                 }
 
             }
-            const auto& time_to_play = give_time(max_time);
+            const auto& time_to_play = time_management::give_time(max_time);
             const auto& move = iterative_deepening(time_to_play * 1000 /* millisecond */, hash);
             if (!move.has_value())
             {

@@ -22,7 +22,7 @@ namespace helpers
     bool threefold(std::vector<std::pair<uint64, int>>& vect, const uint64& hash, int move_count,  int& index);
     bool threefoldd2(std::vector<std::pair<uint64, int>>& vect, const uint64& hash, int half_move_count, int& index);
     std::vector<chessBoard::Move> remove_move_repetition(const std::vector<chessBoard::Move>& vec, chessBoard::Board& board, std::vector<std::pair<uint64, int>>& vec_board, uint64 hash);
-
+    void merge_vect(std::vector<chessBoard::Move>& vect1, std::vector<chessBoard::Move>& vect2);
 }
 
 

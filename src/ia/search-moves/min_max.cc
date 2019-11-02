@@ -1,8 +1,8 @@
 //
 // Created by adrien on 30/05/19.
 //
-#include "ia.hh"
-#include "ia_env.hh"
+#include "../ia.hh"
+#include "../ia_env.hh"
 
 namespace ai
 {
@@ -51,7 +51,7 @@ namespace ai
             if (score >= beta)
             {
                 output_vect[0] = move.second;
-                merge_vect(output_vect, actual_vect);
+                helpers::merge_vect(output_vect, actual_vect);
                 if (transpo == env::transposition_table->end() || transpo->second.depth_get() < depth)
                     transposition_table::update_transposition_table(output_vect[0], score, depth, hash, -1);
                 return score;
@@ -59,7 +59,7 @@ namespace ai
             if (score > best)
             {
                 best = score;
-                merge_vect(output_vect, actual_vect);
+                helpers::merge_vect(output_vect, actual_vect);
                 output_vect[0] = move.second;
                 if (score > alpha)
                 {
@@ -137,7 +137,7 @@ namespace ai
             env::boardM.revert_move(move.second, colo_act);
             if (score >= beta)
             {
-                merge_vect(prev_vect_move, actual_vect);
+                helpers::merge_vect(prev_vect_move, actual_vect);
                 prev_vect_move[0] = move.second;
                 if (transpo == env::transposition_table->end() || transpo->second.depth_get() < depth)
                     transposition_table::update_transposition_table(move.second, score, depth, hash, -1);
@@ -145,7 +145,7 @@ namespace ai
             }
             if (score > best)
             {
-                merge_vect(prev_vect_move, actual_vect);
+                helpers::merge_vect(prev_vect_move, actual_vect);
                 prev_vect_move[0] = move.second;
                 best = score;
                 if (score > alpha)

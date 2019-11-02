@@ -4,22 +4,19 @@
 
 #pragma once
 
+#include "time_management.hh"
 #include "move_ordering.hh"
 #include "transposition_table.hh"
-#include "evaluation.hh"
+#include "evaluation/evaluation.hh"
 #include "perft.hh"
 #include "stock.hh"
-#include <helper.hh>
-#include <uci.hh>
-#include <board.hh>
-#include <map>
+#include "helpers/helper.hh"
+#include "uci.hh"
+#include "board.hh"
 #include <chrono>
 #include <vector>
 #include <algorithm>
-#include <unordered_map>
 
-using Clock = std::chrono::high_resolution_clock;
-using TimePoint = std::chrono::time_point<Clock>;
 using namespace std::chrono;
 
 namespace ai
@@ -45,16 +42,5 @@ namespace ai
                 const chessBoard::Move& prev_move, int depth,
                 chessBoard::MOVES_T& prev_vect_move_quiescence, uint64 hash);
     std::optional<chessBoard::Move> iterative_deepening(int max_size, uint64 hash);
-
-    /* Time management */
-    int get_boost_factor(int nb_turns);
-    int approx_next_time(const chessBoard::Board& cur_b, int depth);
-    bool approx_enough_time(const TimePoint& act_start,
-            const TimePoint& start, int max_time, size_t depth);
-    int val_max_depth();
-
-    int give_time(int time_left);
-
-    void merge_vect(std::vector<chessBoard::Move>& vect1, std::vector<chessBoard::Move>& vect2);
 
 }
