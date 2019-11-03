@@ -36,10 +36,27 @@ namespace ai::transposition_table
         int is_cut_off_;
     };
 
+    class TT
+    {
+    public:
+
+        void init();
+        void clean();
+        void update(const std::optional<chessBoard::Move>& move, int score, int depth, uint64 hash, int is_cut_off);
+        std::unordered_map<uint64 , ai::transposition_table::Data>::iterator get(uint64 hash);
+
+    private:
+        std::unordered_map<uint64 , Data>* TT = nullptr;
+    };
+
     void update_transposition_table(const std::optional<chessBoard::Move>& move, int score, int depth, uint64 hash, int is_cut_off);
     void update_transposition_table_quiescence(const std::optional<chessBoard::Move>& move, int score, uint64 hash, int is_cut_off);
 
-    extern std::unordered_map<uint64, ai::transposition_table::Data>* transposition_table;
-    extern std::unordered_map<uint64, ai::transposition_table::Data>* transposition_table_quiescence;
+    extern TT tt_search;
+    extern TT tt_quiesc;
+
+
+    extern std::unordered_map<uint64, Data>* transposition_table;
+    extern std::unordered_map<uint64, Data>* transposition_table_quiescence;
 }
 

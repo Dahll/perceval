@@ -3,12 +3,17 @@
 //
 #include "transposition_table.hh"
 
-std::unordered_map<uint64, ai::transposition_table::Data>* ai::transposition_table::transposition_table = nullptr;
-std::unordered_map<uint64, ai::transposition_table::Data>* ai::transposition_table::transposition_table_quiescence = nullptr;
+
 
 
 namespace ai::transposition_table
 {
+
+    std::unordered_map<uint64, Data>* transposition_table = nullptr;
+    std::unordered_map<uint64, Data>* transposition_table_quiescence = nullptr;
+
+    TT tt_search = TT();
+    TT tt_quiesc = TT();
 
     chessBoard::Move Data::move_get()
     {
@@ -56,6 +61,40 @@ namespace ai::transposition_table
     }
 
 
+    void TT::init()
+    {
+        TT = new std::unordered_map<uint64 , transposition_table::Data>();
+    }
+
+    void TT::clean()
+    {
+        delete(TT);
+        TT = nullptr;
+    }
+
+    void TT::update(const std::optional<chessBoard::Move>& move, int score, int depth, uint64 hash, int is_cut_off)
+    {
+        auto a = TT->find(hash);
+        if (a != TT->end())
+        {
+            // need to change and overload =
+            a->second.move_set(move);
+            a->second.score_set(score);
+            a->second.depth_set(depth);
+            a->second.is_cut_off_set(is_cut_off);
+        }
+        else
+        {
+            auto data = Data(move, score, depth, is_cut_off);
+            TT->insert({hash, data});
+        }
+    }
+
+    std::unordered_map<uint64 , ai::transposition_table::Data>::iterator TT::get(uint64 hash)
+    {
+        return TT->find(hash);
+    }
+
 
     void update_transposition_table(const std::optional<chessBoard::Move>& move, int score, int depth, uint64 hash, int is_cut_off)
     {
@@ -82,9 +121,9 @@ namespace ai::transposition_table
         if (a != ai::transposition_table::transposition_table_quiescence->end())
         {
             // need to change and overload =
-            //a->second.move_set(move);
+            a->second.move_set(move);
             a->second.score_set(score);
-            //a->second.depth_set(0);
+            a->second.depth_set(0);
             a->second.is_cut_off_set(is_cut_off);
         }
         else

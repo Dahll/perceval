@@ -2,7 +2,7 @@
 // Created by fouche_r on 5/16/19.
 //
 
-#include "ai/search/search.hh"
+#include "ai/uci.hh"
 #include "perft.hh"
 #include <boost/program_options.hpp>
 #include <iostream>
