@@ -2,8 +2,7 @@
 // Created by fouche_r on 5/16/19.
 //
 
-#include "ia/ia.hh"
-#include "ia/ia_env.hh"
+#include "ai/search/search.hh"
 #include "perft.hh"
 #include <boost/program_options.hpp>
 #include <iostream>
@@ -11,15 +10,6 @@
 
 using namespace boost::program_options;
 using Listeners = std::vector<std::string>;
-
-
-
-
-std::vector<chessBoard::Move> ai::env::input_vect = std::vector<chessBoard::Move>();
-std::vector<chessBoard::Move> ai::env::input_vect_quiescence = std::vector<chessBoard::Move>();
-
-
-
 
 int main(int argc, const char *argv[])
 {

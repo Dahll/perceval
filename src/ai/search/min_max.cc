@@ -1,10 +1,9 @@
 //
 // Created by adrien on 30/05/19.
 //
-#include "../ia.hh"
-#include "../ia_env.hh"
+#include "search.hh"
 
-namespace ai
+namespace ai::search
 {
     int caller_alphabeta(int depth,
             chessBoard::MOVES_T& output_vect,
@@ -51,7 +50,7 @@ namespace ai
             if (score >= beta)
             {
                 output_vect[0] = move.second;
-                helpers::merge_vect(output_vect, actual_vect);
+                refutation_table::merge_vect(output_vect, actual_vect);
                 if (transpo == transposition_table::transposition_table->end() || transpo->second.depth_get() < depth)
                     transposition_table::update_transposition_table(output_vect[0], score, depth, hash, -1);
                 return score;
@@ -59,7 +58,7 @@ namespace ai
             if (score > best)
             {
                 best = score;
-                helpers::merge_vect(output_vect, actual_vect);
+                refutation_table::merge_vect(output_vect, actual_vect);
                 output_vect[0] = move.second;
                 if (score > alpha)
                 {
@@ -137,7 +136,7 @@ namespace ai
             chessBoard::boardM.revert_move(move.second, colo_act);
             if (score >= beta)
             {
-                helpers::merge_vect(prev_vect_move, actual_vect);
+                refutation_table::merge_vect(prev_vect_move, actual_vect);
                 prev_vect_move[0] = move.second;
                 if (transpo == transposition_table::transposition_table->end() || transpo->second.depth_get() < depth)
                     transposition_table::update_transposition_table(move.second, score, depth, hash, -1);
@@ -145,7 +144,7 @@ namespace ai
             }
             if (score > best)
             {
-                helpers::merge_vect(prev_vect_move, actual_vect);
+                refutation_table::merge_vect(prev_vect_move, actual_vect);
                 prev_vect_move[0] = move.second;
                 best = score;
                 if (score > alpha)

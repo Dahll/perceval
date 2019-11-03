@@ -9,18 +9,19 @@
 #include <vector>
 #include <algorithm>
 
-#include "time_management.hh"
-#include "transposition_table.hh"
-#include "evaluation/evaluation.hh"
+#include "../time_management.hh"
+#include "../transposition_table.hh"
+#include "../evaluation/evaluation.hh"
 #include "perft.hh"
 #include "stock.hh"
-#include "helpers/helper.hh"
-#include "uci.hh"
+#include "../helpers/helper.hh"
+#include "../uci.hh"
 #include "board.hh"
+#include "../refutation_table.hh"
 
 using namespace std::chrono;
 
-namespace ai
+namespace ai::search
 {
 
     int alphabeta(const chessBoard::enumPiece& colo_act, int depth, int alpha,

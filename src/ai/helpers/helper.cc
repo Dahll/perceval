@@ -211,12 +211,5 @@ namespace ai::helpers
         return ret;
     }
 
-    void merge_vect(chessBoard::MOVES_T& vect1, chessBoard::MOVES_T& vect2)
-    {
-        vect1.resize(1);
-        for (const auto move : vect2)
-        {
-            vect1.push_back(move);
-        }
-    }
+
 }

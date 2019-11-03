@@ -5,8 +5,8 @@
 #pragma once
 
 #include <board.hh>
-#include "ia_env.hh"
 #include <x86intrin.h>
+#include <chrono>
 
 
 using Clock = std::chrono::high_resolution_clock;

@@ -2,7 +2,6 @@
 // Created by adrien on 07/06/19.
 //
 #include "transposition_table.hh"
-#include "ia_env.hh"
 
 std::unordered_map<uint64, ai::transposition_table::Data>* ai::transposition_table::transposition_table = nullptr;
 std::unordered_map<uint64, ai::transposition_table::Data>* ai::transposition_table::transposition_table_quiescence = nullptr;

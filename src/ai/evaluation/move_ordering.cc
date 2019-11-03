@@ -65,9 +65,9 @@ namespace ai::ordering
         {
             ret += 1001;
         }
-        if (ai::env::input_vect_quiescence.size() > depth)
+        if (refutation_table::input_vect_quiescence.size() > depth)
         {
-            const chessBoard::Move& opti_move = ai::env::input_vect_quiescence.at(depth);
+            const chessBoard::Move& opti_move = refutation_table::input_vect_quiescence.at(depth);
             if ((move.piece_get() == opti_move.piece_get()) && (move.to_get() == opti_move.to_get()) &&
                 (move.from_get() == opti_move.from_get()))
             {
@@ -152,9 +152,9 @@ namespace ai::ordering
             }
 
         }
-        if (ai::env::input_vect.size() > ai::time_management::start_depth - act_depth)
+        if (refutation_table::input_vect.size() > ai::time_management::start_depth - act_depth)
         {
-            const chessBoard::Move& opti_move = ai::env::input_vect.at(ai::time_management::start_depth - act_depth);
+            const chessBoard::Move& opti_move = refutation_table::input_vect.at(ai::time_management::start_depth - act_depth);
             if ((move.piece_get() == opti_move.piece_get()) && (move.to_get() == opti_move.to_get()) &&
                 (move.from_get() == opti_move.from_get()))
             {

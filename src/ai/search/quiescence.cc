@@ -1,10 +1,9 @@
 //
 // Created by adrien on 25/10/19.
 //
-#include "../ia.hh"
-#include "../ia_env.hh"
+#include "search.hh"
 
-namespace ai
+namespace ai::search
 {
     int quiesce(const chessBoard::enumPiece& color_act,
                     int alpha, int beta, const chessBoard::Move& prev_move, int depth,
@@ -58,7 +57,7 @@ namespace ai
             chessBoard::boardM.revert_move(move.second, color_act);
             if (score >= beta)
             {
-                helpers::merge_vect(prev_vect_move_quiescence, actual_vect);
+                ai::refutation_table::merge_vect(prev_vect_move_quiescence, actual_vect);
                 prev_vect_move_quiescence[0] = move.second;
                 //if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
                 transposition_table::update_transposition_table_quiescence(move.second, beta, hash, 1);
@@ -66,7 +65,7 @@ namespace ai
             }
             if (score > alpha)
             {
-                helpers::merge_vect(prev_vect_move_quiescence, actual_vect);
+                refutation_table::merge_vect(prev_vect_move_quiescence, actual_vect);
                 prev_vect_move_quiescence[0] = move.second;
                 alpha = score;
             }

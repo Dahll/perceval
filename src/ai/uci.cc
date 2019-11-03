@@ -41,7 +41,7 @@ namespace uci
 
             }
             const auto& time_to_play = ai::time_management::give_time(max_time);
-            const auto& move = ai::iterative_deepening(time_to_play * 1000 /* millisecond */, hash);
+            const auto& move = ai::search::iterative_deepening(time_to_play * 1000 /* millisecond */, hash);
             if (!move.has_value())
             {
                 break;
