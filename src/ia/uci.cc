@@ -1,15 +1,56 @@
 #include "uci.hh"
-//#include "stock.hh"
-#include <fnmatch.h>
-#include <iostream>
-#include <pgn-parser.hh>
-#include <convertion.hh>
-#include <fstream>
-#include <ios>
-#include <iostream>
 
-namespace ai
+
+namespace uci
 {
+
+    const std::string my_name = "Perceval";
+
+    std::vector<std::pair<uint64, int>> vectBoard = std::vector<std::pair<uint64, int>>{};
+
+
+    void loop()
+    {
+        init(my_name);
+        int max_time = 300;
+        while (true)
+        {
+            std::string s = get_board();
+            TimePoint act_time = std::chrono::system_clock::now();
+            next_token(s);
+            vectBoard.clear();
+            uint64 hash = 0;
+            if (s[0] == 'f' && s[1] == 'e' && s[2] == 'n')
+            {
+                next_token(s);
+                std::string fen = pop_fen(s);
+                chessBoard::boardM = Perft::parse(fen);
+                if (s != "")
+                {
+                    next_token(s);
+                    hash = ai::helpers::apply_all_moves(s, chessBoard::boardM, chessBoard::boardM.color, vectBoard);
+                }
+            }
+            else
+            {
+                chessBoard::boardM = chessBoard::Board();
+                next_token(s);
+                if (next_token(s) != "") {
+                    hash = ai::helpers::apply_all_moves(s, chessBoard::boardM, chessBoard::nWhite, vectBoard);
+                }
+
+            }
+            const auto& time_to_play = ai::time_management::give_time(max_time);
+            const auto& move = ai::iterative_deepening(time_to_play * 1000 /* millisecond */, hash);
+            if (!move.has_value())
+            {
+                break;
+            }
+            max_time -= std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - act_time).count();
+            play_move(move.value().to_str());
+
+        }
+    }
 
     namespace
     {

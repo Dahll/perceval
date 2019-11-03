@@ -34,13 +34,11 @@ target_sources(chessengine PRIVATE
         src/ia/uci.cc
         src/board/board.cc
         src/board/move.cc
-        src/board/rules.cc
         src/adapter/adapter.cc
         src/perft/perft.cc
         src/board/movemanager.cc
         src/adapter/convertion.cc
         src/adapter/listenerCalls.cc
-        src/ia/ia.cc
         src/main.cc
         src/magic/generate.cc
         src/ia/evaluation/evaluation.cc

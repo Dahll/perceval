@@ -13,20 +13,11 @@ using namespace boost::program_options;
 using Listeners = std::vector<std::string>;
 
 
-chessBoard::Board ai::env::boardM = chessBoard::Board();
+
 
 std::vector<chessBoard::Move> ai::env::input_vect = std::vector<chessBoard::Move>();
 std::vector<chessBoard::Move> ai::env::input_vect_quiescence = std::vector<chessBoard::Move>();
 
-std::unordered_map<uint64, ai::transposition_table::Data>* ai::env::transposition_table = nullptr;
-std::unordered_map<uint64, ai::transposition_table::Data>* ai::env::transposition_table_quiescence = nullptr;
-
-TimePoint ai::env::act_start = system_clock::now();
-int ai::env::start_depth = 0;
-
-const std::string ai::env::my_name = "Perceval";
-
-std::vector<std::pair<uint64, int>> ai::env::vectBoard = std::vector<std::pair<uint64, int>>{};
 
 
 
@@ -68,7 +59,7 @@ int main(int argc, const char *argv[])
         }
         else
         {
-            ai::play_chess();
+            uci::loop();
         }
     }
     catch (const error &ex)

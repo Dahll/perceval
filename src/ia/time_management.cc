@@ -26,14 +26,18 @@ using namespace std::chrono;
 #define TURN_CAP_LATEGAME 10 /* 10 */
 #define BASE_TIME 5 /* 5 */
 
+TimePoint ai::time_management::act_start = system_clock::now();
+int ai::time_management::start_depth = 0;
+
+
 namespace ai::time_management
 {
     /// Returns a boost factor between 0-100
 
     int give_time(int time_left)
     {
-        auto number_of_turn = ai::env::boardM.turn_count_ * 2;
-        if (ai::env::boardM.color == chessBoard::nWhite)
+        auto number_of_turn = chessBoard::boardM.turn_count_ * 2;
+        if (chessBoard::boardM.color == chessBoard::nWhite)
             number_of_turn += 1;
         const auto& boost_factor = get_boost_factor(number_of_turn);
         int base_time = 0;
@@ -87,7 +91,7 @@ namespace ai::time_management
 
     int val_max_depth()
     {
-        uint64 piece = ai::env::boardM.pieceBB[3] | ai::env::boardM.pieceBB[4] | ai::env::boardM.pieceBB[5] | ai::env::boardM.pieceBB[6];
+        uint64 piece = chessBoard::boardM.pieceBB[3] | chessBoard::boardM.pieceBB[4] | chessBoard::boardM.pieceBB[5] | chessBoard::boardM.pieceBB[6];
         int a = _popcnt64(piece);
         if (a <= 4)
         {

@@ -9,8 +9,10 @@
 #include <algorithm>
 #include <map>
 #include <strings.h>
-#include "board.hh"
+#include "stock.hh"
 #include "../ia_env.hh"
+#include "../transposition_table.hh"
+#include "../time_management.hh"
 
 
 namespace ai

@@ -1,9 +1,16 @@
 #pragma once
 
-#include "board.hh"
+#include "ia.hh"
 #include <string>
+#include <fnmatch.h>
+#include <iostream>
+#include <pgn-parser.hh>
+#include <convertion.hh>
+#include <fstream>
+#include <ios>
+#include <iostream>
 
-namespace ai
+namespace uci
 {
     /** Initialize the communication with the GUI. This function should be
      * called only once at the begining of a game.
@@ -35,4 +42,9 @@ namespace ai
     uint64 apply_all_moves(std::string& s, chessBoard::Board& board, chessBoard::enumPiece color_, std::vector<std::pair<uint64, int>>& vecBoard);
     chessBoard::Move string_to_move(std::string& s);
     std::string pop_fen(std::string& s);
-} // namespace ai
+
+    void loop();
+
+    extern const std::string my_name;
+    extern std::vector<std::pair<uint64, int>> vectBoard;
+}

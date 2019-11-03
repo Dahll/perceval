@@ -4,6 +4,10 @@
 #include "transposition_table.hh"
 #include "ia_env.hh"
 
+std::unordered_map<uint64, ai::transposition_table::Data>* ai::transposition_table::transposition_table = nullptr;
+std::unordered_map<uint64, ai::transposition_table::Data>* ai::transposition_table::transposition_table_quiescence = nullptr;
+
+
 namespace ai::transposition_table
 {
 
@@ -56,8 +60,8 @@ namespace ai::transposition_table
 
     void update_transposition_table(const std::optional<chessBoard::Move>& move, int score, int depth, uint64 hash, int is_cut_off)
     {
-        auto a = ai::env::transposition_table->find(hash);
-        if (a != ai::env::transposition_table->end())
+        auto a = ai::transposition_table::transposition_table->find(hash);
+        if (a != ai::transposition_table::transposition_table->end())
         {
             // need to change and overload =
             a->second.move_set(move);
@@ -68,15 +72,15 @@ namespace ai::transposition_table
         else
         {
             auto data = Data(move, score, depth, is_cut_off);
-            ai::env::transposition_table->insert({hash, data});
+            ai::transposition_table::transposition_table->insert({hash, data});
         }
 
     }
 
     void update_transposition_table_quiescence(const std::optional<chessBoard::Move>& move, int score, uint64 hash, int is_cut_off)
     {
-        auto a = ai::env::transposition_table_quiescence->find(hash);
-        if (a != ai::env::transposition_table_quiescence->end())
+        auto a = ai::transposition_table::transposition_table_quiescence->find(hash);
+        if (a != ai::transposition_table::transposition_table_quiescence->end())
         {
             // need to change and overload =
             //a->second.move_set(move);
@@ -87,7 +91,7 @@ namespace ai::transposition_table
         else
         {
             auto data = Data(move, score, 0, is_cut_off);
-            ai::env::transposition_table_quiescence->insert({hash, data});
+            ai::transposition_table::transposition_table_quiescence->insert({hash, data});
         }
     }
 

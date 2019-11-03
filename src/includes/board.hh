@@ -151,6 +151,5 @@ namespace chessBoard
 
         /* Static */
     };
-
-    std::vector<Move> remove_non_capture_move(std::vector<Move>& vec);
+    extern chessBoard::Board boardM;
 }

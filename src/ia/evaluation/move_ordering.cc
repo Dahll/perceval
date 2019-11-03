@@ -74,9 +74,9 @@ namespace ai::ordering
                 ret += 30000;
             }
         }
-        const auto& transp = ai::env::transposition_table_quiescence->find(hash);
+        const auto& transp = ai::transposition_table::transposition_table_quiescence->find(hash);
 
-        if (transp != ai::env::transposition_table_quiescence->end() && transp->second.move_has_value())
+        if (transp != ai::transposition_table::transposition_table_quiescence->end() && transp->second.move_has_value())
         {
             if (transp->second.move_get().from_get() == move.from_get() && transp->second.move_get().to_get() == move.to_get() &&
             transp->second.move_get().piece_get() == move.piece_get())
@@ -152,9 +152,9 @@ namespace ai::ordering
             }
 
         }
-        if (ai::env::input_vect.size() > ai::env::start_depth - act_depth)
+        if (ai::env::input_vect.size() > ai::time_management::start_depth - act_depth)
         {
-            const chessBoard::Move& opti_move = ai::env::input_vect.at(ai::env::start_depth - act_depth);
+            const chessBoard::Move& opti_move = ai::env::input_vect.at(ai::time_management::start_depth - act_depth);
             if ((move.piece_get() == opti_move.piece_get()) && (move.to_get() == opti_move.to_get()) &&
                 (move.from_get() == opti_move.from_get()))
             {
@@ -162,9 +162,9 @@ namespace ai::ordering
             }
         }
 
-        const auto transp = ai::env::transposition_table->find(hash);
+        const auto transp = ai::transposition_table::transposition_table->find(hash);
 
-        if (transp != ai::env::transposition_table->end() && transp->second.move_has_value())
+        if (transp != ai::transposition_table::transposition_table->end() && transp->second.move_has_value())
         {
             if (transp->second.move_get().from_get() == move.from_get() && transp->second.move_get().to_get() == move.to_get() &&
                 transp->second.move_get().piece_get() == move.piece_get())

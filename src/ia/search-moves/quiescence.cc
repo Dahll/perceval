@@ -42,8 +42,8 @@ namespace ai
         }
         if (alpha < stand_pat)
             alpha = stand_pat;
-        const auto& inv_color = env::boardM.other_color(color_act);
-        const auto& moves = env::boardM.generate_capture_moves(color_act);
+        const auto& inv_color = chessBoard::boardM.other_color(color_act);
+        const auto& moves = chessBoard::boardM.generate_capture_moves(color_act);
         const auto& sorted_moves = ordering::moves_set_values_quiescence(moves, prev_move, depth, hash);//give hash
         if (moves.empty())
         {
@@ -53,9 +53,9 @@ namespace ai
         actual_vect.emplace_back(sorted_moves[0].second);
         for (const auto& move : sorted_moves)
         {
-            const uint64& next_hash = env::boardM.apply_move(move.second, color_act, hash);
+            const uint64& next_hash = chessBoard::boardM.apply_move(move.second, color_act, hash);
             const int& score = -quiesce(inv_color, -beta, -alpha, move.second, depth + 1, actual_vect, next_hash);
-            env::boardM.revert_move(move.second, color_act);
+            chessBoard::boardM.revert_move(move.second, color_act);
             if (score >= beta)
             {
                 helpers::merge_vect(prev_vect_move_quiescence, actual_vect);

@@ -5,9 +5,11 @@
 #pragma once
 
 #include "board.hh"
+#include <unordered_map>
 
 namespace ai::transposition_table
 {
+
     class Data
     {
     public:
@@ -37,4 +39,7 @@ namespace ai::transposition_table
     void update_transposition_table(const std::optional<chessBoard::Move>& move, int score, int depth, uint64 hash, int is_cut_off);
     void update_transposition_table_quiescence(const std::optional<chessBoard::Move>& move, int score, uint64 hash, int is_cut_off);
 
+    extern std::unordered_map<uint64, ai::transposition_table::Data>* transposition_table;
+    extern std::unordered_map<uint64, ai::transposition_table::Data>* transposition_table_quiescence;
 }
+

@@ -14,6 +14,8 @@
 namespace chessBoard
 {
 
+    chessBoard::Board boardM = chessBoard::Board();
+
     Board Board::copy_board() const
     {
         Board n;

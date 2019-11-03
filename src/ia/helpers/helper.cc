@@ -120,9 +120,9 @@ namespace ai::helpers
         std::string ret = "";
         int i =0;
         vecBoard.emplace_back(hash, 1);
-        while ((ret = ::ai::next_token(s)) != "")
+        while ((ret = uci::next_token(s)) != "")
         {
-            chessBoard::Move m = board.ia_apply_move(string_to_move(ret), color_, hash);
+            chessBoard::Move m = board.ia_apply_move(uci::string_to_move(ret), color_, hash);
             color_ = board.other_color(color_);
             board.color = color_;
             if (m.is_capture()) {

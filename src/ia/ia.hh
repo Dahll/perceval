@@ -23,10 +23,6 @@ using namespace std::chrono;
 namespace ai
 {
 
-
-
-    void play_chess();
-
     int alphabeta(const chessBoard::enumPiece& colo_act, int depth, int alpha,
                 int beta, const chessBoard::Move& prev_move,
                 chessBoard::MOVES_T& prev_vect_move,

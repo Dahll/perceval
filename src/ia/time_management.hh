@@ -23,5 +23,6 @@ namespace ai::time_management
 
     int give_time(int time_left);
 
-
+    extern TimePoint act_start;
+    extern int start_depth;
 }
