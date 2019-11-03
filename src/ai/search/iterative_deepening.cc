@@ -13,8 +13,8 @@ namespace ai::search
         int i = 1;
         //const int& max_depth = val_max_depth();
         const auto& start = system_clock::now();
-        transposition_table::transposition_table = new std::unordered_map<uint64 , transposition_table::Data>();
-        transposition_table::transposition_table_quiescence = new std::unordered_map<uint64 , transposition_table::Data>();
+        transposition_table::tt_search.init();
+        transposition_table::tt_quiesc.init();
 
         refutation_table::input_vect = std::vector<chessBoard::Move>();
         auto output_vect = std::vector<chessBoard::Move>();
@@ -34,8 +34,8 @@ namespace ai::search
             output_vect.resize(0);
             if (move == INT32_MAX)
             {
-                delete(transposition_table::transposition_table_quiescence);
-                delete(transposition_table::transposition_table);
+                transposition_table::tt_search.clean();
+                transposition_table::tt_quiesc.clean();
                 return refutation_table::input_vect[0];
             }
             time_management::act_start = system_clock::now();
@@ -43,8 +43,8 @@ namespace ai::search
             std::cout << duration_cast<milliseconds>(time_management::act_start-start).count() << std::endl;
             ++i;
         }
-        delete(transposition_table::transposition_table);
-        delete(transposition_table::transposition_table_quiescence);
+        transposition_table::tt_search.clean();
+        transposition_table::tt_quiesc.clean();
         return refutation_table::input_vect[0];
     }
 

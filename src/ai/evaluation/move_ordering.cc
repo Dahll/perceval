@@ -74,9 +74,9 @@ namespace ai::ordering
                 ret += 30000;
             }
         }
-        const auto& transp = ai::transposition_table::transposition_table_quiescence->find(hash);
+        const auto& transp = transposition_table::tt_quiesc.get(hash);
 
-        if (transp != ai::transposition_table::transposition_table_quiescence->end() && transp->second.move_has_value())
+        if (transp != ai::transposition_table::tt_quiesc.end() && transp->second.move_has_value())
         {
             if (transp->second.move_get().from_get() == move.from_get() && transp->second.move_get().to_get() == move.to_get() &&
             transp->second.move_get().piece_get() == move.piece_get())
@@ -162,9 +162,9 @@ namespace ai::ordering
             }
         }
 
-        const auto transp = ai::transposition_table::transposition_table->find(hash);
+        const auto transp = ai::transposition_table::tt_search.get(hash);
 
-        if (transp != ai::transposition_table::transposition_table->end() && transp->second.move_has_value())
+        if (transp != ai::transposition_table::tt_search.end() && transp->second.move_has_value())
         {
             if (transp->second.move_get().from_get() == move.from_get() && transp->second.move_get().to_get() == move.to_get() &&
                 transp->second.move_get().piece_get() == move.piece_get())

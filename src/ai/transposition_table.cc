@@ -9,9 +9,6 @@
 namespace ai::transposition_table
 {
 
-    std::unordered_map<uint64, Data>* transposition_table = nullptr;
-    std::unordered_map<uint64, Data>* transposition_table_quiescence = nullptr;
-
     TT tt_search = TT();
     TT tt_quiesc = TT();
 
@@ -61,23 +58,22 @@ namespace ai::transposition_table
     }
 
 
-    void TT::init()
+    void TT::init() noexcept
     {
         TT = new std::unordered_map<uint64 , transposition_table::Data>();
     }
 
-    void TT::clean()
+    void TT::clean() noexcept
     {
         delete(TT);
         TT = nullptr;
     }
 
-    void TT::update(const std::optional<chessBoard::Move>& move, int score, int depth, uint64 hash, int is_cut_off)
+    void TT::update(const std::optional<chessBoard::Move>& move, int score, int depth, uint64 hash, int is_cut_off) noexcept
     {
         auto a = TT->find(hash);
         if (a != TT->end())
         {
-            // need to change and overload =
             a->second.move_set(move);
             a->second.score_set(score);
             a->second.depth_set(depth);
@@ -90,47 +86,14 @@ namespace ai::transposition_table
         }
     }
 
-    std::unordered_map<uint64 , ai::transposition_table::Data>::iterator TT::get(uint64 hash)
+    std::unordered_map<uint64 , ai::transposition_table::Data>::iterator TT::get(uint64 hash) noexcept
     {
         return TT->find(hash);
     }
 
 
-    void update_transposition_table(const std::optional<chessBoard::Move>& move, int score, int depth, uint64 hash, int is_cut_off)
+    const std::unordered_map<uint64 , ai::transposition_table::Data>::iterator TT::end() const noexcept
     {
-        auto a = ai::transposition_table::transposition_table->find(hash);
-        if (a != ai::transposition_table::transposition_table->end())
-        {
-            // need to change and overload =
-            a->second.move_set(move);
-            a->second.score_set(score);
-            a->second.depth_set(depth);
-            a->second.is_cut_off_set(is_cut_off);
-        }
-        else
-        {
-            auto data = Data(move, score, depth, is_cut_off);
-            ai::transposition_table::transposition_table->insert({hash, data});
-        }
-
+        return TT->end();
     }
-
-    void update_transposition_table_quiescence(const std::optional<chessBoard::Move>& move, int score, uint64 hash, int is_cut_off)
-    {
-        auto a = ai::transposition_table::transposition_table_quiescence->find(hash);
-        if (a != ai::transposition_table::transposition_table_quiescence->end())
-        {
-            // need to change and overload =
-            a->second.move_set(move);
-            a->second.score_set(score);
-            a->second.depth_set(0);
-            a->second.is_cut_off_set(is_cut_off);
-        }
-        else
-        {
-            auto data = Data(move, score, 0, is_cut_off);
-            ai::transposition_table::transposition_table_quiescence->insert({hash, data});
-        }
-    }
-
 }

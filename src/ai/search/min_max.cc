@@ -12,8 +12,8 @@ namespace ai::search
         int alpha = INT32_MIN + 1;
         int beta = INT32_MAX;
         auto save_alpha = alpha;
-        auto transpo = transposition_table::transposition_table->find(hash);
-        if (transpo != transposition_table::transposition_table->end() && transpo->second.depth_get() >= depth)
+        auto transpo = transposition_table::tt_search.get(hash);
+        if (transpo != transposition_table::tt_search.end() && transpo->second.depth_get() >= depth)
         {
             if (transpo->second.is_cut_off_get() == 0)
                 return transpo->second.score_get();
@@ -51,8 +51,8 @@ namespace ai::search
             {
                 output_vect[0] = move.second;
                 refutation_table::merge_vect(output_vect, actual_vect);
-                if (transpo == transposition_table::transposition_table->end() || transpo->second.depth_get() < depth)
-                    transposition_table::update_transposition_table(output_vect[0], score, depth, hash, -1);
+                if (transpo == transposition_table::tt_search.end() || transpo->second.depth_get() < depth)
+                    transposition_table::tt_search.update(output_vect[0], score, depth, hash, -1);
                 return score;
             }
             if (score > best)
@@ -67,20 +67,20 @@ namespace ai::search
             }
             actual_vect.resize(0);
         }
-        if (transpo == transposition_table::transposition_table->end() || transpo->second.depth_get() < depth)
+        if (transpo == transposition_table::tt_search.end() || transpo->second.depth_get() < depth)
         {
             if (best <= save_alpha)
             {
-                transposition_table::update_transposition_table(output_vect[0], best, depth, hash, 1);
+                transposition_table::tt_search.update(output_vect[0], best, depth, hash, 1);
             }
             else if (best >= beta)
             {
-                    transposition_table::update_transposition_table(output_vect[0], best, depth, hash, -1);
+                    transposition_table::tt_search.update(output_vect[0], best, depth, hash, -1);
             }
             else
             {
                 //if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
-                    transposition_table::update_transposition_table(output_vect[0], best, depth, hash, 0);
+                    transposition_table::tt_search.update(output_vect[0], best, depth, hash, 0);
             }
         }
         return best;
@@ -94,9 +94,9 @@ namespace ai::search
     {
 
         //test if the board exist in the hash map and if depth left == depth stocked
-        auto transpo = transposition_table::transposition_table->find(hash);
+        auto transpo = transposition_table::tt_search.get(hash);
         auto save_alpha = alpha;
-        if (transpo != transposition_table::transposition_table->end() && transpo->second.depth_get() >= depth)
+        if (transpo != transposition_table::tt_search.end() && transpo->second.depth_get() >= depth)
         {
             if (transpo->second.is_cut_off_get() == 0)
                 return transpo->second.score_get();
@@ -138,8 +138,8 @@ namespace ai::search
             {
                 refutation_table::merge_vect(prev_vect_move, actual_vect);
                 prev_vect_move[0] = move.second;
-                if (transpo == transposition_table::transposition_table->end() || transpo->second.depth_get() < depth)
-                    transposition_table::update_transposition_table(move.second, score, depth, hash, -1);
+                if (transpo == transposition_table::tt_search.end() || transpo->second.depth_get() < depth)
+                    transposition_table::tt_search.update(move.second, score, depth, hash, -1);
                 return score;
             }
             if (score > best)
@@ -153,20 +153,20 @@ namespace ai::search
             actual_vect.resize(0);
         }
 
-        if (transpo == transposition_table::transposition_table->end() || transpo->second.depth_get() < depth)
+        if (transpo == transposition_table::tt_search.end() || transpo->second.depth_get() < depth)
         {
             if (best <= save_alpha)
             {
-                transposition_table::update_transposition_table(prev_vect_move[0], best, depth, hash, 1);
+                transposition_table::tt_search.update(prev_vect_move[0], best, depth, hash, 1);
             }
             else if (best >= beta)
             {
-                transposition_table::update_transposition_table(prev_vect_move[0], best, depth, hash, -1);
+                transposition_table::tt_search.update(prev_vect_move[0], best, depth, hash, -1);
             }
             else
             {
                 //if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
-                    transposition_table::update_transposition_table(prev_vect_move[0], best, depth, hash, 0);
+                    transposition_table::tt_search.update(prev_vect_move[0], best, depth, hash, 0);
             }
         }
         return best;

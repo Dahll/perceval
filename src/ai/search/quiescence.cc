@@ -36,7 +36,7 @@ namespace ai::search
         if (stand_pat >= beta)
         {
 
-            transposition_table::update_transposition_table_quiescence(std::nullopt, beta, hash, 1);
+            transposition_table::tt_quiesc.update(std::nullopt, beta, 0, hash, 1);
             return beta;
         }
         if (alpha < stand_pat)
@@ -46,7 +46,7 @@ namespace ai::search
         const auto& sorted_moves = ordering::moves_set_values_quiescence(moves, prev_move, depth, hash);//give hash
         if (moves.empty())
         {
-            transposition_table::update_transposition_table_quiescence(std::nullopt, alpha, hash, -1);
+            transposition_table::tt_quiesc.update(std::nullopt, alpha, 0, hash, -1);
             return alpha;
         }
         actual_vect.emplace_back(sorted_moves[0].second);
@@ -60,7 +60,7 @@ namespace ai::search
                 ai::refutation_table::merge_vect(prev_vect_move_quiescence, actual_vect);
                 prev_vect_move_quiescence[0] = move.second;
                 //if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
-                transposition_table::update_transposition_table_quiescence(move.second, beta, hash, 1);
+                transposition_table::tt_quiesc.update(move.second, beta, 0, hash, 1);
                 return beta;
             }
             if (score > alpha)
@@ -74,9 +74,9 @@ namespace ai::search
         //if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
         //{
         if (prev_vect_move_quiescence.empty())
-            transposition_table::update_transposition_table_quiescence(std::nullopt, alpha, hash, 0);
+            transposition_table::tt_quiesc.update(std::nullopt, alpha, 0, hash, 0);
         else
-            transposition_table::update_transposition_table_quiescence(prev_vect_move_quiescence[0], alpha, hash, 0);
+            transposition_table::tt_quiesc.update(prev_vect_move_quiescence[0], alpha, 0, hash, 0);
         //}
         return alpha;
     }
