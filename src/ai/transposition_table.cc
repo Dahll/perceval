@@ -10,7 +10,6 @@ namespace ai::transposition_table
 {
 
     TT tt_search = TT();
-    TT tt_quiesc = TT();
 
     chessBoard::Move Data::move_get()
     {

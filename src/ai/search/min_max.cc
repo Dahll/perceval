@@ -75,12 +75,11 @@ namespace ai::search
             }
             else if (best >= beta)
             {
-                    transposition_table::tt_search.update(output_vect[0], best, depth, hash, -1);
+                transposition_table::tt_search.update(output_vect[0], best, depth, hash, -1);
             }
             else
             {
-                //if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
-                    transposition_table::tt_search.update(output_vect[0], best, depth, hash, 0);
+                transposition_table::tt_search.update(output_vect[0], best, depth, hash, 0);
             }
         }
         return best;
@@ -113,7 +112,7 @@ namespace ai::search
 
         if (depth == 0)
         {
-            return quiesce(colo_act, alpha, beta, prev_move, 0, prev_vect_move_quiescence, hash);
+            return quiesce(colo_act, alpha, beta, prev_move, hash);
         }
 
         auto actual_vect = chessBoard::MOVES_T();
@@ -165,8 +164,7 @@ namespace ai::search
             }
             else
             {
-                //if (transpo == transposition_table->end() || transpo->second.depth_get() < depth)
-                    transposition_table::tt_search.update(prev_vect_move[0], best, depth, hash, 0);
+                transposition_table::tt_search.update(prev_vect_move[0], best, depth, hash, 0);
             }
         }
         return best;

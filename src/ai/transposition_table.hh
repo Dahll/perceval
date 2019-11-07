@@ -51,6 +51,5 @@ namespace ai::transposition_table
     };
 
     extern TT tt_search;
-    extern TT tt_quiesc;
 }
 

@@ -32,8 +32,7 @@ namespace ai::search
     int caller_alphabeta(int depth, std::vector<chessBoard::Move>& output_vect, std::vector<chessBoard::Move>& output_vect_quiescence, uint64 hash);
 
     int quiesce(const chessBoard::enumPiece& color_act, int alpha, int beta,
-                const chessBoard::Move& prev_move, int depth,
-                chessBoard::MOVES_T& prev_vect_move_quiescence, uint64 hash);
+                const chessBoard::Move& prev_move, uint64 hash);
     std::optional<chessBoard::Move> iterative_deepening(int max_size, uint64 hash);
 
 }

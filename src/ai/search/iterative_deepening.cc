@@ -14,13 +14,11 @@ namespace ai::search
         //const int& max_depth = val_max_depth();
         const auto& start = system_clock::now();
         transposition_table::tt_search.init();
-        transposition_table::tt_quiesc.init();
 
         refutation_table::input_vect = std::vector<chessBoard::Move>();
         auto output_vect = std::vector<chessBoard::Move>();
         time_management::act_start = system_clock::now();
         auto output_vect_quiescence = std::vector<chessBoard::Move>();
-        refutation_table::input_vect_quiescence = std::vector<chessBoard::Move>();
         auto move = 0;
 
         while ((std::chrono::duration_cast<std::chrono::milliseconds>(time_management::act_start-start).count() * 6 < max_time ))
@@ -29,13 +27,11 @@ namespace ai::search
             time_management::start_depth = i;
             move = caller_alphabeta(i, output_vect, output_vect_quiescence, hash);
             refutation_table::input_vect = output_vect;
-            refutation_table::input_vect_quiescence = output_vect_quiescence;
             output_vect_quiescence.resize(0);
             output_vect.resize(0);
             if (move == INT32_MAX)
             {
                 transposition_table::tt_search.clean();
-                transposition_table::tt_quiesc.clean();
                 return refutation_table::input_vect[0];
             }
             time_management::act_start = system_clock::now();
@@ -44,7 +40,6 @@ namespace ai::search
             ++i;
         }
         transposition_table::tt_search.clean();
-        transposition_table::tt_quiesc.clean();
         return refutation_table::input_vect[0];
     }
 

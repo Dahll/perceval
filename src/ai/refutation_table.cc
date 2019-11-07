@@ -8,7 +8,6 @@ namespace ai::refutation_table
 {
 
     std::vector<chessBoard::Move> input_vect = std::vector<chessBoard::Move>();
-    std::vector<chessBoard::Move> input_vect_quiescence = std::vector<chessBoard::Move>();
 
 
     void merge_vect(chessBoard::MOVES_T& vect1, chessBoard::MOVES_T& vect2)
