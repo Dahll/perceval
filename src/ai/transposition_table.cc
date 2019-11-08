@@ -11,7 +11,7 @@ namespace ai::transposition_table
 
     TT tt_search = TT();
 
-    chessBoard::Move Data::move_get()
+    chessBoard::Move Data::move_get() const
     {
         return move_.value();
     }
@@ -21,12 +21,12 @@ namespace ai::transposition_table
         move_ = move;
     }
 
-    bool Data::move_has_value()
+    bool Data::move_has_value() const
     {
         return move_.has_value();
     }
 
-    int Data::score_get()
+    int Data::score_get() const
     {
         return score_;
     }
@@ -36,7 +36,7 @@ namespace ai::transposition_table
         score_ = score;
     }
 
-    int Data::depth_get()
+    int Data::depth_get() const
     {
         return depth_;
     }
@@ -46,7 +46,7 @@ namespace ai::transposition_table
         depth_ = depth;
     }
 
-    int Data::is_cut_off_get()
+    int Data::is_cut_off_get() const
     {
         return is_cut_off_;
     }
@@ -59,40 +59,48 @@ namespace ai::transposition_table
 
     void TT::init() noexcept
     {
-        TT = new std::unordered_map<uint64 , transposition_table::Data>();
+        TT_ = new std::unordered_map<uint64 , transposition_table::Data>();
     }
 
     void TT::clean() noexcept
     {
-        delete(TT);
-        TT = nullptr;
+        delete(TT_);
+        TT_ = nullptr;
     }
 
-    void TT::update(const std::optional<chessBoard::Move>& move, int score, int depth, uint64 hash, int is_cut_off) noexcept
+    void TT::update(const std::optional<chessBoard::Move>& move, int score, int depth, uint64 hash, int is_cut_off
+            , std::unordered_map<uint64 , ai::transposition_table::Data>::iterator& transpo) noexcept
     {
-        auto a = TT->find(hash);
-        if (a != TT->end())
-        {
-            a->second.move_set(move);
-            a->second.score_set(score);
-            a->second.depth_set(depth);
-            a->second.is_cut_off_set(is_cut_off);
-        }
-        else
+        //auto a = TT_->find(hash);
+
+        if (transpo == TT_->end())
         {
             auto data = Data(move, score, depth, is_cut_off);
-            TT->insert({hash, data});
+            TT_->insert({hash, data});
         }
+        else if (transpo->second.depth_get() < depth)
+        {
+            transpo->second.move_set(move);
+            transpo->second.score_set(score);
+            transpo->second.depth_set(depth);
+            transpo->second.is_cut_off_set(is_cut_off);
+        }
+
     }
 
     std::unordered_map<uint64 , ai::transposition_table::Data>::iterator TT::get(uint64 hash) noexcept
     {
-        return TT->find(hash);
+        return TT_->find(hash);
     }
 
 
     const std::unordered_map<uint64 , ai::transposition_table::Data>::iterator TT::end() const noexcept
     {
-        return TT->end();
+        return TT_->end();
+    }
+
+    TT::TT(int size)
+    {
+        size_ = size;
     }
 }
