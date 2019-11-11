@@ -39,6 +39,10 @@ namespace ai::search
             }
         }
 
+
+        bool foundpv = false;
+
+
         auto actual_vect = std::vector<chessBoard::Move>();
         int best = INT32_MIN + 1;
         const auto &inv_color = chessBoard::boardM.other_color(chessBoard::boardM.color);
@@ -55,8 +59,22 @@ namespace ai::search
         for (const auto &move : sorted_moves)
         {
             const uint64 &next_hash = chessBoard::boardM.apply_move(move.second, colo_act, hash);
-            score = -alphabeta(inv_color, depth - 1, -beta, -alpha, move.second, actual_vect,
-                               next_hash);
+
+            if (foundpv)
+            {
+                score = -alphabeta(inv_color, depth - 1, -alpha - 1, -alpha, move.second, actual_vect,
+                                   next_hash);
+                if ((score > alpha) && (score < beta))
+                {
+                    score = -alphabeta(inv_color, depth - 1, -beta, -alpha, move.second, actual_vect,
+                                       next_hash);
+                }
+            }
+            else
+            {
+                score = -alphabeta(inv_color, depth - 1, -beta, -alpha, move.second, actual_vect,
+                                   next_hash);
+            }
             chessBoard::boardM.revert_move(move.second, colo_act);
             if (score >= beta)
             {
@@ -76,6 +94,7 @@ namespace ai::search
                 if (score > alpha)
                 {
                     alpha = score;
+                    foundpv = true;
                 }
             }
             actual_vect.resize(0);
@@ -128,6 +147,8 @@ namespace ai::search
             return quiesce(colo_act, alpha, beta, prev_move, hash);
         }
 
+        bool foundpv = false;
+
         auto actual_vect = chessBoard::MOVES_T();
         int best = INT32_MIN + 1;
         const auto &moves = chessBoard::boardM.generate_moves(colo_act);
@@ -140,11 +161,27 @@ namespace ai::search
         const auto &sorted_moves = ordering::moves_set_values(moves, prev_move, depth, hash);//give hash
         const auto &inv_color = chessBoard::boardM.other_color(colo_act);
         prev_vect_move.push_back(sorted_moves[0].second);
+        int score = 0;
         for (const auto &move : sorted_moves)
         {
             uint64 next_hash = chessBoard::boardM.apply_move(move.second, colo_act, hash);
-            int score = -alphabeta(inv_color, depth - 1, -beta, -alpha, move.second, actual_vect,
+
+            if (foundpv)
+            {
+                score = -alphabeta(inv_color, depth - 1, -alpha - 1, -alpha, move.second, actual_vect,
                                    next_hash);
+                if ((score > alpha) && (score < beta))
+                {
+                    score = -alphabeta(inv_color, depth - 1, -beta, -alpha, move.second, actual_vect,
+                                       next_hash);
+                }
+            }
+            else
+            {
+                score = -alphabeta(inv_color, depth - 1, -beta, -alpha, move.second, actual_vect,
+                                   next_hash);
+            }
+
             chessBoard::boardM.revert_move(move.second, colo_act);
             if (score >= beta)
             {
@@ -159,7 +196,10 @@ namespace ai::search
                 prev_vect_move[0] = move.second;
                 best = score;
                 if (score > alpha)
+                {
+                    foundpv = true;
                     alpha = score;
+                }
             }
             actual_vect.resize(0);
         }
