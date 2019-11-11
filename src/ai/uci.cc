@@ -1,5 +1,8 @@
 #include "uci.hh"
+#include <iostream>
+#include <fstream>
 
+using namespace std;
 
 namespace uci
 {
@@ -16,6 +19,9 @@ namespace uci
         while (true)
         {
             std::string s = get_board();
+            /*ofstream myfile;
+            myfile.open ("/tmp/log_ai.txt", ios::out | ios::app);
+            myfile << s << endl;*/
             TimePoint act_time = std::chrono::system_clock::now();
             next_token(s);
             vectBoard.clear();
@@ -25,6 +31,7 @@ namespace uci
                 next_token(s);
                 std::string fen = pop_fen(s);
                 chessBoard::boardM = Perft::parse(fen);
+                hash = ai::helpers::zobrist(chessBoard::boardM);
                 if (s != "")
                 {
                     next_token(s);
@@ -34,12 +41,13 @@ namespace uci
             else
             {
                 chessBoard::boardM = chessBoard::Board();
+                hash = ai::helpers::zobrist(chessBoard::boardM);
                 next_token(s);
                 if (next_token(s) != "") {
                     hash = ai::helpers::apply_all_moves(s, chessBoard::boardM, chessBoard::nWhite, vectBoard);
                 }
-
             }
+
             const auto& time_to_play = ai::time_management::give_time(max_time);
             const auto& move = ai::search::iterative_deepening(time_to_play * 1000 /* millisecond */, hash);
             if (!move.has_value())

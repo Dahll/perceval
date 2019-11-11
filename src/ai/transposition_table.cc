@@ -9,98 +9,64 @@
 namespace ai::transposition_table
 {
 
-    TT tt_search = TT();
+    TT tt_search = TT(8000);
 
-    chessBoard::Move Data::move_get() const
+    void TT::update(const chessBoard::Move& move, int score, int depth, uint64 hash, int is_cut_off) noexcept
     {
-        return move_.value();
+        auto& act_data = TT_[hash%size_];
+        if (act_data.depth_ == -1)
+        {
+            act_data.update(move, score, depth, hash, is_cut_off, age_);
+        }
+        else if (act_data.age_ < age_)
+        {
+            act_data.update(move, score, depth, hash, is_cut_off, age_);
+        }
+        else if (act_data.depth_ <= depth)
+        {
+            act_data.update(move, score, depth, hash, is_cut_off, age_);
+        }
     }
 
-    void Data::move_set(std::optional<chessBoard::Move> move)
+    Data& TT::find(uint64 hash) noexcept
     {
+        return TT_[hash % size_];
+    }
+
+    TT::TT(int size) // in K
+    {
+        int tmp_size = (size * 1024) / sizeof(Data);
+        size_ = 2;
+        while (size_ < tmp_size)
+        {
+            size_ *= 2;
+        }
+        TT_ = std::vector<Data>(size_);
+        age_ = 0;
+    }
+
+    void TT::increment_age() noexcept
+    {
+        age_++;
+    }
+
+    Data::Data()
+    {
+        depth_ = -1;
+        move_ = chessBoard::Move();
+        score_ = 0;
+        hash_ = 0;
+        is_cut_off_ = 0;
+        age_ = -1;
+    }
+
+    void Data::update(const chessBoard::Move &move, int score, int depth, uint64 hash, int is_cut_off, int age) noexcept
+    {
+        hash_ = hash;
         move_ = move;
-    }
-
-    bool Data::move_has_value() const
-    {
-        return move_.has_value();
-    }
-
-    int Data::score_get() const
-    {
-        return score_;
-    }
-
-    void Data::score_set(int score)
-    {
         score_ = score;
-    }
-
-    int Data::depth_get() const
-    {
-        return depth_;
-    }
-
-    void Data::depth_set(int depth)
-    {
         depth_ = depth;
-    }
-
-    int Data::is_cut_off_get() const
-    {
-        return is_cut_off_;
-    }
-
-    void Data::is_cut_off_set(int is_cut_off)
-    {
         is_cut_off_ = is_cut_off;
-    }
-
-
-    void TT::init() noexcept
-    {
-        TT_ = new std::unordered_map<uint64 , transposition_table::Data>();
-    }
-
-    void TT::clean() noexcept
-    {
-        delete(TT_);
-        TT_ = nullptr;
-    }
-
-    void TT::update(const std::optional<chessBoard::Move>& move, int score, int depth, uint64 hash, int is_cut_off
-            , std::unordered_map<uint64 , ai::transposition_table::Data>::iterator& transpo) noexcept
-    {
-        //auto a = TT_->find(hash);
-
-        if (transpo == TT_->end())
-        {
-            auto data = Data(move, score, depth, is_cut_off);
-            TT_->insert({hash, data});
-        }
-        else if (transpo->second.depth_get() < depth)
-        {
-            transpo->second.move_set(move);
-            transpo->second.score_set(score);
-            transpo->second.depth_set(depth);
-            transpo->second.is_cut_off_set(is_cut_off);
-        }
-
-    }
-
-    std::unordered_map<uint64 , ai::transposition_table::Data>::iterator TT::get(uint64 hash) noexcept
-    {
-        return TT_->find(hash);
-    }
-
-
-    const std::unordered_map<uint64 , ai::transposition_table::Data>::iterator TT::end() const noexcept
-    {
-        return TT_->end();
-    }
-
-    TT::TT(int size)
-    {
-        size_ = size;
+        age_ = age;
     }
 }

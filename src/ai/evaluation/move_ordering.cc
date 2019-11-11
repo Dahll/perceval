@@ -143,12 +143,12 @@ namespace ai::ordering
             }
         }
 
-        const auto transp = ai::transposition_table::tt_search.get(hash);
+        const auto transpo = ai::transposition_table::tt_search.find(hash);
 
-        if (transp != ai::transposition_table::tt_search.end() && transp->second.move_has_value())
+        if (transpo.depth_ != -1 && transpo.hash_ == hash)
         {
-            if (transp->second.move_get().from_get() == move.from_get() && transp->second.move_get().to_get() == move.to_get() &&
-                transp->second.move_get().piece_get() == move.piece_get())
+            if (transpo.move_.from_get() == move.from_get() && transpo.move_.to_get() == move.to_get() &&
+                transpo.move_.piece_get() == move.piece_get())
             {
                 ret += 1000;
             }

@@ -10,46 +10,31 @@
 namespace ai::transposition_table
 {
 
-    class Data
+    struct Data
     {
-    public:
-        Data(const std::optional<chessBoard::Move> move, int score, int depth, int is_cut_off) : move_(move), score_(score), depth_(depth), is_cut_off_(is_cut_off)
-        {}
-        int score_get() const;
-        void score_set(int score);
-
-        chessBoard::Move move_get() const;
-        void move_set(std::optional<chessBoard::Move> move); 
-
-        int depth_get() const;
-        void depth_set(int depth);
-
-        int is_cut_off_get() const;
-        void is_cut_off_set(int is_cut_off);
-
-        bool move_has_value() const;
-
-    private:
-        std::optional<chessBoard::Move> move_;
+        Data();
+        void update(const chessBoard::Move& move, int score, int depth, uint64 hash, int is_cut_off, int age) noexcept;
+        uint64 hash_;
+        chessBoard::Move move_;
         int score_;
         int depth_;
         int is_cut_off_;
+        int age_;
     };
 
     class TT
     {
     public:
 
-        TT(int size = 2048);
-        void init() noexcept;
-        void clean() noexcept;
-        void update(const std::optional<chessBoard::Move>& move, int score, int depth, uint64 hash, int is_cut_off, std::unordered_map<uint64 , ai::transposition_table::Data>::iterator& transpo) noexcept ;
-        std::unordered_map<uint64 , ai::transposition_table::Data>::iterator get(uint64 hash) noexcept ;
-        const std::unordered_map<uint64 , ai::transposition_table::Data>::iterator end() const noexcept ;
+        explicit TT(int size);
+        void update(const chessBoard::Move& move, int score, int depth, uint64 hash, int is_cut_off) noexcept ;
+        Data& find(uint64 hash) noexcept;
+        void increment_age() noexcept;
 
     private:
-        std::unordered_map<uint64 , Data>* TT_ = nullptr;
+        std::vector<Data> TT_;
         int size_;
+        int age_;
     };
 
     extern TT tt_search;

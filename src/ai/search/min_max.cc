@@ -5,27 +5,38 @@
 
 namespace ai::search
 {
-    int caller_alphabeta(int depth,
+    chessBoard::Move caller_alphabeta(int depth,
                          chessBoard::MOVES_T &output_vect,
-                         chessBoard::MOVES_T &output_vect_quiescence, uint64 hash)
+                         uint64 hash,
+                         bool& winning_move)
     {
         int alpha = INT32_MIN + 1;
         int beta = INT32_MAX;
+        chessBoard::Move best_move = chessBoard::Move();
         auto save_alpha = alpha;
-        auto transpo = transposition_table::tt_search.get(hash);
-        if (transpo != transposition_table::tt_search.end() && transpo->second.depth_get() >= depth)
+        auto transpo = transposition_table::tt_search.find(hash);
+        if (transpo.depth_ != -1 && transpo.hash_ == hash && transpo.depth_ >= depth)
         {
-            if (transpo->second.is_cut_off_get() == 0)
-                return transpo->second.score_get();
-            else if (transpo->second.is_cut_off_get() == -1)
+            if (transpo.is_cut_off_ == 0)
             {
-                alpha = std::max(alpha, transpo->second.score_get());
-            } else
+                if (transpo.score_ == INT32_MAX)
+                    winning_move = true;
+                return transpo.move_;
+            }
+            else if (transpo.is_cut_off_ == -1)
             {
-                beta = std::min(beta, transpo->second.score_get());
+                alpha = std::max(alpha, transpo.score_);
+            }
+            else
+            {
+                beta = std::min(beta, transpo.score_);
             }
             if (alpha >= beta)
-                return transpo->second.score_get();
+            {
+                if (transpo.score_ == INT32_MAX)
+                    winning_move = true;
+                return transpo.move_;
+            }
         }
 
         auto actual_vect = std::vector<chessBoard::Move>();
@@ -36,27 +47,30 @@ namespace ai::search
         //test if the board exist in the hash map and if depth left == depth stocked
         const auto &mov = chessBoard::boardM.generate_moves(colo_act);
         auto moves = helpers::remove_move_repetition(mov, chessBoard::boardM, uci::vectBoard, hash);
-        if (moves.empty())
-            return INT32_MIN + 1;
+        /*if (moves.empty())
+            return INT32_MIN + 1;*/
         auto sorted_moves = ordering::moves_set_values(moves, std::nullopt, depth, hash);
         output_vect.push_back(sorted_moves[0].second);
         int score = 0;
         for (const auto &move : sorted_moves)
         {
             const uint64 &next_hash = chessBoard::boardM.apply_move(move.second, colo_act, hash);
-            score = -alphabeta(inv_color, depth - 1, -beta, -alpha, move.second, actual_vect, output_vect_quiescence,
+            score = -alphabeta(inv_color, depth - 1, -beta, -alpha, move.second, actual_vect,
                                next_hash);
             chessBoard::boardM.revert_move(move.second, colo_act);
             if (score >= beta)
             {
                 output_vect[0] = move.second;
                 refutation_table::merge_vect(output_vect, actual_vect);
-                transposition_table::tt_search.update(output_vect[0], score, depth, hash, -1, transpo);
-                return score;
+                transposition_table::tt_search.update(output_vect[0], score, depth, hash, -1);
+                if (score == INT32_MAX)
+                    winning_move = true;
+                return move.second;
             }
             if (score > best)
             {
                 best = score;
+                best_move = move.second;
                 refutation_table::merge_vect(output_vect, actual_vect);
                 output_vect[0] = move.second;
                 if (score > alpha)
@@ -68,40 +82,45 @@ namespace ai::search
         }
         if (best <= save_alpha)
         {
-            transposition_table::tt_search.update(output_vect[0], best, depth, hash, 1, transpo);
-        } else if (best >= beta)
-        {
-            transposition_table::tt_search.update(output_vect[0], best, depth, hash, -1, transpo);
-        } else
-        {
-            transposition_table::tt_search.update(output_vect[0], best, depth, hash, 0, transpo);
+            transposition_table::tt_search.update(output_vect[0], best, depth, hash, 1);
         }
-        return best;
+        else if (best >= beta)
+        {
+            transposition_table::tt_search.update(output_vect[0], best, depth, hash, -1);
+        }
+        else
+        {
+            transposition_table::tt_search.update(output_vect[0], best, depth, hash, 0);
+        }
+        if (score == INT32_MAX)
+            winning_move = true;
+        return best_move;
     }
 
 
     int alphabeta(const chessBoard::enumPiece &colo_act,
                   int depth, int alpha, int beta, const chessBoard::Move &prev_move,
                   chessBoard::MOVES_T &prev_vect_move,
-                  chessBoard::MOVES_T &prev_vect_move_quiescence, uint64 hash)
+                  uint64 hash)
     {
 
         //test if the board exist in the hash map and if depth left == depth stocked
-        auto transpo = transposition_table::tt_search.get(hash);
         auto save_alpha = alpha;
-        if (transpo != transposition_table::tt_search.end() && transpo->second.depth_get() >= depth)
+        auto transpo = transposition_table::tt_search.find(hash);
+        if (transpo.depth_ != -1 && transpo.hash_ == hash && transpo.depth_ >= depth)
         {
-            if (transpo->second.is_cut_off_get() == 0)
-                return transpo->second.score_get();
-            else if (transpo->second.is_cut_off_get() == -1)
+            if (transpo.is_cut_off_ == 0)
+                return transpo.score_;
+            else if (transpo.is_cut_off_ == -1)
             {
-                alpha = std::max(alpha, transpo->second.score_get());
-            } else
+                alpha = std::max(alpha, transpo.score_);
+            }
+            else
             {
-                beta = std::min(beta, transpo->second.score_get());
+                beta = std::min(beta, transpo.score_);
             }
             if (alpha >= beta)
-                return transpo->second.score_get();
+                return transpo.score_;
         }
 
         if (depth == 0)
@@ -125,13 +144,13 @@ namespace ai::search
         {
             uint64 next_hash = chessBoard::boardM.apply_move(move.second, colo_act, hash);
             int score = -alphabeta(inv_color, depth - 1, -beta, -alpha, move.second, actual_vect,
-                                   prev_vect_move_quiescence, next_hash);
+                                   next_hash);
             chessBoard::boardM.revert_move(move.second, colo_act);
             if (score >= beta)
             {
                 refutation_table::merge_vect(prev_vect_move, actual_vect);
                 prev_vect_move[0] = move.second;
-                transposition_table::tt_search.update(move.second, score, depth, hash, -1, transpo);
+                transposition_table::tt_search.update(move.second, score, depth, hash, -1);
                 return score;
             }
             if (score > best)
@@ -146,13 +165,15 @@ namespace ai::search
         }
         if (best <= save_alpha)
         {
-            transposition_table::tt_search.update(prev_vect_move[0], best, depth, hash, 1, transpo);
-        } else if (best >= beta)
+            transposition_table::tt_search.update(prev_vect_move[0], best, depth, hash, 1);
+        }
+        else if (best >= beta)
         {
-            transposition_table::tt_search.update(prev_vect_move[0], best, depth, hash, -1, transpo);
-        } else
+            transposition_table::tt_search.update(prev_vect_move[0], best, depth, hash, -1);
+        }
+        else
         {
-            transposition_table::tt_search.update(prev_vect_move[0], best, depth, hash, 0, transpo);
+            transposition_table::tt_search.update(prev_vect_move[0], best, depth, hash, 0);
         }
         return best;
     }
