@@ -39,9 +39,7 @@ namespace ai::search
             }
         }
 
-
         bool foundpv = false;
-
 
         auto actual_vect = std::vector<chessBoard::Move>();
         int best = INT32_MIN + 1;

@@ -85,6 +85,8 @@ namespace uci
         std::cout << "uciok" << std::endl;
         get_input("isready");
         std::cout << "readyok" << std::endl;
+        //get_input("isready");
+        //std::cout << "readyok" << std::endl;
     }
 
     void play_move(const std::string& move)

@@ -14,11 +14,7 @@ namespace ai::transposition_table
     void TT::update(const chessBoard::Move& move, int score, int depth, uint64 hash, int is_cut_off) noexcept
     {
         auto& act_data = TT_[hash%size_];
-        if (act_data.depth_ == -1)
-        {
-            act_data.update(move, score, depth, hash, is_cut_off, age_);
-        }
-        else if (act_data.age_ < age_)
+        if (act_data.age_ < age_)
         {
             act_data.update(move, score, depth, hash, is_cut_off, age_);
         }
