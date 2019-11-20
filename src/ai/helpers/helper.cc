@@ -114,14 +114,16 @@ namespace ai::helpers
         return hash_value;
     }
 
-    uint64 apply_all_moves(std::string& s, chessBoard::Board& board, chessBoard::enumPiece color_, std::vector<std::pair<uint64, int>>& vecBoard)
+    uint64 apply_all_moves(std::vector<std::string>& input, chessBoard::Board& board, chessBoard::enumPiece color_, std::vector<std::pair<uint64, int>>& vecBoard)
     {
         uint64 hash = zobrist(board);
         std::string ret = "";
         int i =0;
+        int pos = 0;
         vecBoard.emplace_back(hash, 1);
-        while ((ret = uci::next_token(s)) != "")
+        while (pos < (int)input.size())
         {
+            ret = input[pos];
             chessBoard::Move m = board.ia_apply_move(uci::string_to_move(ret), color_, hash);
             color_ = board.other_color(color_);
             board.color = color_;
@@ -132,7 +134,7 @@ namespace ai::helpers
             else {
                 threefold(vecBoard, hash, board.half_move_count_, i);
             }
-            //      vec_board_update(vecBoard, vecint, board);
+            pos++;
         }
         return hash;
     }

@@ -18,7 +18,7 @@ namespace ai::helpers
     bool vec_board_update(std::vector<chessBoard::Board>& vecBoard, std::vector<int>& vecint, const chessBoard::Board& act_board);
     bool cmp_boards(const chessBoard::Board& b, const chessBoard::Board& n);
     uint64 zobrist(const chessBoard::Board& b);
-    uint64 apply_all_moves(std::string& s, chessBoard::Board& board, chessBoard::enumPiece color_, std::vector<std::pair<uint64, int>>& vecBoard);
+    uint64 apply_all_moves(std::vector<std::string>& input, chessBoard::Board& board, chessBoard::enumPiece color_, std::vector<std::pair<uint64, int>>& vecBoard);
     bool threefold(std::vector<std::pair<uint64, int>>& vect, const uint64& hash, int move_count,  int& index);
     bool threefoldd2(std::vector<std::pair<uint64, int>>& vect, const uint64& hash, int half_move_count, int& index);
     std::vector<chessBoard::Move> remove_move_repetition(const std::vector<chessBoard::Move>& vec, chessBoard::Board& board, std::vector<std::pair<uint64, int>>& vec_board, uint64 hash);

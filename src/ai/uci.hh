@@ -33,7 +33,7 @@ namespace uci
      * Eg:
      * - position startpos
      * - position startpos moves e2e4
-     * - position fen rnbqkbnr/ppppp pp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+     * - position fen rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
      * - position fen rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1
      * moves f7f5
      */
@@ -41,7 +41,8 @@ namespace uci
     std::string next_token(std::string& s);
     uint64 apply_all_moves(std::string& s, chessBoard::Board& board, chessBoard::enumPiece color_, std::vector<std::pair<uint64, int>>& vecBoard);
     chessBoard::Move string_to_move(std::string& s);
-    std::string pop_fen(std::string& s);
+    std::string pop_fen(std::vector<std::string>& input);
+    std::string get_input(const std::string& expected = "*");
 
     void loop();
 

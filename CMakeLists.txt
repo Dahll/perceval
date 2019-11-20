@@ -25,6 +25,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
 add_executable(chessengine)
 
 target_sources(chessengine PRIVATE
+        src/ai/metadata.cc
         src/ai/refutation_table.cc
         src/ai/search/quiescence.cc
         src/ai/helpers/helper.cc

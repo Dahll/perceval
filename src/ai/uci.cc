@@ -12,70 +12,30 @@ namespace uci
     std::vector<std::pair<uint64, int>> vectBoard = std::vector<std::pair<uint64, int>>{};
 
 
-    void loop()
-    {
-        init(my_name);
-        int max_time = 300;
-        while (true)
-        {
-            std::string s = get_board();
-            /*ofstream myfile;
-            myfile.open ("/tmp/log_ai.txt", ios::out | ios::app);
-            myfile << s << endl;*/
-            TimePoint act_time = std::chrono::system_clock::now();
-            next_token(s);
-            vectBoard.clear();
-            uint64 hash = 0;
-            if (s[0] == 'f' && s[1] == 'e' && s[2] == 'n')
-            {
-                next_token(s);
-                std::string fen = pop_fen(s);
-                chessBoard::boardM = Perft::parse(fen);
-                hash = ai::helpers::zobrist(chessBoard::boardM);
-                if (s != "")
-                {
-                    next_token(s);
-                    hash = ai::helpers::apply_all_moves(s, chessBoard::boardM, chessBoard::boardM.color, vectBoard);
-                }
-            }
-            else
-            {
-                chessBoard::boardM = chessBoard::Board();
-                hash = ai::helpers::zobrist(chessBoard::boardM);
-                next_token(s);
-                if (next_token(s) != "") {
-                    hash = ai::helpers::apply_all_moves(s, chessBoard::boardM, chessBoard::nWhite, vectBoard);
-                }
-            }
-
-            const auto& time_to_play = ai::time_management::give_time(max_time);
-            const auto& move = ai::search::iterative_deepening(time_to_play * 1000 /* millisecond */, hash);
-            if (!move.has_value())
-            {
-                break;
-            }
-            max_time -= std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - act_time).count();
-            play_move(move.value().to_str());
-
+    std::vector<string> split(const string &s, char d) {
+        std::vector<string> v;
+        std::stringstream ss(s);
+        string item;
+        while (getline(ss, item, d)) {
+            v.push_back(item);
         }
+        return v;
     }
 
-    namespace
+    std::string get_input(const std::string& expected)
     {
-        std::string get_input(const std::string& expected = "*")
+        // Get a command following the expected globbing
+        // Ignoring all unrecognized commands
+        std::string buffer;
+        do
         {
-            // Get a command following the expected globbing
-            // Ignoring all unrecognized commands
-            std::string buffer;
-            do
-            {
-                std::getline(std::cin, buffer);
-                if ("quit" == buffer || "stopuci" == buffer)
-                    exit(0);
-            } while (fnmatch(expected.c_str(), buffer.c_str(), 0));
-            return buffer;
-        }
-    } // namespace
+            std::getline(std::cin, buffer);
+            if ("quit" == buffer || "stopuci" == buffer)
+                exit(0);
+        } while (fnmatch(expected.c_str(), buffer.c_str(), 0));
+        return buffer;
+    }
+
 
     void init(const std::string& name)
     {
@@ -117,32 +77,32 @@ namespace uci
         return board;
     }
 
-
-
-
-
-
-
-    std::string pop_fen(std::string& s)
+    std::string pop_fen(std::vector<std::string>& input)
     {
         std::string ret = "";
-        ret += next_token(s);
+        ret += input[0];
+        input.erase(input.begin());
         ret += " ";
-        ret += next_token(s);
+        ret += input[0];
+        input.erase(input.begin());
         ret += " ";
-        ret += next_token(s);
+        ret += input[0];
+        input.erase(input.begin());
         ret += " ";
-        ret += next_token(s);
+        ret += input[0];
+        input.erase(input.begin());
         ret += " ";
-        ret += next_token(s);
-        ret += " ";
-        ret += next_token(s);
-        ret += " ";
-
+        if (input.size() > 1)
+        {
+            ret += input[0];
+            input.erase(input.begin());
+            ret += " ";
+            ret += input[0];
+            input.erase(input.begin());
+            ret += " ";
+        }
         return ret;
     }
-
-
 
     chessBoard::Move string_to_move(std::string& s)
     {
@@ -176,6 +136,74 @@ namespace uci
         }
         return chessBoard::Move(indexf, indext, chessBoard::nWhite, std::nullopt, enup, false, false, 0);
     }
+
+    void loop()
+    {
+        //init(my_name);
+        int max_time = 300;
+        while (true)
+        {
+            auto input = split(get_input(), ' ');
+            if (input[0] == "uci")
+            {
+                std::cout << "id name " << my_name << '\n';
+                std::cout << "id author " << my_name << '\n';
+                std::cout << "uciok" << std::endl;
+            }
+            else if (input[0] == "isready")
+            {
+                std::cout << "readyok" << std::endl;
+            }
+            else if (input[0] == "position")
+            {
+                input.erase(input.begin());
+                vectBoard.clear();
+                uint64 hash = 0;
+                if (input[0] == "fen")
+                {
+                    input.erase(input.begin());
+                    std::string fen = pop_fen(input);
+                    chessBoard::boardM = Perft::parse(fen);
+                    hash = ai::helpers::zobrist(chessBoard::boardM);
+                    if (input[0] == "moves")
+                    {
+                        input.erase(input.begin());
+                        hash = ai::helpers::apply_all_moves(input, chessBoard::boardM, chessBoard::boardM.color, vectBoard);
+                    }
+                }
+                else
+                {
+                    input.erase(input.begin());
+                    chessBoard::boardM = chessBoard::Board();
+                    hash = ai::helpers::zobrist(chessBoard::boardM);
+                    if (!input.empty())
+                    {
+                        input.erase(input.begin());
+                        hash = ai::helpers::apply_all_moves(input, chessBoard::boardM, chessBoard::nWhite, vectBoard);
+                    }
+                }
+                ai::meta.hash = hash;
+            }
+            else if (input[0] == "go")
+            {
+                TimePoint act_time = std::chrono::system_clock::now();
+                const auto& time_to_play = ai::time_management::give_time(max_time);
+                const auto& move = ai::search::iterative_deepening(time_to_play * 1000 /* millisecond */);
+                if (!move.has_value())
+                {
+                    break;
+                }
+                play_move(move.value().to_str());
+                max_time -= std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - act_time).count();
+            }
+            else if (input[0] == "stop")
+            {
+                break;
+            }
+        }
+    }
+
+
 
 
 

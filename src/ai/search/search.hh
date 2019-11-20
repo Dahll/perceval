@@ -18,6 +18,7 @@
 #include "../uci.hh"
 #include "board.hh"
 #include "../refutation_table.hh"
+#include "../metadata.hh"
 
 using namespace std::chrono;
 
@@ -33,6 +34,6 @@ namespace ai::search
 
     int quiesce(const chessBoard::enumPiece& color_act, int alpha, int beta,
                 const chessBoard::Move& prev_move, uint64 hash);
-    std::optional<chessBoard::Move> iterative_deepening(int max_size, uint64 hash);
+    std::optional<chessBoard::Move> iterative_deepening(int max_size);
 
 }

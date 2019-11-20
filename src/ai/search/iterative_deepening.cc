@@ -6,7 +6,7 @@
 
 namespace ai::search
 {
-    std::optional<chessBoard::Move> iterative_deepening(int max_time , uint64 hash) // max_time in milliseconds
+    std::optional<chessBoard::Move> iterative_deepening(int max_time) // max_time in milliseconds
     {
         //Initialisation des variables
         max_time += 1;
@@ -24,7 +24,7 @@ namespace ai::search
         while ((std::chrono::duration_cast<std::chrono::milliseconds>(time_management::act_start-start).count() * 6 < max_time ))
         {
             time_management::start_depth = i;
-            move = caller_alphabeta(i, output_vect, hash, winning_move);
+            move = caller_alphabeta(i, output_vect, meta.hash, winning_move);
             refutation_table::input_vect = output_vect;
             output_vect.resize(0);
             if (winning_move)
