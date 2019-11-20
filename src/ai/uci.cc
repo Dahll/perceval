@@ -36,45 +36,10 @@ namespace uci
         return buffer;
     }
 
-
-    void init(const std::string& name)
-    {
-        get_input("uci");
-        std::cout << "id name " << name << '\n';
-        std::cout << "id author " << name << '\n';
-        std::cout << "uciok" << std::endl;
-        get_input("isready");
-        std::cout << "readyok" << std::endl;
-        //get_input("isready");
-        //std::cout << "readyok" << std::endl;
-    }
-
     void play_move(const std::string& move)
     {
         // Send the computed move
         std::cout << "bestmove " << move << std::endl;
-    }
-
-    std::string next_token(std::string& s)
-    {
-        std::string ret = "";
-        while (s != "" && s.at(0) != ' ' && s.at(0) != '\0' && s.at(0) != '\n' && s.at(0) != '\t')
-        {
-            ret.push_back(s.at(0));
-            s.erase(0, 1);
-        }
-        while (s != "" && (s.at(0) == ' ' || s.at(0) == '\t'))
-        {
-            s.erase(0, 1);
-        }
-        return ret;
-    }
-
-    std::string get_board()
-    {
-        auto board = get_input("position *"); // Get the board
-        get_input("go *"); // Wait for a go from GUI
-        return board;
     }
 
     std::string pop_fen(std::vector<std::string>& input)
@@ -137,9 +102,40 @@ namespace uci
         return chessBoard::Move(indexf, indext, chessBoard::nWhite, std::nullopt, enup, false, false, 0);
     }
 
+    void set_position(std::vector<std::string>& input)
+    {
+        input.erase(input.begin());
+        vectBoard.clear();
+        uint64 hash = 0;
+        if (input[0] == "fen")
+        {
+            input.erase(input.begin());
+            std::string fen = pop_fen(input);
+            chessBoard::boardM = Perft::parse(fen);
+            hash = ai::helpers::zobrist(chessBoard::boardM);
+            if (input[0] == "moves")
+            {
+                input.erase(input.begin());
+                hash = ai::helpers::apply_all_moves(input, chessBoard::boardM, chessBoard::boardM.color, vectBoard);
+            }
+        }
+        else
+        {
+            input.erase(input.begin());
+            chessBoard::boardM = chessBoard::Board();
+            hash = ai::helpers::zobrist(chessBoard::boardM);
+            if (!input.empty())
+            {
+                input.erase(input.begin());
+                hash = ai::helpers::apply_all_moves(input, chessBoard::boardM, chessBoard::nWhite, vectBoard);
+            }
+        }
+        ai::meta.hash = hash;
+    }
+
+
     void loop()
     {
-        //init(my_name);
         int max_time = 300;
         while (true)
         {
@@ -156,33 +152,7 @@ namespace uci
             }
             else if (input[0] == "position")
             {
-                input.erase(input.begin());
-                vectBoard.clear();
-                uint64 hash = 0;
-                if (input[0] == "fen")
-                {
-                    input.erase(input.begin());
-                    std::string fen = pop_fen(input);
-                    chessBoard::boardM = Perft::parse(fen);
-                    hash = ai::helpers::zobrist(chessBoard::boardM);
-                    if (input[0] == "moves")
-                    {
-                        input.erase(input.begin());
-                        hash = ai::helpers::apply_all_moves(input, chessBoard::boardM, chessBoard::boardM.color, vectBoard);
-                    }
-                }
-                else
-                {
-                    input.erase(input.begin());
-                    chessBoard::boardM = chessBoard::Board();
-                    hash = ai::helpers::zobrist(chessBoard::boardM);
-                    if (!input.empty())
-                    {
-                        input.erase(input.begin());
-                        hash = ai::helpers::apply_all_moves(input, chessBoard::boardM, chessBoard::nWhite, vectBoard);
-                    }
-                }
-                ai::meta.hash = hash;
+                set_position(input);
             }
             else if (input[0] == "go")
             {
