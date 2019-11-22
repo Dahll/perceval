@@ -168,7 +168,7 @@ namespace uci
             }
             else if (input[0] == "stop")
             {
-                break;
+                continue;
             }
         }
     }
