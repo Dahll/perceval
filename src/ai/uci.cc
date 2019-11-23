@@ -30,8 +30,8 @@ namespace uci
         do
         {
             std::getline(std::cin, buffer);
-            if ("quit" == buffer || "stopuci" == buffer)
-                exit(0);
+            /*if ("quit" == buffer || "stopuci" == buffer)
+                exit(0);*/
         } while (fnmatch(expected.c_str(), buffer.c_str(), 0));
         return buffer;
     }
@@ -104,7 +104,6 @@ namespace uci
 
     void set_position(std::vector<std::string>& input)
     {
-        input.erase(input.begin());
         vectBoard.clear();
         uint64 hash = 0;
         if (input[0] == "fen")
@@ -133,10 +132,44 @@ namespace uci
         ai::meta.hash = hash;
     }
 
+    void set_option_go(std::vector<std::string>& input)
+    {
+        while (!input.empty())
+        {
+            if (input[0] == "infinite")
+            {
+                /* TODO */
+                break;
+            }
+            else if (input[0] == "wtime")
+            {
+                input.erase(input.begin());
+                ai::meta.wtime = std::stoi(input[0]);
+            }
+            else if (input[0] == "btime")
+            {
+                input.erase(input.begin());
+                ai::meta.btime = std::stoi(input[0]);
+            }
+            else if (input[0] == "winc")
+            {
+                input.erase(input.begin());
+                ai::meta.winc = std::stoi(input[0]);
+            }
+            else if (input[0] == "binc")
+            {
+                input.erase(input.begin());
+                ai::meta.binc = std::stoi(input[0]);
+
+            }
+            input.erase(input.begin());
+        }
+    }
+
 
     void loop()
     {
-        int max_time = 300;
+        //int max_time = 300000;
         while (true)
         {
             auto input = split(get_input(), ' ');
@@ -146,29 +179,35 @@ namespace uci
                 std::cout << "id author " << my_name << '\n';
                 std::cout << "uciok" << std::endl;
             }
+            else if (input[0] == "quit" || input[0] == "stopuci")
+            {
+                break;
+            }
             else if (input[0] == "isready")
             {
                 std::cout << "readyok" << std::endl;
             }
             else if (input[0] == "position")
             {
+                input.erase(input.begin());
                 set_position(input);
             }
             else if (input[0] == "go")
             {
-                TimePoint act_time = std::chrono::system_clock::now();
-                const auto& time_to_play = ai::time_management::give_time(max_time);
-                const auto& move = ai::search::iterative_deepening(time_to_play * 1000 /* millisecond */);
-                if (!move.has_value())
-                {
-                    break;
-                }
-                play_move(move.value().to_str());
-                max_time -= std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now() - act_time).count();
+                input.erase(input.begin());
+                set_option_go(input);
+                ai::search::iterative_deepening();
+                play_move(ai::meta.best_move.to_str());
             }
             else if (input[0] == "stop")
             {
-                continue;
+                if (ai::meta.running)
+                {
+                    ai::meta.running = false;
+                    /* join the thread */
+                    /* return move */
+                }
+
             }
         }
     }

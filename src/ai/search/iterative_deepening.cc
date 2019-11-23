@@ -6,12 +6,16 @@
 
 namespace ai::search
 {
-    std::optional<chessBoard::Move> iterative_deepening(int max_time) // max_time in milliseconds
+    void iterative_deepening() // max_time in milliseconds
     {
         //Initialisation des variables
-        max_time += 1;
+
         int i = 1;
-        //const int& max_depth = val_max_depth();
+
+        int max_time = ai::time_management::give_time();
+
+        max_time += 1;
+
         const auto& start = system_clock::now();
 
         transposition_table::tt_search.increment_age();
@@ -27,16 +31,29 @@ namespace ai::search
             move = caller_alphabeta(i, output_vect, meta.hash, winning_move);
             refutation_table::input_vect = output_vect;
             output_vect.resize(0);
-            if (winning_move)
-            {
-                return move;
-            }
+
             time_management::act_start = system_clock::now();
+
             /// This prints the time spend for this depth
             std::cout << duration_cast<milliseconds>(time_management::act_start-start).count() << std::endl;
+            if (winning_move)
+            {
+                break;
+            }
             ++i;
         }
-        return move;
+
+        auto time = duration_cast<milliseconds>(system_clock::now()-start).count();
+
+        if (chessBoard::boardM.color == chessBoard::nWhite)
+        {
+            ai::meta.wtime -= time;
+        }
+        else
+        {
+            ai::meta.btime -= time;
+        }
+        ai::meta.best_move = move;
     }
 
 }

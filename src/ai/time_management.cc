@@ -34,21 +34,26 @@ namespace ai::time_management
 {
     /// Returns a boost factor between 0-100
 
-    int give_time(int time_left)
+    int give_time()
     {
         auto number_of_turn = chessBoard::boardM.turn_count_ * 2;
         if (chessBoard::boardM.color == chessBoard::nWhite)
             number_of_turn += 1;
         const auto& boost_factor = get_boost_factor(number_of_turn);
         int base_time = 0;
-        if (time_left < 120)
+        int time_left = 0;
+        if (chessBoard::boardM.color == chessBoard::nWhite)
+            time_left = ai::meta.wtime;
+        else
+            time_left = ai::meta.btime;
+        if (time_left < 120000)
         {
             return 1;
         }
         else
         {
             base_time = BASE_TIME + (2 * boost_factor / 100);
-            return base_time;
+            return base_time * 1000;
         }
     }
 

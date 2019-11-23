@@ -4,18 +4,27 @@
 
 #pragma once
 
+#include <move.hh>
+
 namespace ai
 {
     class Metadata
     {
     public:
         int hash = 0;
-        int wtime = 0;
-        int btime = 0;
+        bool multithread = false;
+        bool running = false;
+
+        chessBoard::Move best_move = chessBoard::Move();
+
+
+        /* Time options */
+        int wtime = 300000;
+        int btime = 300000;
         int winc = 0;
         int binc = 0;
-        int running = false;
+
     };
-    
+
     extern Metadata meta;
 }

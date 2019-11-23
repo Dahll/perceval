@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "metadata.hh"
 #include <board.hh>
 #include <x86intrin.h>
 #include <chrono>
@@ -21,7 +22,7 @@ namespace ai::time_management
                             const TimePoint& start, int max_time, size_t depth);
     int val_max_depth();
 
-    int give_time(int time_left);
+    int give_time();
 
     extern TimePoint act_start;
     extern int start_depth;

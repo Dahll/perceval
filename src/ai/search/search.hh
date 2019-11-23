@@ -34,6 +34,6 @@ namespace ai::search
 
     int quiesce(const chessBoard::enumPiece& color_act, int alpha, int beta,
                 const chessBoard::Move& prev_move, uint64 hash);
-    std::optional<chessBoard::Move> iterative_deepening(int max_size);
+    void iterative_deepening();
 
 }

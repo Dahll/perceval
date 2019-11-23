@@ -42,6 +42,8 @@ namespace uci
     std::string pop_fen(std::vector<std::string>& input);
     std::string get_input(const std::string& expected = "*");
     void set_position(std::vector<std::string>& input);
+    void set_option_go(std::vector<std::string>& input);
+
 
     void loop();
 
