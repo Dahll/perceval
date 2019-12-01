@@ -8,6 +8,8 @@ namespace ai::search
     int quiesce(const chessBoard::enumPiece& color_act,
                     int alpha, int beta, const chessBoard::Move& prev_move, uint64 hash)
     {
+        if (!meta.running)
+            return 0;
         // Evaluate and break with evaluate result
         const int& stand_pat = evaluation::evaluate(color_act);
         if (stand_pat >= beta)
@@ -24,6 +26,9 @@ namespace ai::search
         {
             return alpha;
         }
+
+        int bestscore = stand_pat;
+
         for (const auto& move : sorted_moves)
         {
             const uint64& next_hash = chessBoard::boardM.apply_move(move.second, color_act, hash);
@@ -33,11 +38,15 @@ namespace ai::search
             {
                 return beta;
             }
-            if (score > alpha)
+            if (score > bestscore)
             {
-                alpha = score;
+                bestscore = score;
+                if (score > alpha)
+                {
+                    alpha = score;
+                }
             }
         }
-        return alpha;
+        return bestscore;
     }
 }

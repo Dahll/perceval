@@ -12,7 +12,7 @@
 
 namespace ai::helpers
 {
-
+    void swap_vector_values(std::vector<chessBoard::Move>& vect);
     bool board_is_false(const std::vector<chessBoard::Board>& vecBoard, const std::vector<int>& vecint, const chessBoard::Board& act_board);
     chessBoard::Board copy_board(const chessBoard::Board& b);
     bool vec_board_update(std::vector<chessBoard::Board>& vecBoard, std::vector<int>& vecint, const chessBoard::Board& act_board);

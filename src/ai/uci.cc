@@ -1,17 +1,12 @@
 #include "uci.hh"
 #include <iostream>
 #include <fstream>
+#include <thread>
 
 using namespace std;
 
 namespace uci
 {
-
-    const std::string my_name = "Perceval";
-
-    std::vector<std::pair<uint64, int>> vectBoard = std::vector<std::pair<uint64, int>>{};
-
-
     std::vector<string> split(const string &s, char d) {
         std::vector<string> v;
         std::stringstream ss(s);
@@ -104,7 +99,7 @@ namespace uci
 
     void set_position(std::vector<std::string>& input)
     {
-        vectBoard.clear();
+        ai::meta.vectBoard.clear();
         uint64 hash = 0;
         if (input[0] == "fen")
         {
@@ -115,7 +110,7 @@ namespace uci
             if (input[0] == "moves")
             {
                 input.erase(input.begin());
-                hash = ai::helpers::apply_all_moves(input, chessBoard::boardM, chessBoard::boardM.color, vectBoard);
+                hash = ai::helpers::apply_all_moves(input, chessBoard::boardM, chessBoard::boardM.color, ai::meta.vectBoard);
             }
         }
         else
@@ -126,7 +121,7 @@ namespace uci
             if (!input.empty())
             {
                 input.erase(input.begin());
-                hash = ai::helpers::apply_all_moves(input, chessBoard::boardM, chessBoard::nWhite, vectBoard);
+                hash = ai::helpers::apply_all_moves(input, chessBoard::boardM, chessBoard::nWhite, ai::meta.vectBoard);
             }
         }
         ai::meta.hash = hash;
@@ -169,14 +164,13 @@ namespace uci
 
     void loop()
     {
-        //int max_time = 300000;
         while (true)
         {
             auto input = split(get_input(), ' ');
             if (input[0] == "uci")
             {
-                std::cout << "id name " << my_name << '\n';
-                std::cout << "id author " << my_name << '\n';
+                std::cout << "id name " << ai::meta.my_name << '\n';
+                std::cout << "id author " << ai::meta.my_name << '\n';
                 std::cout << "uciok" << std::endl;
             }
             else if (input[0] == "quit" || input[0] == "stopuci")
@@ -196,7 +190,12 @@ namespace uci
             {
                 input.erase(input.begin());
                 set_option_go(input);
-                ai::search::iterative_deepening();
+                ai::meta.test_time_to_play();
+                ai::meta.running = true;
+                std::thread main(ai::search::iterative_deepening);
+                std::this_thread::sleep_for(std::chrono::milliseconds(ai::meta.time_to_play));
+                ai::meta.running = false;
+                main.join();
                 play_move(ai::meta.best_move.to_str());
             }
             else if (input[0] == "stop")
@@ -211,11 +210,5 @@ namespace uci
             }
         }
     }
-
-
-
-
-
-
 
 } // namespace ai

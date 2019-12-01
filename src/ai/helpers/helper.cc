@@ -211,7 +211,16 @@ namespace ai::helpers
             return vec;
         }
         return ret;
-    }
 
+    }
+    void swap_vector_values(std::vector<chessBoard::Move>& vect)
+    {
+        auto tmp = std::vector<chessBoard::Move>();
+        for (auto& mov : vect)
+        {
+            tmp.insert(tmp.begin(), mov);
+        }
+        vect = tmp;
+    }
 
 }

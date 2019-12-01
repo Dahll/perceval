@@ -46,7 +46,4 @@ namespace uci
 
 
     void loop();
-
-    extern const std::string my_name;
-    extern std::vector<std::pair<uint64, int>> vectBoard;
 }

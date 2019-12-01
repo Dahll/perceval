@@ -18,7 +18,7 @@ namespace ai::transposition_table
         chessBoard::Move move_;
         int score_;
         int depth_;
-        int is_cut_off_;
+        int8 is_cut_off_;
         int age_;
     };
 

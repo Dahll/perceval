@@ -48,7 +48,7 @@ namespace ai::search
 
         //test if the board exist in the hash map and if depth left == depth stocked
         const auto &mov = chessBoard::boardM.generate_moves(colo_act);
-        auto moves = helpers::remove_move_repetition(mov, chessBoard::boardM, uci::vectBoard, hash);
+        auto moves = helpers::remove_move_repetition(mov, chessBoard::boardM, ai::meta.vectBoard, hash);
         /*if (moves.empty())
             return INT32_MIN + 1;*/
         auto sorted_moves = ordering::moves_set_values(moves, std::nullopt, depth, hash);
@@ -97,7 +97,7 @@ namespace ai::search
             }
             actual_vect.resize(0);
         }
-        if (best <= save_alpha)
+        /*if (best <= save_alpha)
         {
             transposition_table::tt_search.update(output_vect[0], best, depth, hash, 1);
         }
@@ -108,6 +108,14 @@ namespace ai::search
         else
         {
             transposition_table::tt_search.update(output_vect[0], best, depth, hash, 0);
+        }*/
+        if (save_alpha < alpha && alpha < beta)
+        {
+            transposition_table::tt_search.update(output_vect[0], best, depth, hash, 0);
+        }
+        else if (alpha <= save_alpha)
+        {
+            transposition_table::tt_search.update(output_vect[0], best, depth, hash, 1);
         }
         if (score == INT32_MAX)
             winning_move = true;
@@ -121,6 +129,8 @@ namespace ai::search
                   uint64 hash)
     {
 
+        if (!meta.running)
+            return 0;
         //test if the board exist in the hash map and if depth left == depth stocked
         auto save_alpha = alpha;
         auto transpo = transposition_table::tt_search.find(hash);
@@ -201,7 +211,7 @@ namespace ai::search
             }
             actual_vect.resize(0);
         }
-        if (best <= save_alpha)
+        /*if (best <= save_alpha)
         {
             transposition_table::tt_search.update(prev_vect_move[0], best, depth, hash, 1);
         }
@@ -212,6 +222,14 @@ namespace ai::search
         else
         {
             transposition_table::tt_search.update(prev_vect_move[0], best, depth, hash, 0);
+        }*/
+        if (save_alpha < alpha && alpha < beta)
+        {
+            transposition_table::tt_search.update(prev_vect_move[0], best, depth, hash, 0);
+        }
+        else if (alpha <= save_alpha)
+        {
+            transposition_table::tt_search.update(prev_vect_move[0], best, depth, hash, 1);
         }
         return best;
     }

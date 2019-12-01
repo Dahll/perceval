@@ -4,6 +4,8 @@
 
 #include "search.hh"
 
+using namespace ai::refutation_table;
+
 namespace ai::search
 {
     void iterative_deepening() // max_time in milliseconds
@@ -12,30 +14,36 @@ namespace ai::search
 
         int i = 1;
 
-        int max_time = ai::time_management::give_time();
-
-        max_time += 1;
-
         const auto& start = system_clock::now();
 
         transposition_table::tt_search.increment_age();
 
-        refutation_table::input_vect = std::vector<chessBoard::Move>();
+        /* Setup input_vect */
+        input_vect = std::vector<chessBoard::Move>();
+        input_vect.insert(input_vect.begin(), chessBoard::Move());
+        input_vect.insert(input_vect.begin(), chessBoard::Move());
+
         auto output_vect = std::vector<chessBoard::Move>();
-        time_management::act_start = system_clock::now();
+
         auto move = chessBoard::Move();
         bool winning_move = false;
-        while ((std::chrono::duration_cast<std::chrono::milliseconds>(time_management::act_start-start).count() * 6 < max_time ))
+        while (true)
         {
-            time_management::start_depth = i;
-            move = caller_alphabeta(i, output_vect, meta.hash, winning_move);
-            refutation_table::input_vect = output_vect;
+            auto tmp_move = caller_alphabeta(i, output_vect, meta.hash, winning_move);
+            if (!ai::meta.running)
+                break;
+            move = tmp_move;
+            /* Update input vect */
+            input_vect = output_vect;
+            ai::helpers::swap_vector_values(input_vect);
+            input_vect.insert(input_vect.begin(), chessBoard::Move());
+            input_vect.insert(input_vect.begin(), chessBoard::Move());
+
+            /* Reset output_vect */
             output_vect.resize(0);
 
-            time_management::act_start = system_clock::now();
-
             /// This prints the time spend for this depth
-            std::cout << duration_cast<milliseconds>(time_management::act_start-start).count() << std::endl;
+            std::cout << duration_cast<milliseconds>(system_clock::now()-start).count() << std::endl;
             if (winning_move)
             {
                 break;

@@ -133,9 +133,9 @@ namespace ai::ordering
             }
 
         }
-        if (refutation_table::input_vect.size() > ai::time_management::start_depth - act_depth)
+        if (refutation_table::input_vect.size() > 1)
         {
-            const chessBoard::Move& opti_move = refutation_table::input_vect.at(ai::time_management::start_depth - act_depth);
+            const chessBoard::Move& opti_move = refutation_table::input_vect.at(act_depth);
             if ((move.piece_get() == opti_move.piece_get()) && (move.to_get() == opti_move.to_get()) &&
                 (move.from_get() == opti_move.from_get()))
             {
