@@ -25,27 +25,27 @@ namespace ai
     namespace evaluation
     {
 
-        int test_mini_max();
+        int test_mini_max(const chessBoard::Board& b);
 
-        int eval_queen(const chessBoard::enumPiece &color,
+        int eval_queen(const chessBoard::Board& b, const chessBoard::enumPiece &color,
                        const chessBoard::enumPiece &not_color_);
 
-        int eval_rook(const chessBoard::enumPiece &color,
+        int eval_rook(const chessBoard::Board& b, const chessBoard::enumPiece &color,
                       const chessBoard::enumPiece &not_color_);
 
-        int eval_bishop(const chessBoard::enumPiece &color,
+        int eval_bishop(const chessBoard::Board& b, const chessBoard::enumPiece &color,
                         const chessBoard::enumPiece &not_color_);
 
-        int eval_knight(const chessBoard::enumPiece &color,
+        int eval_knight(const chessBoard::Board& b, const chessBoard::enumPiece &color,
                         const chessBoard::enumPiece &not_color_);
 
-        int eval_pawn(const chessBoard::enumPiece &color,
+        int eval_pawn(const chessBoard::Board& b, const chessBoard::enumPiece &color,
                       const chessBoard::enumPiece &not_color_);
 
-        int eval_king(const chessBoard::enumPiece &color,
+        int eval_king(const chessBoard::Board& b, const chessBoard::enumPiece &color,
                       const chessBoard::enumPiece &not_color_);
 
-        int evaluate(const chessBoard::enumPiece &color_);
+        int evaluate(const chessBoard::Board& b, const chessBoard::enumPiece &color_);
 
 
         static const std::map<std::string, int> map_test_white{

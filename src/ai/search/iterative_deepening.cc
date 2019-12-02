@@ -29,7 +29,7 @@ namespace ai::search
         bool winning_move = false;
         while (true)
         {
-            auto tmp_move = caller_alphabeta(i, output_vect, meta.hash, winning_move);
+            auto tmp_move = caller_alphabeta(meta.boardM, i, output_vect, meta.hash, winning_move);
             if (!ai::meta.running)
                 break;
             move = tmp_move;
@@ -53,7 +53,7 @@ namespace ai::search
 
         auto time = duration_cast<milliseconds>(system_clock::now()-start).count();
 
-        if (chessBoard::boardM.color == chessBoard::nWhite)
+        if (meta.boardM.color == chessBoard::nWhite)
         {
             ai::meta.wtime -= time;
         }

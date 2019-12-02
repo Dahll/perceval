@@ -12,6 +12,21 @@
 
 namespace ai
 {
+    class TreefoldStack
+    {
+    public:
+        bool is_treefold(uint64 hash);
+        void push(uint64 hash);
+        void pop();
+        void reset();
+        void set_root_index();
+
+    private:
+        int root_index = 0;
+        int stack_index = 0;
+        std::vector<uint64> stack = std::vector<uint64>(256);
+    };
+
     class Metadata
     {
     public:
@@ -22,24 +37,29 @@ namespace ai
 
         /* Core option*/
 
-        //Move repetition
+        /* Treefold and 50 moves repetition */
         std::vector<std::pair<uint64, int>> vectBoard = std::vector<std::pair<uint64, int>>{};
+        uint8 fiftymoves = 0;
 
-        int hash = 0;
+
+
+        // Multithreading info
         bool multithread = false;
         bool running = false;
 
-        int time_to_play;
+        // Board info
+        chessBoard::Board boardM = chessBoard::Board();
+        int hash = 0;
         chessBoard::Move best_move = chessBoard::Move();
 
 
         /* Time options */
+        int time_to_play;
         int wtime = 300000;
         int btime = 300000;
         int winc = 0;
         int binc = 0;
         void set_time_to_play();
-        void test_time_to_play();
     };
 
     extern Metadata meta;

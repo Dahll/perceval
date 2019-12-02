@@ -5,22 +5,23 @@
 
 namespace ai::search
 {
-    int quiesce(const chessBoard::enumPiece& color_act,
+    int quiesce(const chessBoard::Board& b, const chessBoard::enumPiece& color_act,
                     int alpha, int beta, const chessBoard::Move& prev_move, uint64 hash)
     {
+        // Out of time
         if (!meta.running)
             return 0;
         // Evaluate and break with evaluate result
-        const int& stand_pat = evaluation::evaluate(color_act);
+        const int& stand_pat = evaluation::evaluate(b, color_act);
         if (stand_pat >= beta)
         {
             return beta;
         }
         if (alpha < stand_pat)
             alpha = stand_pat;
-        const auto& inv_color = chessBoard::boardM.other_color(color_act);
+        const auto& inv_color = b.other_color(color_act);
         // Generate moves and order them
-        const auto& moves = chessBoard::boardM.generate_capture_moves(color_act);
+        const auto& moves = b.generate_capture_moves(color_act);
         const auto& sorted_moves = ordering::moves_set_values_quiescence(moves, prev_move);//give hash
         if (moves.empty())
         {
@@ -31,9 +32,10 @@ namespace ai::search
 
         for (const auto& move : sorted_moves)
         {
-            const uint64& next_hash = chessBoard::boardM.apply_move(move.second, color_act, hash);
-            const int& score = -quiesce(inv_color, -beta, -alpha, move.second, next_hash);
-            chessBoard::boardM.revert_move(move.second, color_act);
+            auto cpy = helpers::copy_board(b);
+            const uint64& next_hash = cpy.apply_move(move.second, color_act, hash);
+            const int& score = -quiesce(cpy, inv_color, -beta, -alpha, move.second, next_hash);
+            //b.revert_move(move.second, color_act);
             if (score >= beta)
             {
                 return beta;

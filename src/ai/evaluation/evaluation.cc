@@ -10,18 +10,18 @@ namespace ai::evaluation
         using chessBoard::enumPiece;
     }
 
-    int eval_king(const enumPiece& color_,
+    int eval_king(const chessBoard::Board& b, const enumPiece& color_,
             const chessBoard::enumPiece& not_color_)
     {
         int ret = 0;
         int index = 0;
-        uint64 mask_color = chessBoard::boardM.pieceBB[enumPiece::nKing] & chessBoard::boardM.pieceBB[color_];
+        uint64 mask_color = b.pieceBB[enumPiece::nKing] & b.pieceBB[color_];
         if ((index = chessBoard::split_index(mask_color)) != 0)
         {
             ret += VAL_KING;
             ret += chessBoard::board_king[color_][index];
         }
-        uint64 mask_no_color = chessBoard::boardM.pieceBB[enumPiece::nKing] & chessBoard::boardM.pieceBB[not_color_];
+        uint64 mask_no_color = b.pieceBB[enumPiece::nKing] & b.pieceBB[not_color_];
         if ((index = chessBoard::split_index(mask_no_color)) != 0)
         {
             ret -= VAL_KING;
@@ -30,17 +30,17 @@ namespace ai::evaluation
         return ret;
     }
 
-    int eval_queen(const enumPiece& color_,
+    int eval_queen(const chessBoard::Board& b, const enumPiece& color_,
             const chessBoard::enumPiece& not_color_)
     {
         int ret = 0;
-        uint64 mask = chessBoard::boardM.pieceBB[enumPiece::nQueen] & chessBoard::boardM.pieceBB[color_];
+        uint64 mask = b.pieceBB[enumPiece::nQueen] & b.pieceBB[color_];
         int index = 0;
         while ((index = chessBoard::split_index(mask)) != 0) {
             ret += VAL_QUEEN;
             ret += chessBoard::board_queen[color_][index];
         }
-        uint64 mask_no = chessBoard::boardM.pieceBB[enumPiece::nQueen] & chessBoard::boardM.pieceBB[not_color_];
+        uint64 mask_no = b.pieceBB[enumPiece::nQueen] & b.pieceBB[not_color_];
         while ((index = chessBoard::split_index(mask_no)) != 0) {
             ret -= VAL_QUEEN;
             ret -= chessBoard::board_queen[not_color_][index];
@@ -48,17 +48,17 @@ namespace ai::evaluation
         return ret;
     }
 
-    int eval_rook(const chessBoard::enumPiece& color_,
+    int eval_rook(const chessBoard::Board& b, const chessBoard::enumPiece& color_,
             const chessBoard::enumPiece& not_color_)
     {
         int ret = 0;
-        uint64 mask = chessBoard::boardM.pieceBB[enumPiece::nRook] & chessBoard::boardM.pieceBB[color_];
+        uint64 mask = b.pieceBB[enumPiece::nRook] & b.pieceBB[color_];
         int index = 0;
         while ((index = chessBoard::split_index(mask)) != 0) {
             ret += VAL_ROOKS;
             ret += chessBoard::board_rooks[color_][index];
         }
-        uint64 mask_no = chessBoard::boardM.pieceBB[enumPiece::nRook] & chessBoard::boardM.pieceBB[not_color_];
+        uint64 mask_no = b.pieceBB[enumPiece::nRook] & b.pieceBB[not_color_];
         while ((index = chessBoard::split_index(mask_no)) != 0) {
             ret -= VAL_ROOKS;
             ret -= chessBoard::board_rooks[not_color_][index];
@@ -66,17 +66,17 @@ namespace ai::evaluation
         return ret;
     }
 
-    int eval_bishop(const enumPiece& color_,
+    int eval_bishop(const chessBoard::Board& b, const enumPiece& color_,
             const chessBoard::enumPiece& not_color_)
     {
         int ret = 0;
-        uint64 mask = chessBoard::boardM.pieceBB[enumPiece::nBishop] & chessBoard::boardM.pieceBB[color_];
+        uint64 mask = b.pieceBB[enumPiece::nBishop] & b.pieceBB[color_];
         int index = 0;
         while ((index = chessBoard::split_index(mask)) != 0) {
             ret += VAL_BISHOP;
             ret += chessBoard::board_bishop[color_][index];
         }
-        uint64 mask_no = chessBoard::boardM.pieceBB[enumPiece::nBishop] & chessBoard::boardM.pieceBB[not_color_];
+        uint64 mask_no = b.pieceBB[enumPiece::nBishop] & b.pieceBB[not_color_];
         while ((index = chessBoard::split_index(mask_no)) != 0) {
             ret -= VAL_BISHOP;
             ret -= chessBoard::board_bishop[not_color_][index];
@@ -85,17 +85,17 @@ namespace ai::evaluation
     }
 
 
-    int eval_knight(const enumPiece& color_,
+    int eval_knight(const chessBoard::Board& b, const enumPiece& color_,
             const chessBoard::enumPiece& not_color_)
     {
         int ret = 0;
-        uint64 mask = chessBoard::boardM.pieceBB[enumPiece::nKnight] & chessBoard::boardM.pieceBB[color_];
+        uint64 mask = b.pieceBB[enumPiece::nKnight] & b.pieceBB[color_];
         int index = 0;
         while ((index = chessBoard::split_index(mask)) != 0) {
             ret += VAL_KNIGHT;
             ret += chessBoard::board_knight[color_][index];
         }
-        uint64 mask_no = chessBoard::boardM.pieceBB[enumPiece::nKnight] & chessBoard::boardM.pieceBB[not_color_];
+        uint64 mask_no = b.pieceBB[enumPiece::nKnight] & b.pieceBB[not_color_];
         while ((index = chessBoard::split_index(mask_no)) != 0) {
             ret -= VAL_KNIGHT;
             ret -= chessBoard::board_knight[not_color_][index];
@@ -104,17 +104,17 @@ namespace ai::evaluation
     }
 
 
-    int eval_pawn(const enumPiece& color_,
+    int eval_pawn(const chessBoard::Board& b, const enumPiece& color_,
             const chessBoard::enumPiece& not_color_)
     {
         int ret = 0;
-        uint64 mask = chessBoard::boardM.pieceBB[enumPiece::nPawn] & chessBoard::boardM.pieceBB[color_];
+        uint64 mask = b.pieceBB[enumPiece::nPawn] & b.pieceBB[color_];
         int index = 0;
         while ((index = chessBoard::split_index(mask)) != 0) {
             ret += VAL_PAWN;
             ret += chessBoard::board_pawn[color_][index];
         }
-        uint64 mask_no = chessBoard::boardM.pieceBB[enumPiece::nPawn] & chessBoard::boardM.pieceBB[not_color_];
+        uint64 mask_no = b.pieceBB[enumPiece::nPawn] & b.pieceBB[not_color_];
         while ((index = chessBoard::split_index(mask_no)) != 0) {
             ret -= VAL_PAWN;
             ret -= chessBoard::board_pawn[not_color_][index];
@@ -122,23 +122,23 @@ namespace ai::evaluation
         return ret;
     }
 
-    int evaluate(const chessBoard::enumPiece& color_)
+    int evaluate(const chessBoard::Board& b, const chessBoard::enumPiece& color_)
     {
-        const chessBoard::enumPiece& not_color = chessBoard::boardM.other_color(color_);
+        const chessBoard::enumPiece& not_color = b.other_color(color_);
         int ret = 0;
-        ret += eval_queen(color_, not_color);
-        ret += eval_rook(color_, not_color);
-        ret += eval_bishop(color_, not_color);
-        ret += eval_knight(color_, not_color);
-        ret += eval_pawn(color_, not_color);
-        ret += eval_king(color_, not_color);
+        ret += eval_queen(b, color_, not_color);
+        ret += eval_rook(b, color_, not_color);
+        ret += eval_bishop(b, color_, not_color);
+        ret += eval_knight(b, color_, not_color);
+        ret += eval_pawn(b, color_, not_color);
+        ret += eval_king(b, color_, not_color);
         return ret;
     }
 
-    int test_mini_max()
+    int test_mini_max(const chessBoard::Board& b)
     {
-        auto str = chessBoard::boardM.to_perft();
-        if (chessBoard::boardM.color == chessBoard::nWhite)
+        auto str = b.to_perft();
+        if (b.color == chessBoard::nWhite)
         {
             const auto a = map_test_white.find(str);
             return a->second;

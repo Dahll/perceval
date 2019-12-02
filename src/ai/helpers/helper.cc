@@ -43,6 +43,8 @@ namespace ai::helpers
         n.mat = n.mat;
         n.check = b.check;
         n.pat = b.pat;
+        n.turn_count_ = b.turn_count_;
+        n.half_move_count_ = b.half_move_count_;
         return n;
     }
 
@@ -194,7 +196,7 @@ namespace ai::helpers
     }
 
     std::vector<chessBoard::Move> remove_move_repetition(const std::vector<chessBoard::Move>& vec,
-                                                         chessBoard::Board& board, std::vector<std::pair<uint64, int>>& vec_board, uint64 hash)
+                                                         chessBoard::Board board, std::vector<std::pair<uint64, int>>& vec_board, uint64 hash)
     {
         auto ret = std::vector<chessBoard::Move>();
         for (const auto& move : vec)

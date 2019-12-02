@@ -105,23 +105,23 @@ namespace uci
         {
             input.erase(input.begin());
             std::string fen = pop_fen(input);
-            chessBoard::boardM = Perft::parse(fen);
-            hash = ai::helpers::zobrist(chessBoard::boardM);
+            ai::meta.boardM = Perft::parse(fen);
+            hash = ai::helpers::zobrist(ai::meta.boardM);
             if (input[0] == "moves")
             {
                 input.erase(input.begin());
-                hash = ai::helpers::apply_all_moves(input, chessBoard::boardM, chessBoard::boardM.color, ai::meta.vectBoard);
+                hash = ai::helpers::apply_all_moves(input, ai::meta.boardM, ai::meta.boardM.color, ai::meta.vectBoard);
             }
         }
         else
         {
             input.erase(input.begin());
-            chessBoard::boardM = chessBoard::Board();
-            hash = ai::helpers::zobrist(chessBoard::boardM);
+            ai::meta.boardM = chessBoard::Board();
+            hash = ai::helpers::zobrist(ai::meta.boardM);
             if (!input.empty())
             {
                 input.erase(input.begin());
-                hash = ai::helpers::apply_all_moves(input, chessBoard::boardM, chessBoard::nWhite, ai::meta.vectBoard);
+                hash = ai::helpers::apply_all_moves(input, ai::meta.boardM, chessBoard::nWhite, ai::meta.vectBoard);
             }
         }
         ai::meta.hash = hash;
@@ -190,7 +190,7 @@ namespace uci
             {
                 input.erase(input.begin());
                 set_option_go(input);
-                ai::meta.test_time_to_play();
+                ai::meta.set_time_to_play();
                 ai::meta.running = true;
                 std::thread main(ai::search::iterative_deepening);
                 std::this_thread::sleep_for(std::chrono::milliseconds(ai::meta.time_to_play));

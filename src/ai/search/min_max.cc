@@ -5,7 +5,7 @@
 
 namespace ai::search
 {
-    chessBoard::Move caller_alphabeta(int depth,
+    chessBoard::Move caller_alphabeta(const chessBoard::Board& b, int depth,
                          chessBoard::MOVES_T &output_vect,
                          uint64 hash,
                          bool& winning_move)
@@ -43,12 +43,12 @@ namespace ai::search
 
         auto actual_vect = std::vector<chessBoard::Move>();
         int best = INT32_MIN + 1;
-        const auto &inv_color = chessBoard::boardM.other_color(chessBoard::boardM.color);
-        const auto &colo_act = chessBoard::boardM.color;
+        const auto &inv_color = b.other_color(b.color);
+        const auto &colo_act = b.color;
 
         //test if the board exist in the hash map and if depth left == depth stocked
-        const auto &mov = chessBoard::boardM.generate_moves(colo_act);
-        auto moves = helpers::remove_move_repetition(mov, chessBoard::boardM, ai::meta.vectBoard, hash);
+        const auto &mov = b.generate_moves(colo_act);
+        auto moves = helpers::remove_move_repetition(mov, b, ai::meta.vectBoard, hash);
         /*if (moves.empty())
             return INT32_MIN + 1;*/
         auto sorted_moves = ordering::moves_set_values(moves, std::nullopt, depth, hash);
@@ -56,24 +56,25 @@ namespace ai::search
         int score = 0;
         for (const auto &move : sorted_moves)
         {
-            const uint64 &next_hash = chessBoard::boardM.apply_move(move.second, colo_act, hash);
+            auto cpy = helpers::copy_board(b);
+            const uint64 &next_hash = cpy.apply_move(move.second, colo_act, hash);
 
             if (foundpv)
             {
-                score = -alphabeta(inv_color, depth - 1, -alpha - 1, -alpha, move.second, actual_vect,
+                score = -alphabeta(cpy, inv_color, depth - 1, -alpha - 1, -alpha, move.second, actual_vect,
                                    next_hash);
                 if ((score > alpha) && (score < beta))
                 {
-                    score = -alphabeta(inv_color, depth - 1, -beta, -alpha, move.second, actual_vect,
+                    score = -alphabeta(cpy, inv_color, depth - 1, -beta, -alpha, move.second, actual_vect,
                                        next_hash);
                 }
             }
             else
             {
-                score = -alphabeta(inv_color, depth - 1, -beta, -alpha, move.second, actual_vect,
+                score = -alphabeta(cpy, inv_color, depth - 1, -beta, -alpha, move.second, actual_vect,
                                    next_hash);
             }
-            chessBoard::boardM.revert_move(move.second, colo_act);
+            //b.revert_move(move.second, colo_act);
             if (score >= beta)
             {
                 output_vect[0] = move.second;
@@ -123,12 +124,12 @@ namespace ai::search
     }
 
 
-    int alphabeta(const chessBoard::enumPiece &colo_act,
+    int alphabeta(const chessBoard::Board& b, const chessBoard::enumPiece &colo_act,
                   int depth, int alpha, int beta, const chessBoard::Move &prev_move,
                   chessBoard::MOVES_T &prev_vect_move,
                   uint64 hash)
     {
-
+        // Out of time
         if (!meta.running)
             return 0;
         //test if the board exist in the hash map and if depth left == depth stocked
@@ -152,45 +153,47 @@ namespace ai::search
 
         if (depth == 0)
         {
-            return quiesce(colo_act, alpha, beta, prev_move, hash);
+            return quiesce(b, colo_act, alpha, beta, prev_move, hash);
         }
 
         bool foundpv = false;
 
         auto actual_vect = chessBoard::MOVES_T();
         int best = INT32_MIN + 1;
-        const auto &moves = chessBoard::boardM.generate_moves(colo_act);
+        const auto &moves = b.generate_moves(colo_act);
         if (moves.empty())
         {
-            if (!chessBoard::boardM.player_is_check(colo_act))
+            if (!b.player_is_check(colo_act))
                 return 0;
             return best;
         }
         const auto &sorted_moves = ordering::moves_set_values(moves, prev_move, depth, hash);//give hash
-        const auto &inv_color = chessBoard::boardM.other_color(colo_act);
+        const auto &inv_color = b.other_color(colo_act);
         prev_vect_move.push_back(sorted_moves[0].second);
         int score = 0;
         for (const auto &move : sorted_moves)
         {
-            uint64 next_hash = chessBoard::boardM.apply_move(move.second, colo_act, hash);
+
+            auto cpy = helpers::copy_board(b);
+            uint64 next_hash = cpy.apply_move(move.second, colo_act, hash);
 
             if (foundpv)
             {
-                score = -alphabeta(inv_color, depth - 1, -alpha - 1, -alpha, move.second, actual_vect,
+                score = -alphabeta(cpy, inv_color, depth - 1, -alpha - 1, -alpha, move.second, actual_vect,
                                    next_hash);
                 if ((score > alpha) && (score < beta))
                 {
-                    score = -alphabeta(inv_color, depth - 1, -beta, -alpha, move.second, actual_vect,
+                    score = -alphabeta(cpy, inv_color, depth - 1, -beta, -alpha, move.second, actual_vect,
                                        next_hash);
                 }
             }
             else
             {
-                score = -alphabeta(inv_color, depth - 1, -beta, -alpha, move.second, actual_vect,
+                score = -alphabeta(cpy, inv_color, depth - 1, -beta, -alpha, move.second, actual_vect,
                                    next_hash);
             }
 
-            chessBoard::boardM.revert_move(move.second, colo_act);
+            //b.revert_move(move.second, colo_act);
             if (score >= beta)
             {
                 refutation_table::merge_vect(prev_vect_move, actual_vect);

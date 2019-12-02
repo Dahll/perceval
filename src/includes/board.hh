@@ -151,5 +151,4 @@ namespace chessBoard
 
         /* Static */
     };
-    extern chessBoard::Board boardM;
 }

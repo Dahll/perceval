@@ -14,7 +14,6 @@
 namespace chessBoard
 {
 
-    chessBoard::Board boardM = chessBoard::Board();
 
     Board Board::copy_board() const
     {
@@ -105,6 +104,7 @@ namespace chessBoard
 
     Move Board::ia_apply_move(const Move& m, const enumPiece& color_, uint64& hash_board)
     {
+        // Build Move
         for (int i = nPawn; i <= nKing; ++i)
         {
             if (!(m.from_get() & pieceBB[i]))

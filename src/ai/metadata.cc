@@ -22,7 +22,7 @@ namespace ai
     }
 
 
-    void Metadata::set_time_to_play()
+    /*void Metadata::set_time_to_play()
     {
         auto number_of_turn = chessBoard::boardM.turn_count_ * 2;
         if (chessBoard::boardM.color == chessBoard::nWhite)
@@ -43,9 +43,9 @@ namespace ai
             base_time = BASE_TIME + (2 * boost_factor / 100);
             time_to_play = (base_time) * 1000;
         }
-    }
+    }*/
 
-    void Metadata::test_time_to_play()
+    void Metadata::set_time_to_play()
     {
         /* Set factor*/
         int number_of_moves_play = vectBoard.size();
@@ -67,7 +67,7 @@ namespace ai
             number_max_moves_left = vectBoard.size() + 30;
 
         int time_left = 0;
-        if (chessBoard::boardM.color == chessBoard::nWhite)
+        if (meta.boardM.color == chessBoard::nWhite)
             time_left = meta.wtime;
         else
             time_left = meta.btime;
@@ -80,7 +80,7 @@ namespace ai
 
         /* Set increment */
         int increment = 0;
-        if (chessBoard::boardM.color == chessBoard::nWhite)
+        if (meta.boardM.color == chessBoard::nWhite)
             increment = meta.winc;
         else
             increment = meta.binc;
@@ -88,5 +88,42 @@ namespace ai
         time_to_play = normal_move_time + increment;
         std::cout << "move_time :" << normal_move_time << std::endl;
         std::cout << "increment : " << increment << std::endl;
+    }
+
+    bool TreefoldStack::is_treefold(uint64 hash)
+    {
+        for (int i = stack_index-1; i >= 0; i--) {
+            if (stack[i] == hash) {
+                if (i <= root_index) {
+                    for (int j = i-1; j >= 0; j--) {
+                        if (stack[j] == hash) return true;
+                    }
+                }
+                else return true;
+            }
+        }
+        return false;
+    }
+
+    void TreefoldStack::push(uint64 hash)
+    {
+        stack[stack_index] = hash;
+        stack_index += 1;
+    }
+
+    void TreefoldStack::pop()
+    {
+        stack_index -= 1;
+    }
+
+    void TreefoldStack::reset()
+    {
+        root_index = 0;
+        stack_index = 0;
+    }
+
+    void TreefoldStack::set_root_index()
+    {
+        root_index = stack_index--;
     }
 }
