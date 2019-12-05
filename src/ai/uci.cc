@@ -99,6 +99,7 @@ namespace uci
 
     void set_position(std::vector<std::string>& input)
     {
+        ai::meta.treefold.reset();
         ai::meta.vectBoard.clear();
         uint64 hash = 0;
         if (input[0] == "fen")
@@ -125,6 +126,7 @@ namespace uci
             }
         }
         ai::meta.hash = hash;
+        ai::meta.treefold.set_root_index();
     }
 
     void set_option_go(std::vector<std::string>& input)

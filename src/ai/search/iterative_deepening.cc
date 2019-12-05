@@ -36,8 +36,9 @@ namespace ai::search
             /* Update input vect */
             input_vect = output_vect;
             ai::helpers::swap_vector_values(input_vect);
+            ai::helpers::add_padding_move(input_vect, i + 1);
             input_vect.insert(input_vect.begin(), chessBoard::Move());
-            input_vect.insert(input_vect.begin(), chessBoard::Move());
+            //input_vect.insert(input_vect.begin(), chessBoard::Move());
 
             /* Reset output_vect */
             output_vect.resize(0);

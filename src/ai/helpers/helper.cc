@@ -120,7 +120,7 @@ namespace ai::helpers
     {
         uint64 hash = zobrist(board);
         std::string ret = "";
-        int i =0;
+        //int i =0;
         int pos = 0;
         vecBoard.emplace_back(hash, 1);
         while (pos < (int)input.size())
@@ -129,13 +129,16 @@ namespace ai::helpers
             chessBoard::Move m = board.ia_apply_move(uci::string_to_move(ret), color_, hash);
             color_ = board.other_color(color_);
             board.color = color_;
-            if (m.is_capture()) {
+            /*if (m.is_capture()) {
                 vecBoard.clear();
                 vecBoard.emplace_back(hash, 1);
             }
             else {
                 threefold(vecBoard, hash, board.half_move_count_, i);
-            }
+            }*/
+            if (m.is_capture() || m.piece_get() == chessBoard::nPawn)
+                ai::meta.treefold.reset();
+            ai::meta.treefold.push(hash);
             pos++;
         }
         return hash;
@@ -223,6 +226,14 @@ namespace ai::helpers
             tmp.insert(tmp.begin(), mov);
         }
         vect = tmp;
+    }
+
+    void add_padding_move(std::vector<chessBoard::Move>& vect, int len)
+    {
+        while ((int)vect.size() != len)
+        {
+            vect.insert(vect.begin(), chessBoard::Move());
+        }
     }
 
 }

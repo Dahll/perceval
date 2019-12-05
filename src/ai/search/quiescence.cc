@@ -8,6 +8,7 @@ namespace ai::search
     int quiesce(const chessBoard::Board& b, const chessBoard::enumPiece& color_act,
                     int alpha, int beta, const chessBoard::Move& prev_move, uint64 hash)
     {
+
         // Out of time
         if (!meta.running)
             return 0;
@@ -32,9 +33,12 @@ namespace ai::search
 
         for (const auto& move : sorted_moves)
         {
-            auto cpy = helpers::copy_board(b);
+            //auto cpy = helpers::copy_board(b);
+            auto cpy = b;
             const uint64& next_hash = cpy.apply_move(move.second, color_act, hash);
+            ai::meta.treefold.push(next_hash);
             const int& score = -quiesce(cpy, inv_color, -beta, -alpha, move.second, next_hash);
+            ai::meta.treefold.pop();
             //b.revert_move(move.second, color_act);
             if (score >= beta)
             {

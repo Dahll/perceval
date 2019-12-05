@@ -12,33 +12,8 @@ namespace ai::search
     {
         int alpha = INT32_MIN + 1;
         int beta = INT32_MAX;
-        chessBoard::Move best_move = chessBoard::Move();
-        auto save_alpha = alpha;
-        auto transpo = transposition_table::tt_search.find(hash);
-        if (transpo.depth_ != -1 && transpo.hash_ == hash && transpo.depth_ >= depth)
-        {
-            if (transpo.is_cut_off_ == 0)
-            {
-                if (transpo.score_ == INT32_MAX)
-                    winning_move = true;
-                return transpo.move_;
-            }
-            else if (transpo.is_cut_off_ == -1)
-            {
-                alpha = std::max(alpha, transpo.score_);
-            }
-            else
-            {
-                beta = std::min(beta, transpo.score_);
-            }
-            if (alpha >= beta)
-            {
-                if (transpo.score_ == INT32_MAX)
-                    winning_move = true;
-                return transpo.move_;
-            }
-        }
 
+        auto save_alpha = alpha;
         bool foundpv = false;
 
         auto actual_vect = std::vector<chessBoard::Move>();
@@ -48,17 +23,18 @@ namespace ai::search
 
         //test if the board exist in the hash map and if depth left == depth stocked
         const auto &mov = b.generate_moves(colo_act);
-        auto moves = helpers::remove_move_repetition(mov, b, ai::meta.vectBoard, hash);
+        chessBoard::Move best_move = mov[0];
+        //auto moves = helpers::remove_move_repetition(mov, b, ai::meta.vectBoard, hash);
         /*if (moves.empty())
             return INT32_MIN + 1;*/
-        auto sorted_moves = ordering::moves_set_values(moves, std::nullopt, depth, hash);
+        auto sorted_moves = ordering::moves_set_values(mov, std::nullopt, depth, hash);
         output_vect.push_back(sorted_moves[0].second);
         int score = 0;
         for (const auto &move : sorted_moves)
         {
-            auto cpy = helpers::copy_board(b);
+            auto cpy = b;
             const uint64 &next_hash = cpy.apply_move(move.second, colo_act, hash);
-
+            ai::meta.treefold.push(next_hash);
             if (foundpv)
             {
                 score = -alphabeta(cpy, inv_color, depth - 1, -alpha - 1, -alpha, move.second, actual_vect,
@@ -74,7 +50,7 @@ namespace ai::search
                 score = -alphabeta(cpy, inv_color, depth - 1, -beta, -alpha, move.second, actual_vect,
                                    next_hash);
             }
-            //b.revert_move(move.second, colo_act);
+            ai::meta.treefold.pop();
             if (score >= beta)
             {
                 output_vect[0] = move.second;
@@ -129,6 +105,13 @@ namespace ai::search
                   chessBoard::MOVES_T &prev_vect_move,
                   uint64 hash)
     {
+
+        if (b.half_move_count_ >= 100)
+            return 0;
+        if (b.half_move_count_ >= 2 && meta.treefold.is_treefold(hash))
+        {
+            return 0;
+        }
         // Out of time
         if (!meta.running)
             return 0;
@@ -174,9 +157,10 @@ namespace ai::search
         for (const auto &move : sorted_moves)
         {
 
-            auto cpy = helpers::copy_board(b);
+            //auto cpy = helpers::copy_board(b);
+            auto cpy = b;
             uint64 next_hash = cpy.apply_move(move.second, colo_act, hash);
-
+            ai::meta.treefold.push(next_hash);
             if (foundpv)
             {
                 score = -alphabeta(cpy, inv_color, depth - 1, -alpha - 1, -alpha, move.second, actual_vect,
@@ -192,7 +176,7 @@ namespace ai::search
                 score = -alphabeta(cpy, inv_color, depth - 1, -beta, -alpha, move.second, actual_vect,
                                    next_hash);
             }
-
+            ai::meta.treefold.pop();
             //b.revert_move(move.second, colo_act);
             if (score >= beta)
             {

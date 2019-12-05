@@ -92,14 +92,22 @@ namespace ai
 
     bool TreefoldStack::is_treefold(uint64 hash)
     {
-        for (int i = stack_index-1; i >= 0; i--) {
-            if (stack[i] == hash) {
-                if (i <= root_index) {
-                    for (int j = i-1; j >= 0; j--) {
-                        if (stack[j] == hash) return true;
+        for (int i = stack_index-1; i >= 0; i--)
+        {
+            if (stack[i] == hash)
+            {
+                //if (i <= root_index)
+                {
+                    for (int j = i-1; j >= 0; j--)
+                    {
+                        if (stack[j] == hash)
+                            return true;
                     }
                 }
-                else return true;
+                /*else
+                {
+                    return true;
+                }*/
             }
         }
         return false;
@@ -124,6 +132,6 @@ namespace ai
 
     void TreefoldStack::set_root_index()
     {
-        root_index = stack_index--;
+        root_index = stack_index - 1;
     }
 }

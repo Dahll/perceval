@@ -38,8 +38,8 @@ namespace ai
         /* Core option*/
 
         /* Treefold and 50 moves repetition */
+        TreefoldStack treefold = TreefoldStack();
         std::vector<std::pair<uint64, int>> vectBoard = std::vector<std::pair<uint64, int>>{};
-        uint8 fiftymoves = 0;
 
 
 
@@ -49,7 +49,7 @@ namespace ai
 
         // Board info
         chessBoard::Board boardM = chessBoard::Board();
-        int hash = 0;
+        uint64 hash = 0;
         chessBoard::Move best_move = chessBoard::Move();
 
 

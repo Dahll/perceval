@@ -12,6 +12,7 @@
 
 namespace ai::helpers
 {
+    void add_padding_move(std::vector<chessBoard::Move>& vect, int len);
     void swap_vector_values(std::vector<chessBoard::Move>& vect);
     bool board_is_false(const std::vector<chessBoard::Board>& vecBoard, const std::vector<int>& vecint, const chessBoard::Board& act_board);
     chessBoard::Board copy_board(const chessBoard::Board& b);
