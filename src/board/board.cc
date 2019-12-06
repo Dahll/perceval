@@ -8,7 +8,7 @@
 #include <stock.hh>
 #include <strings.h>
 #include <board.hh>
-#include <x86intrin.h>
+//#include <x86intrin.h>
 
 
 namespace chessBoard
@@ -471,7 +471,7 @@ namespace chessBoard
 
     int uint64_to_index(uint64 pos)
     {
-        return ffsll(pos) - 1;
+        return __builtin_ffsll(pos) - 1;
     }
 
     int Board::moves_count()
@@ -1088,10 +1088,10 @@ namespace chessBoard
         return ret;
     }
 
-    int Board::get_current_pieces_count() const
+    /*int Board::get_current_pieces_count() const
     {
         return _popcnt64(pieceBB[nWhite] | pieceBB[nBlack]);
-    }
+    }*/
 
     int Board::get_current_captures_count() const
     {
