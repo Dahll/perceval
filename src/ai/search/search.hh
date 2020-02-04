@@ -11,7 +11,7 @@
 
 #include "../transposition_table.hh"
 #include "../evaluation/evaluation.hh"
-#include "perft.hh"
+#include "../../perft/perft.hh"
 #include "stock.hh"
 #include "../helpers/helper.hh"
 #include "../uci.hh"

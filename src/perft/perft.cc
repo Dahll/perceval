@@ -60,27 +60,16 @@ namespace Perft
 
     uint64 Perft::calculate()
     {
-        // FIXME
         if (!depth)
             return 1;
-
         uint64 n = 0;
-     //   Board nb = copy_board(b);
         auto vect = b.generate_moves(b.color);
-   //     if (!cmp_boards(nb, b)) {
-     //       std::cout << b.to_perft() << std::endl
-       //               << nb.to_perft() << std::endl;
-         //   b.print();
-           // nb.print();
-        //}
         if (vect.empty())
             return 0;
         for (const auto& m : vect)
         {
- //           Board kb = copy_board(b);
             uint64 h = 0;
             b.apply_move(m, b.color, h);
-       //     Board nb = copy_board(b);
             b.switch_color();
             --depth;
             uint64 i = calculate();
@@ -88,16 +77,7 @@ namespace Perft
             ++depth;
             b.switch_color();
             b.revert_move(m, b.color);
- /*           if (!cmp_boards(kb, b)) {
-                m.print();
-                std::cout << b.to_perft() << std::endl
-                          << kb.to_perft() << std::endl;
-                b.print();
-                kb.print();
-            }*/
         }
-       // if (!cmp_boards(nb, b))
-     //       std::cout << "test2" << std::endl;
         return n;
     }
 

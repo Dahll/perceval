@@ -3,7 +3,7 @@
 //
 
 #include "ai/uci.hh"
-#include "perft.hh"
+#include "perft/perft.hh"
 #include <boost/program_options.hpp>
 #include <iostream>
 #include "adapter/adapter.hh"
