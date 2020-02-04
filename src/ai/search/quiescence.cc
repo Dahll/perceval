@@ -36,7 +36,7 @@ namespace ai::search
             //auto cpy = helpers::copy_board(b);
             auto cpy = b;
             const uint64& next_hash = cpy.apply_move(move.second, color_act, hash);
-            ai::meta.treefold.push(next_hash);
+            ai::meta.treefold.push(hash);
             const int& score = -quiesce(cpy, inv_color, -beta, -alpha, move.second, next_hash);
             ai::meta.treefold.pop();
             //b.revert_move(move.second, color_act);

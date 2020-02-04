@@ -7,9 +7,6 @@
 #include <move.hh>
 #include "board.hh"
 
-#define BASE_TIME 5 /* 5 */
-
-
 namespace ai
 {
     class TreefoldStack

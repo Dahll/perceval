@@ -7,6 +7,7 @@
 #include <boost/program_options.hpp>
 #include <iostream>
 #include <adapter.hh>
+#include "magic/magic.hh"
 
 using namespace boost::program_options;
 using Listeners = std::vector<std::string>;
@@ -17,6 +18,7 @@ int main(int argc, const char *argv[])
 
     // FIXME en passant/pion avancer de 2 et revert tout ca
     // FIXME draws 50 half move rule/3 times sqme board
+    fill_magic();
     try
     {
         Listeners listeners;

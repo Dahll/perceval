@@ -1,7 +1,7 @@
 //
 // Created by adrien on 20/11/19.
 //
-
+#include "iostream"
 #include "metadata.hh"
 
 namespace ai
@@ -92,11 +92,13 @@ namespace ai
 
     bool TreefoldStack::is_treefold(uint64 hash)
     {
-        for (int i = stack_index-1; i >= 0; i--)
+        for (int i = stack_index - 1; i >= 0; i--)
         {
             if (stack[i] == hash)
             {
-                //if (i <= root_index)
+                return true;
+                // FIXME
+                if (i <= root_index)
                 {
                     for (int j = i-1; j >= 0; j--)
                     {
@@ -104,10 +106,10 @@ namespace ai
                             return true;
                     }
                 }
-                /*else
+                else
                 {
                     return true;
-                }*/
+                }
             }
         }
         return false;

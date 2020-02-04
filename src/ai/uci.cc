@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <thread>
+#include <sstream>
 
 using namespace std;
 

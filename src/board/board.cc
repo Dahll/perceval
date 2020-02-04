@@ -2,7 +2,7 @@
 // Created by fouche_r on 5/16/19.
 //
 
-#include "generate.hh"
+//#include "../magic/generate.hh"
 #include "chessBoard.hh"
 #include "pieces.hh"
 #include <stock.hh>
@@ -542,6 +542,7 @@ namespace chessBoard
     {
         uint64 king = pos;
         int index = ffsll(king);
+        const uint64 occ = (pieceBB[0] | pieceBB[1]);
         enumPiece no_color = other_color(color_);
 
         // Check for knight
@@ -556,16 +557,18 @@ namespace chessBoard
 
         // check for tower + queen tower
         const uint64 tower_pos = (pieceBB[5] & pieceBB[no_color]) | (pieceBB[6] & pieceBB[no_color]);
-        const int pos_magique_tower = ((tower_move[index] & (pieceBB[0] | pieceBB[1])) * magic_number_tower[index]) >> 52ull;
-        if ((tower_output[index][pos_magique_tower] & tower_pos) != 0)
+        //const int pos_magique_tower = ((tower_move[index] & (pieceBB[0] | pieceBB[1])) * magic_number_tower[index]) >> 52ull;
+        //if ((tower_output[index][pos_magique_tower] & tower_pos) != 0)
+        if ((rookAttacks(occ, index) & tower_pos) != 0)
         {
             return true;
         }
 
         // check for bishop  + queen bishop
         const uint64 bishop_pos = (pieceBB[4] & pieceBB[no_color]) | (pieceBB[6] & pieceBB[no_color]);
-        const int pos_magique_bishop = (((pieceBB[0] | pieceBB[1]) & bishop_move[index]) * magic_number_bishop[index]) >> 52ull;
-        if ((bishop_output[index][pos_magique_bishop] & bishop_pos) != 0)
+        //const int pos_magique_bishop = (((pieceBB[0] | pieceBB[1]) & bishop_move[index]) * magic_number_bishop[index]) >> 52ull;
+        //if ((bishop_output[index][pos_magique_bishop] & bishop_pos) != 0)
+        if ((bishopAttacks(occ, index) & bishop_pos) != 0)
         {
             return true;
         }
@@ -593,7 +596,7 @@ namespace chessBoard
     {
         uint64 king = pos;
         int index = ffsll(king);
-
+        const uint64 occ = pieceBB[0] | pieceBB[1];
         uint64 i = 0;
 
         // Check for knight
@@ -614,8 +617,9 @@ namespace chessBoard
         }
         // check for tower + queen tower
         const uint64 tower_pos = (pieceBB[5] & pieceBB[no_color]);
-        const int pos_magique_tower = ((tower_move[index] & (pieceBB[0] | pieceBB[1])) * magic_number_tower[index]) >> 52ull;
-        uint64 tower_mask = tower_output[index][pos_magique_tower] & tower_pos;
+        //const int pos_magique_tower = ((tower_move[index] & (pieceBB[0] | pieceBB[1])) * magic_number_tower[index]) >> 52ull;
+        //uint64 tower_mask = tower_output[index][pos_magique_tower] & tower_pos;
+        uint64 tower_mask = rookAttacks(occ, index) & tower_pos;
         while ((i = split_pos(tower_mask)) != 0)
         {
             add_move(no_color, moves,
@@ -624,8 +628,9 @@ namespace chessBoard
         }
         // check for bishop  + queen bishop
         const uint64 bishop_pos = (pieceBB[4] & pieceBB[no_color]);
-        const int pos_magique_bishop = (((pieceBB[0] | pieceBB[1]) & bishop_move[index]) * magic_number_bishop[index]) >> 52ull;
-        uint64 bishop_mask = bishop_output[index][pos_magique_bishop] & bishop_pos;
+        //const int pos_magique_bishop = (((pieceBB[0] | pieceBB[1]) & bishop_move[index]) * magic_number_bishop[index]) >> 52ull;
+        //uint64 bishop_mask = bishop_output[index][pos_magique_bishop] & bishop_pos;
+        uint64 bishop_mask = bishopAttacks(occ, index) & bishop_pos;
         while ((i = split_pos(bishop_mask)) != 0)
         {
             add_move(no_color, moves,
@@ -634,8 +639,9 @@ namespace chessBoard
         }
         // check queen_tower
         const uint64 queen_tower_pos = (pieceBB[6] & pieceBB[no_color]);
-        const int queen_pos_magique_tower = ((tower_move[index] & (pieceBB[0] | pieceBB[1])) * magic_number_tower[index]) >> 52ull;
-        uint64 queen_tower_mask = tower_output[index][queen_pos_magique_tower] & queen_tower_pos;
+        //const int queen_pos_magique_tower = ((tower_move[index] & (pieceBB[0] | pieceBB[1])) * magic_number_tower[index]) >> 52ull;
+        //uint64 queen_tower_mask = tower_output[index][queen_pos_magique_tower] & queen_tower_pos;
+        uint64 queen_tower_mask = rookAttacks(occ, index) & queen_tower_pos;
         while ((i = split_pos(queen_tower_mask)) != 0)
         {
             add_move(no_color, moves,
@@ -644,8 +650,9 @@ namespace chessBoard
         }
         // check queen_bishop
         const uint64 queen_bishop_pos = (pieceBB[6] & pieceBB[no_color]);
-        const int queen_pos_magique_bishop = (((pieceBB[0] | pieceBB[1]) & bishop_move[index]) * magic_number_bishop[index]) >> 52ull;
-        uint64 queen_bishop_mask = bishop_output[index][queen_pos_magique_bishop] & queen_bishop_pos;
+        //const int queen_pos_magique_bishop = (((pieceBB[0] | pieceBB[1]) & bishop_move[index]) * magic_number_bishop[index]) >> 52ull;
+        //uint64 queen_bishop_mask = bishop_output[index][queen_pos_magique_bishop] & queen_bishop_pos;
+        uint64 queen_bishop_mask = bishopAttacks(occ, index) & queen_bishop_pos;
         while ((i = split_pos(queen_bishop_mask)) != 0)
         {
             add_move(no_color, moves,
@@ -719,7 +726,7 @@ namespace chessBoard
         uint64 king = pieceBB[7] & pieceBB[color_];
         int index = ffsll(king);
         enumPiece no_color = other_color(color_);
-
+        const uint64 occ = pieceBB[0] | pieceBB[1];
         // Check for knight
         if ((knight_move[index] & (pieceBB[3] & pieceBB[no_color])) != 0)
         {
@@ -733,16 +740,18 @@ namespace chessBoard
 
         // check for tower + queen tower
         const uint64 tower_pos = (pieceBB[5] & pieceBB[no_color]) | (pieceBB[6] & pieceBB[no_color]);
-        const int pos_magique_tower = ((tower_move[index] & (pieceBB[0] | pieceBB[1])) * magic_number_tower[index]) >> 52ull;
-        if ((tower_output[index][pos_magique_tower] & tower_pos) != 0)
+        //const int pos_magique_tower = ((tower_move[index] & (pieceBB[0] | pieceBB[1])) * magic_number_tower[index]) >> 52ull;
+        //if ((tower_output[index][pos_magique_tower] & tower_pos) != 0)
+        if ((rookAttacks(occ, index) & tower_pos) != 0)
         {
             return true;
         }
 
         // check for bishop  + queen bishop
         const uint64 bishop_pos = (pieceBB[4] & pieceBB[no_color]) | (pieceBB[6] & pieceBB[no_color]);
-        const int pos_magique_bishop = (((pieceBB[0] | pieceBB[1]) & bishop_move[index]) * magic_number_bishop[index]) >> 52ull;
-        if ((bishop_output[index][pos_magique_bishop] & bishop_pos) != 0)
+        //const int pos_magique_bishop = (((pieceBB[0] | pieceBB[1]) & bishop_move[index]) * magic_number_bishop[index]) >> 52ull;
+        //if ((bishop_output[index][pos_magique_bishop] & bishop_pos) != 0)
+        if ((bishopAttacks(occ, index) & bishop_pos) != 0)
         {
             return true;
         }

@@ -4,7 +4,7 @@
 
 #include "stock.hh"
 #include "board.hh"
-#include "generate.hh"
+//#include "../magic/generate.hh"
 #include <strings.h>
 
 namespace chessBoard {
@@ -29,11 +29,15 @@ namespace chessBoard {
                                         MOVES_T &vec) const
     {
         uint64 mask = pieceBB[nRook] & pieceBB[color_];
+        const uint64 occ = pieceBB[0] | pieceBB[1];
         int i = 0;
         while ((i = split_index(mask)) != 0) {
-            const uint64& relevant_mask = tower_move[i] & (pieceBB[0] | pieceBB[1]);
-            const uint64& index = (magic_number_tower[i] * relevant_mask) >> 52ull;
-            uint64 temp = tower_output[i][index];
+            //const uint64& relevant_mask = tower_move[i] & (pieceBB[0] | pieceBB[1]);
+            //const uint64& index = (magic_number_tower[i] * relevant_mask) >> 52ull;
+            //uint64 temp = tower_output[i][index];
+
+            uint64 temp = rookAttacks(occ, i);
+
             temp = (temp & pieceBB[color_]) ^ temp;
             uint64 temp_cap = temp & pieceBB[other_color(color_)];
 
@@ -46,12 +50,16 @@ namespace chessBoard {
                                          MOVES_T &vec) const
     {
         uint64 mask = pieceBB[nBishop] & pieceBB[color_];
+        const uint64 occ = pieceBB[0] | pieceBB[1];
         int i = 0;
         while ((i = split_index(mask)) != 0)
         {
-            const uint64& relevant_mask = bishop_move[i] & (pieceBB[0] | pieceBB[1]);
-            const uint64& index = (magic_number_bishop[i] * relevant_mask) >> 52ull;
-            uint64 temp = bishop_output[i][index];
+            //const uint64& relevant_mask = bishop_move[i] & (pieceBB[0] | pieceBB[1]);
+            //const uint64& index = (magic_number_bishop[i] * relevant_mask) >> 52ull;
+            //uint64 temp = bishop_output[i][index];
+
+            uint64 temp = bishopAttacks(occ, i);
+
             temp = (temp & pieceBB[color_]) ^ temp;
             uint64 temp_cap = temp & pieceBB[other_color(color_)];
 
@@ -78,15 +86,19 @@ namespace chessBoard {
                                         MOVES_T &vec) const
     {
         uint64 queen = pieceBB[6] & pieceBB[color_];
+        const uint64 occ = pieceBB[0] | pieceBB[1];
         int i = 0;
         while ((i = split_index(queen)) != 0)
         {
-            const uint64& relevant_diagonals = bishop_move[i] & (pieceBB[0] | pieceBB[1]);
+            /*const uint64& relevant_diagonals = bishop_move[i] & (pieceBB[0] | pieceBB[1]);
             const uint64& index_diagonals = (magic_number_bishop[i] * relevant_diagonals) >> 52ull;
             const uint64& relevant_lignes = tower_move[i] & (pieceBB[0] | pieceBB[1]);
             const uint64& index_lignes = (magic_number_tower[i] * relevant_lignes) >> 52ull;
 
-            uint64 temp = tower_output[i][index_lignes] | bishop_output[i][index_diagonals];
+            uint64 temp = tower_output[i][index_lignes] | bishop_output[i][index_diagonals];*/
+
+            uint64 temp = rookAttacks(occ, i) | bishopAttacks(occ, i);
+
             temp = (temp & pieceBB[color_]) ^ temp;
             uint64 temp_cap = temp & pieceBB[other_color(color_)];
 

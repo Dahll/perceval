@@ -6,6 +6,13 @@
 #include <stock.hh>
 #include <pgn-parser.hh>
 #include <map>
+#include <iostream>
+#include <string>
+#include <vector>
+#include <array>
+#include <fstream>
+
+//#include "sstream"
 #include "move.hh"
 
 namespace chessBoard

@@ -42,13 +42,13 @@ target_sources(chessengine PRIVATE
         src/adapter/convertion.cc
         src/adapter/listenerCalls.cc
         src/main.cc
-        src/magic/generate.cc
         src/ai/evaluation/evaluation.cc
         src/ai/search/min_max.cc
         src/board/moves_capture.cc
         src/board/moves_capture.cc
         src/ai/evaluation/move_ordering.cc
         src/ai/transposition_table.cc
+        src/magic/magic.cc
 )
 
 target_include_directories(chessengine

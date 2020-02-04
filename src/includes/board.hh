@@ -8,7 +8,9 @@
 #include "move.hh"
 #include "position.hh"
 #include "chessBoard.hh"
-#include "generate.hh"
+//#include "../magic/generate.hh"
+#include "../magic/magic.hh"
+#include <iostream>
 #include <vector>
 #include <optional>
 /*

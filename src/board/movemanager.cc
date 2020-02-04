@@ -3,7 +3,7 @@
 //
 
 #include "board.hh"
-#include "generate.hh"
+//#include "../magic/generate.hh"
 #include "stock.hh"
 #include <strings.h>
 
@@ -184,11 +184,13 @@ namespace chessBoard
     void Board::get_tower_move(const enumPiece& color_, std::vector<Move>& vec) const
     {
         uint64 mask = pieceBB[5] & pieceBB[color_];
+        const uint64 occ = pieceBB[0] | pieceBB[1];
         int i = 0;
         while ((i = split_index(mask)) != 0) {
-            const uint64 &relevant_mask = tower_move[i] & (pieceBB[0] | pieceBB[1]);
-            const uint64 &index = (magic_number_tower[i] * relevant_mask) >> 52ull;
-            uint64 temp = tower_output[i][index];
+            //const uint64 &relevant_mask = tower_move[i] & (pieceBB[0] | pieceBB[1]);
+            //const uint64 &index = (magic_number_tower[i] * relevant_mask) >> 52ull;
+            //uint64 temp = tower_output[i][index];
+            uint64 temp = rookAttacks(occ, i);
             temp = (temp & pieceBB[color_]) ^ temp;
             //print();
             //std::cout << std::endl << int_to_string(temp) << std::endl;
@@ -207,13 +209,15 @@ namespace chessBoard
     void Board::get_bishop_move(const enumPiece& color_, std::vector<Move>& vec) const
     {
         uint64 mask = pieceBB[4] & pieceBB[color_];
+        const uint64 occ = pieceBB[0] | pieceBB[1];
         int i = 0;
         //std::cout << std::endl << int_to_string(mask) << std::endl;
         while ((i = split_index(mask)) != 0)
         {
-            const uint64& relevant_mask = bishop_move[i] & (pieceBB[0] | pieceBB[1]);
-            const uint64& index = (magic_number_bishop[i] * relevant_mask) >> 52ull;
-            uint64 temp = bishop_output[i][index];
+            //const uint64& relevant_mask = bishop_move[i] & (pieceBB[0] | pieceBB[1]);
+            //const uint64& index = (magic_number_bishop[i] * relevant_mask) >> 52ull;
+            //uint64 temp = bishop_output[i][index];
+            uint64 temp = bishopAttacks(occ, i);
             //std::cout << std::endl << int_to_string(temp) << std::endl <<i << std::endl << index << std::endl;
             temp = (temp & pieceBB[color_]) ^ temp;
             //std::cout << std::endl << int_to_string(relevant_mask) << std::endl << relevant_mask << std::endl;
@@ -321,15 +325,20 @@ namespace chessBoard
     void Board::get_queen_move(const enumPiece& color_, std::vector<Move>& vec) const
     {
         uint64 queen = pieceBB[6] & pieceBB[color_];
+        const uint64 occ = pieceBB[0] | pieceBB[1];
         int i = 0;
         while ((i = split_index(queen)) != 0) {
-            const uint64 &relevant_diagonals = bishop_move[i] & (pieceBB[0] | pieceBB[1]);
+            /*const uint64 &relevant_diagonals = bishop_move[i] & (pieceBB[0] | pieceBB[1]);
             const uint64 &index_diagonals = (magic_number_bishop[i] * relevant_diagonals) >> 52ull;
+
             const uint64 &relevant_lignes = tower_move[i] & (pieceBB[0] | pieceBB[1]);
             const uint64 &index_lignes = (magic_number_tower[i] * relevant_lignes) >> 52ull;
 
-            uint64 temp = tower_output[i][index_lignes] | bishop_output[i][index_diagonals];
+            uint64 temp = tower_output[i][index_lignes] | bishop_output[i][index_diagonals];*/
             //std::cout << std::endl << int_to_string(relevant_lignes) << std::endl;
+
+            uint64 temp = rookAttacks(occ, i) | bishopAttacks(occ, i);
+
             temp = (temp & pieceBB[color_]) ^ temp;
             //std::cout << std::endl << int_to_string(temp) << std::endl;
             const enumPiece notcolor = other_color(color_);

@@ -15,8 +15,9 @@ namespace ai::search
         int i = 1;
 
         const auto& start = system_clock::now();
-
+        std::cout << "TIME | DEPTH | MOVE" << std::endl;
         transposition_table::tt_search.increment_age();
+        //ai::transposition_table::tt_search.reset();
 
         /* Setup input_vect */
         input_vect = std::vector<chessBoard::Move>();
@@ -29,6 +30,7 @@ namespace ai::search
         bool winning_move = false;
         while (true)
         {
+
             auto tmp_move = caller_alphabeta(meta.boardM, i, output_vect, meta.hash, winning_move);
             if (!ai::meta.running)
                 break;
@@ -44,7 +46,7 @@ namespace ai::search
             output_vect.resize(0);
 
             /// This prints the time spend for this depth
-            std::cout << duration_cast<milliseconds>(system_clock::now()-start).count() << std::endl;
+            std::cout << duration_cast<milliseconds>(system_clock::now()-start).count() << " | " << i << " | " << move.to_str() << std::endl;
             if (winning_move)
             {
                 break;

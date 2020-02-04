@@ -30,6 +30,7 @@ namespace ai::transposition_table
         void update(const chessBoard::Move& move, int score, int depth, uint64 hash, int is_cut_off) noexcept ;
         Data& find(uint64 hash) noexcept;
         void increment_age() noexcept;
+        void reset();
 
     private:
         std::vector<Data> TT_;

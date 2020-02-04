@@ -46,6 +46,14 @@ namespace ai::transposition_table
         age_++;
     }
 
+    void TT::reset()
+    {
+        for (auto &a : TT_)
+        {
+            a = Data();
+        }
+    }
+
     Data::Data()
     {
         depth_ = -1;
