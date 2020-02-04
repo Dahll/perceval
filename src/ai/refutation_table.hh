@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "board.hh"
+#include "../board/board.hh"
 
 namespace ai::refutation_table
 {

@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "board.hh"
+#include "../board/board.hh"
 namespace chessBoard
 {
     using Piece = chessBoard::enumPiece;

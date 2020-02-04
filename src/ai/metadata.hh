@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include <move.hh>
-#include "board.hh"
+#include "../board/move.hh"
+#include "../board/board.hh"
 
 namespace ai
 {

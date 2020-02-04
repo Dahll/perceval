@@ -3,8 +3,8 @@
 //
 
 #include "stock.hh"
-#include "convertion.hh"
-#include "board.hh"
+#include "../../adapter/convertion.hh"
+#include "../../board/board.hh"
 
 #ifndef FOUCHE_R_CHESS_HELPER_HH
 #define FOUCHE_R_CHESS_HELPER_HH

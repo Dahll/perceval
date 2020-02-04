@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include "board.hh"
+#include "../board/board.hh"
 #include "listener.hh"
 #include "pgn-move.hh"
-#include "move.hh"
+#include "../board/move.hh"
 #include "chessboard-interface.hh"
 
 namespace adapter

@@ -3,7 +3,7 @@
 //
 
 #include "perft.hh"
-#include "convertion.hh"
+#include "../adapter/convertion.hh"
 #include "stock.hh"
 #include <fstream>
 #include <strings.h>

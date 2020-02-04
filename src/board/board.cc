@@ -7,7 +7,7 @@
 #include "pieces.hh"
 #include <stock.hh>
 #include <strings.h>
-#include <board.hh>
+#include "board.hh"
 //#include <x86intrin.h>
 
 

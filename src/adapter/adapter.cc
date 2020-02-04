@@ -6,7 +6,7 @@
 #include "convertion.hh"
 #include "listenerCalls.hh"
 #include <dlfcn.h>
-#include <pgn-parser.hh>
+#include "pgn-parser.hh"
 #include <optional>
 
 namespace adapter

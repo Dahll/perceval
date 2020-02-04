@@ -6,7 +6,7 @@
 #include "perft.hh"
 #include <boost/program_options.hpp>
 #include <iostream>
-#include <adapter.hh>
+#include "adapter/adapter.hh"
 #include "magic/magic.hh"
 
 using namespace boost::program_options;

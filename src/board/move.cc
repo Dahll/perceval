@@ -4,7 +4,7 @@
 
 #include <strings.h>
 #include <stock.hh>
-#include <pgn-parser.hh>
+#include "../adapter/pgn-parser.hh"
 #include <map>
 #include <iostream>
 #include <string>

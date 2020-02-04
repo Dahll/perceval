@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "board.hh"
-#include "pgn-parser.hh"
+#include "../board/board.hh"
+#include "../adapter/pgn-parser.hh"
 #include "chessBoard.hh"
 #include <string>
 

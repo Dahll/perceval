@@ -4,8 +4,8 @@
 #include <string>
 #include <fnmatch.h>
 #include <iostream>
-#include <pgn-parser.hh>
-#include <convertion.hh>
+#include "../adapter/pgn-parser.hh"
+#include "../adapter/convertion.hh"
 #include <fstream>
 #include <ios>
 #include <iostream>

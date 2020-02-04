@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "board.hh"
+#include "../board/board.hh"
 #include <unordered_map>
 
 namespace ai::transposition_table

@@ -7,7 +7,7 @@
 #include "chessBoard.hh"
 #include "listener.hh"
 #include "pgn-move.hh"
-#include "move.hh"
+#include "../board/move.hh"
 #include "chessboard-interface.hh"
 
 

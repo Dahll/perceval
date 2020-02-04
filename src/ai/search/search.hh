@@ -15,7 +15,7 @@
 #include "stock.hh"
 #include "../helpers/helper.hh"
 #include "../uci.hh"
-#include "board.hh"
+#include "../../board/board.hh"
 #include "../refutation_table.hh"
 #include "../metadata.hh"
 
