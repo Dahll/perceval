@@ -34,7 +34,7 @@ namespace ai::search
         {
             auto cpy = b;
             const uint64 &next_hash = cpy.apply_move(move.second, colo_act, hash);
-            ai::meta.treefold.push(next_hash);
+            ai::meta.treefold.push(hash);
             if (foundpv)
             {
                 score = -alphabeta(cpy, inv_color, depth - 1, -alpha - 1, -alpha, move.second, actual_vect,
