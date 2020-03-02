@@ -28,8 +28,10 @@ namespace chessBoard
             const INDEX_T& index, std::vector<Move>& vec) const
     {
         uint64 j = 0;
-        while ((j = split_pos(captures_pos)) != 0)
+        while (captures_pos != 0)
         {
+            j = 1ull << (__builtin_ctzll(captures_pos));
+            captures_pos &= captures_pos - 1;
             enumPiece enup;
             if ((j & pieceBB[2]) != 0)
             {
@@ -68,8 +70,10 @@ namespace chessBoard
     {
 
         uint64 j = 0;
-        while ((j = split_pos(destination_pos)) != 0)
+        while (destination_pos != 0)
         {
+            j = 1ull << (__builtin_ctzll(destination_pos));
+            destination_pos &= destination_pos - 1;
             add_move(color_, vec,
                      { tab_pos[index], j, type, std::nullopt, std::nullopt,
                        false, false,
@@ -84,8 +88,10 @@ namespace chessBoard
             const INDEX_T& index, MOVES_T& vec) const
     {
         uint64 j = 0;
-        while ((j = split_pos(captures_pos)) != 0)
+        while (captures_pos != 0)
         {
+            j = 1ull << (__builtin_ctzll(captures_pos));
+            captures_pos &= captures_pos - 1;
             enumPiece enup;
             if ((j & pieceBB[2]) != 0)
             {
@@ -137,8 +143,10 @@ namespace chessBoard
             const INDEX_T& index, std::vector<Move>& vec) const
     {
         uint64 j = 0;
-        while ((j = split_pos(destination_pos)) != 0)
+        while (destination_pos != 0)
         {
+            j = 1ull << (__builtin_ctzll(destination_pos));
+            destination_pos &= destination_pos - 1;
             const auto move = Move(tab_pos[index], j,
                                    type,
                                    std::nullopt,
@@ -165,8 +173,10 @@ namespace chessBoard
     {
         uint64 mask = pieceBB[3] & pieceBB[color_];
         int i = 0;
-        while ((i = split_index(mask)) != 0)
+        while (mask != 0)
         {
+            i = __builtin_ctzll(mask) + 1;
+            mask &= mask - 1;
             const uint64& move = knight_move[i];
             const enumPiece notcolor = other_color(color_);
             const uint64 temp = ((move ^ pieceBB[color_]) & move);
@@ -186,7 +196,9 @@ namespace chessBoard
         uint64 mask = pieceBB[5] & pieceBB[color_];
         const uint64 occ = pieceBB[0] | pieceBB[1];
         int i = 0;
-        while ((i = split_index(mask)) != 0) {
+        while (mask != 0) {
+            i = __builtin_ctzll(mask) + 1;
+            mask &= mask - 1;
             //const uint64 &relevant_mask = tower_move[i] & (pieceBB[0] | pieceBB[1]);
             //const uint64 &index = (magic_number_tower[i] * relevant_mask) >> 52ull;
             //uint64 temp = tower_output[i][index];
@@ -212,8 +224,10 @@ namespace chessBoard
         const uint64 occ = pieceBB[0] | pieceBB[1];
         int i = 0;
         //std::cout << std::endl << int_to_string(mask) << std::endl;
-        while ((i = split_index(mask)) != 0)
+        while (mask != 0)
         {
+            i = __builtin_ctzll(mask) + 1;
+            mask &= mask - 1;
             //const uint64& relevant_mask = bishop_move[i] & (pieceBB[0] | pieceBB[1]);
             //const uint64& index = (magic_number_bishop[i] * relevant_mask) >> 52ull;
             //uint64 temp = bishop_output[i][index];
@@ -296,12 +310,11 @@ namespace chessBoard
     {
         // FIXME castlings
         uint64 king = pieceBB[7] & pieceBB[color_];
-        int i = split_index(king);
+        int i = __builtin_ctzll(king) + 1;
+
         const uint64& move = king_move[i];
-        //if (pieceBB[])
         const enumPiece notcolor = other_color(color_);
         const uint64 temp = ((move ^ pieceBB[color_]) & move);
-       // std::cout << std::endl << int_to_string(temp) << std::endl;
         uint64 temp_cap = temp & pieceBB[notcolor];
         uint64 temp_norm = (temp & (~pieceBB[notcolor]));
 
@@ -309,17 +322,8 @@ namespace chessBoard
         generate_captures_casts(nKing, color_, temp_cap, i, vec);
         //move normal
         generate_non_captures_casts(nKing, color_, temp_norm, i, vec);
-   //     std::cout << std::endl << "test" << std::endl;
- //       print();
         if (!player_is_check(color_))
             generate_castlings(color_, vec);
-     //   std::cout << std::endl << "test" << std::endl;
-       // print();
-  //      for (auto v : vec)
- //       {
-  //          std::cout << "test" << std::endl << int_to_string(v.from_get()) << std::endl << int_to_string(v.to_get())
-   //                   << std::endl;
-  //      }
     }
 
     void Board::get_queen_move(const enumPiece& color_, std::vector<Move>& vec) const
@@ -327,7 +331,9 @@ namespace chessBoard
         uint64 queen = pieceBB[6] & pieceBB[color_];
         const uint64 occ = pieceBB[0] | pieceBB[1];
         int i = 0;
-        while ((i = split_index(queen)) != 0) {
+        while (queen != 0) {
+            i = __builtin_ctzll(queen) + 1;
+            queen &= queen - 1;
             /*const uint64 &relevant_diagonals = bishop_move[i] & (pieceBB[0] | pieceBB[1]);
             const uint64 &index_diagonals = (magic_number_bishop[i] * relevant_diagonals) >> 52ull;
 
@@ -388,8 +394,10 @@ namespace chessBoard
         uint64 mask = attack[index] & pieceBB[other_color(color_)];
         bool is_promotion = pawn_will_promote(index, color_);
         uint64 i = 0;
-        while ((i = split_pos(mask)) != 0)
+        while (mask != 0)
         {
+            i = 1ull << (__builtin_ctzll(mask));
+            mask &= mask - 1;
             enumPiece enup;
             if ((i & pieceBB[nPawn]) != 0)
             {
@@ -454,8 +462,10 @@ namespace chessBoard
            //std::cout << int_to_string(tab_pos[index]) << std::endl << int_to_string(oui_passant) << std::endl;
         //}
         uint64 j = 0;
-        while ((j = split_pos(mask_en_passant)) != 0)
+        while (mask_en_passant != 0)
         {
+            j = 1ull << (__builtin_ctzll(mask_en_passant));
+            mask_en_passant &= mask_en_passant - 1;
             add_move(color_,vec,
                      { tab_pos[index], j, nPawn, nPawn, std::nullopt,
                        false, true,
@@ -518,8 +528,10 @@ namespace chessBoard
     {
         int i = 0;
         //std::cout << std::endl << int_to_string(mask) << std::endl;
-        while ((i = split_index(mask)) != 0)
+        while (mask != 0)
         {
+            i = __builtin_ctzll(mask) + 1;
+            mask &= mask - 1;
             generate_attack_move_pawn(color_, vec, i, attack);
             generate_classic_move_pawn(color_, vec, i, normal, jump);
         }
@@ -541,39 +553,50 @@ namespace chessBoard
 
         // check for king
         uint64 king_mask = board.pieceBB[color_] & board.pieceBB[7];
-        if ((i = split_pos(king_mask)) != 0)
+        if (king_mask != 0)
         {
+            i = 1ull << (__builtin_ctzll(king_mask));
             board.move_attack_square(moves, color_, i, nKing);
         }
         // Check for knight
         uint64 knight_mask = board.pieceBB[3] & board.pieceBB[color_];
-        while ((i = split_pos(knight_mask)) != 0)
+        while (knight_mask != 0)
         {
+            i = 1ull << (__builtin_ctzll(knight_mask));
+            knight_mask &= knight_mask - 1;
             board.move_attack_square(moves, color_, i, nKnight);
         }
         // check for tower
         uint64 tower_pos = (board.pieceBB[5] & board.pieceBB[color_]);
-        while ((i = split_pos(tower_pos)) != 0)
+        while (tower_pos != 0)
         {
+            i = 1ull << (__builtin_ctzll(tower_pos));
+            tower_pos &= tower_pos - 1;
             board.move_attack_square(moves, color_, i, nRook);
         }
         // check for bishop
         uint64 bishop_pos = (board.pieceBB[4] & board.pieceBB[color_]);
-        while ((i = split_pos(bishop_pos)) != 0)
+        while (bishop_pos != 0)
         {
+            i = 1ull << (__builtin_ctzll(bishop_pos));
+            bishop_pos &= bishop_pos - 1;
             board.move_attack_square(moves, color_, i, nBishop);
         }
         // check queen
         uint64 queen_tower_pos = (board.pieceBB[6] & board.pieceBB[color_]);
-        while ((i = split_pos(queen_tower_pos)) != 0)
+        while (queen_tower_pos != 0)
         {
+            i = 1ull << (__builtin_ctzll(queen_tower_pos));
+            queen_tower_pos &= queen_tower_pos - 1;
             board.move_attack_square(moves, color_, i, nQueen);
         }
         // check pawn
 
         uint64 mask_black_pawn = (board.pieceBB[2] & board.pieceBB[color_]);
-        while ((i = split_pos(mask_black_pawn)) != 0)
+        while (mask_black_pawn != 0)
         {
+            i = 1ull << (__builtin_ctzll(mask_black_pawn));
+            mask_black_pawn &= mask_black_pawn - 1;
             board.move_attack_square(moves, color_, i, nPawn);
         }
     }

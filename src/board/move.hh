@@ -30,7 +30,75 @@ code 	promotion 	capture 	special 1 	special 0 	kind of move         |
 15 	    1 	        1 	        1 	        1 	        queen-promo capture  |
 -----------------------------------------------------------------------------
 */
+class CMove {
 
+    CMove()
+    {
+        m_Move = 0;
+    }
+
+    CMove(uint16 from, uint16 to, uint16 flags)
+    {
+        m_Move = flags << 12u | (from << 6u) | to;
+    }
+
+    void operator=(CMove a) {m_Move = a.m_Move;}
+
+    uint8 getTo() const {return m_Move & 0x3fu;}
+
+    uint8 getFrom() const {uint8 t = m_Move >> 6u; return t & 0x3fu;}
+
+    uint8 getFlags() const {return m_Move >> 12u;}
+
+    void setTo(uint8 to) {m_Move &= 0xffc0u; m_Move |= to;}
+
+    void setFrom(uint16 from) {m_Move &= 0xf03fu; from = from << 6u; m_Move |= from;}
+
+    void setFlags(uint16 flags) {m_Move &= 0xf000u;flags = flags << 12u;m_Move |= flags;}
+
+    bool isCapture() const {return (m_Move & 0x2000u) != 0;}
+
+    bool isPromotion() const {return (m_Move & 0x1000u) != 0;}
+
+    bool isQuiet() const {uint8 t = m_Move >> 12u; return t == 0;}
+
+    bool isDoublePawnPush() const {uint8 t = m_Move >> 12u; return t == 1;}
+
+    bool isKingCastle() const {uint8 t = m_Move >> 12u; return t == 2;}
+
+    bool isQueenCastle() const {uint8 t = m_Move >> 12u; return t == 3;}
+
+    bool isSimpleCapture() const {uint8 t = m_Move >> 12u; return t == 4;}
+
+    bool isEnPassantCapture() const {uint8 t = m_Move >> 12u; return t == 5;}
+
+    bool isKnightPromotion() const {uint8 t = m_Move >> 12u; return t == 8;}
+
+    bool isBishopPromotion() const {uint8 t = m_Move >> 12u; return t == 9;}
+
+    bool isRookPromotion() const {uint8 t = m_Move >> 12u; return t == 10;}
+
+    bool isQueenPromotion() const {uint8 t = m_Move >> 12u; return t == 11;}
+
+    bool isKnightPromotionCapture() const {uint8 t = m_Move >> 12u; return t == 12;}
+
+    bool isBishopPromotionCapture() const {uint8 t = m_Move >> 12u; return t == 13;}
+
+    bool isRookPromotionCapture() const {uint8 t = m_Move >> 12u; return t == 14;}
+
+    bool isQueenPromotionCapture() const {uint8 t = m_Move >> 12u; return t == 15;}
+
+    uint16 getButterflyIndex() const {return m_Move & 0x0fffu;}
+
+    bool operator==(CMove a) const {return m_Move == a.m_Move;}
+
+    bool operator!=(CMove a) const {return m_Move != a.m_Move;}
+
+    uint16 to_int16() const {return m_Move;}
+
+protected:
+    uint16 m_Move;
+};
 
 namespace chessBoard
 {
@@ -64,7 +132,6 @@ namespace chessBoard
 
         POSITION_T to_get() const;
 
-        void castlings_set(uint64 c);
         uint64 castlings_get() const;
 
         enumPiece piece_get() const;
@@ -82,9 +149,6 @@ namespace chessBoard
         uint64 special_move_get() const;
         std::string to_str() const;
         int half_move_get() const;
-        void print() const;
-        void print(std::ofstream& ofs) const;
-        bool cmp_move(const chessBoard::Move& move2) const;
     private:
         POSITION_T from_;
         POSITION_T to_;
@@ -97,14 +161,7 @@ namespace chessBoard
         bool is_en_passant_;
         uint64 special_move_;
         uint64 castlings_;
-        int half_move_;
+        int half_move_; //supr this
     };
-
-/*    std::ofstream& operator<<(std::ofstream& os, Move& m)
-    {
-        std::string s = m.to_str();
-        os << "test";
-        return os;
-    }*/
 
 }

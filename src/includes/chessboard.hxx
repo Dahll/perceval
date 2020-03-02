@@ -3,6 +3,7 @@
 //
 
 #include <strings.h>
+#include <iostream>
 
 
 namespace chessBoard
@@ -23,21 +24,26 @@ namespace chessBoard
     }
     inline INDEX_T split_index(uint64& pBB)
     {
-        int index = ffsll(pBB);
-        uint64 pos = index_to_uint64(index);
-//        pos = pos << (index);
-        pBB ^= pos;
+        int index = __builtin_ffsll(pBB);
+        //uint64 pos = index_to_uint64(index);
+        //uint64 pos = 1 << (index);
+        //pBB ^= pos;
+        pBB &= pBB - 1;
         //// check if dereferencing an array is faster
         return index;
     }
 
     inline POSITION_T split_pos(uint64& pBB)
     {
-        int index = ffsll(pBB);
-        uint64 pos = index_to_uint64(index);
+        int index = __builtin_ffsll(pBB);
+        //uint64 pos = index_to_uint64(index);
         //       pos = pos << (index);
-        pBB = pBB ^ pos;
-        return pos;
+        //uint64 pos = (1ull << index);
+        pBB &= pBB - 1;
+        if (index == 0)
+            return 0;
+        index -= 1;
+        return 1ull << index;
     }
 
     inline POSITION_T pos_from_index(const INDEX_T& index)

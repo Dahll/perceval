@@ -286,13 +286,14 @@ namespace Perft
         for (int i = nPawn; i <= nKing; ++i)
         {
             my64 minib = b.pieceBB[i];
-            my64 pos = split_pos(minib);
-            while (pos) {
+            while (minib != 0) {
+                int index = __builtin_ctzll(minib);
+                uint64 pos = 1ull << index;
+                minib &= minib - 1;
                 if (pos & b.pieceBB[nWhite])
-                    board[ffsll(pos) - 1] = epiece_to_char[i];
+                    board[index] = epiece_to_char[i];
                 else if (pos & b.pieceBB[nBlack])
-                    board[ffsll(pos) - 1] = epiece_to_char[i] + 'a' - 'A';
-                pos = split_pos(minib);
+                    board[index] = epiece_to_char[i] + 'a' - 'A';
             }
         }
         for (int i = 0; i < 64; i++)

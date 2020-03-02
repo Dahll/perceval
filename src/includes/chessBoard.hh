@@ -49,6 +49,37 @@ namespace chessBoard {
         }
     }
 
+    constexpr uint64_t FILE_A = 0x0101010101010101;
+    constexpr uint64_t FILE_B = 0x0202020202020202;
+    constexpr uint64_t FILE_C = 0x0404040404040404;
+    constexpr uint64_t FILE_D = 0x0808080808080808;
+    constexpr uint64_t FILE_E = 0x1010101010101010;
+    constexpr uint64_t FILE_F = 0x2020202020202020;
+    constexpr uint64_t FILE_G = 0x4040404040404040;
+    constexpr uint64_t FILE_H = 0x8080808080808080;
+    constexpr uint64_t FILES[8] = {
+            0x0101010101010101, 0x0202020202020202, 0x0404040404040404,
+            0x0808080808080808, 0x1010101010101010, 0x2020202020202020,
+            0x4040404040404040, 0x8080808080808080
+    };
+    constexpr uint64_t QSIDE = 0x0F0F0F0F0F0F0F0F;
+    constexpr uint64_t KSIDE = 0xF0F0F0F0F0F0F0F0;
+    constexpr uint64_t CENTER_FILES = 0x3C3C3C3C3C3C3C3C;
+
+    constexpr uint64_t RANK_1 = 0x00000000000000FF;
+    constexpr uint64_t RANK_2 = 0x000000000000FF00;
+    constexpr uint64_t RANK_3 = 0x0000000000FF0000;
+    constexpr uint64_t RANK_4 = 0x00000000FF000000;
+    constexpr uint64_t RANK_5 = 0x000000FF00000000;
+    constexpr uint64_t RANK_6 = 0x0000FF0000000000;
+    constexpr uint64_t RANK_7 = 0x00FF000000000000;
+    constexpr uint64_t RANK_8 = 0xFF00000000000000;
+    constexpr uint64_t RANKS[8] = {
+            0x00000000000000FF, 0x000000000000FF00, 0x0000000000FF0000,
+            0x00000000FF000000, 0x000000FF00000000, 0x0000FF0000000000,
+            0x00FF000000000000, 0xFF00000000000000
+    };
+
     /* Board independent / general purpose */
     int number_piece(uint64 num);
     uint64 index_to_uint64(int index);

@@ -14,8 +14,10 @@ namespace chessBoard {
     {
         uint64 mask = pieceBB[nKnight] & pieceBB[color_];
         int i = 0;
-        while ((i = split_index(mask)) != 0)
+        while (mask != 0)
         {
+            i = __builtin_ctzll(mask) + 1;
+            mask &= mask - 1;
             const uint64& move = knight_move[i];
             const uint64 temp = ((move ^ pieceBB[color_]) & move);
             uint64 temp_cap = temp & pieceBB[other_color(color_)];
@@ -31,7 +33,9 @@ namespace chessBoard {
         uint64 mask = pieceBB[nRook] & pieceBB[color_];
         const uint64 occ = pieceBB[0] | pieceBB[1];
         int i = 0;
-        while ((i = split_index(mask)) != 0) {
+        while (mask != 0) {
+            i = __builtin_ctzll(mask) + 1;
+            mask &= mask - 1;
             //const uint64& relevant_mask = tower_move[i] & (pieceBB[0] | pieceBB[1]);
             //const uint64& index = (magic_number_tower[i] * relevant_mask) >> 52ull;
             //uint64 temp = tower_output[i][index];
@@ -52,8 +56,10 @@ namespace chessBoard {
         uint64 mask = pieceBB[nBishop] & pieceBB[color_];
         const uint64 occ = pieceBB[0] | pieceBB[1];
         int i = 0;
-        while ((i = split_index(mask)) != 0)
+        while (mask != 0)
         {
+            i = __builtin_ctzll(mask) + 1;
+            mask &= mask - 1;
             //const uint64& relevant_mask = bishop_move[i] & (pieceBB[0] | pieceBB[1]);
             //const uint64& index = (magic_number_bishop[i] * relevant_mask) >> 52ull;
             //uint64 temp = bishop_output[i][index];
@@ -73,7 +79,8 @@ namespace chessBoard {
                                        MOVES_T &vec) const
     {
         uint64 king = pieceBB[nKing] & pieceBB[color_];
-        int i = split_index(king);
+        //int i = split_index(king);
+        int i = __builtin_ctzll(king) + 1;
         const uint64& move = king_move[i];
         const uint64 temp = ((move ^ pieceBB[color_]) & move);
         uint64 temp_cap = temp & pieceBB[other_color(color_)];
@@ -88,8 +95,10 @@ namespace chessBoard {
         uint64 queen = pieceBB[6] & pieceBB[color_];
         const uint64 occ = pieceBB[0] | pieceBB[1];
         int i = 0;
-        while ((i = split_index(queen)) != 0)
+        while (queen != 0)
         {
+            i = __builtin_ctzll(queen) + 1;
+            queen &= queen - 1;
             /*const uint64& relevant_diagonals = bishop_move[i] & (pieceBB[0] | pieceBB[1]);
             const uint64& index_diagonals = (magic_number_bishop[i] * relevant_diagonals) >> 52ull;
             const uint64& relevant_lignes = tower_move[i] & (pieceBB[0] | pieceBB[1]);
@@ -111,17 +120,22 @@ namespace chessBoard {
             MOVES_T &vec) const
     {
         uint64 mask = pieceBB[nPawn] & pieceBB[color_];
-        if (color_ == nWhite)
-        {
+        if (color_ == nWhite) {
             int i = 0;
-            while ((i = split_index(mask)) != 0)
+            while (mask != 0) {
+                i = __builtin_ctzll(mask) + 1;
+                mask &= mask - 1;
                 generate_attack_move_pawn(color_, vec, i, white_pawn_attack);
+
+            }
         }
-        else
-        {
+        else {
             int i = 0;
-            while ((i = split_index(mask)) != 0)
+            while (mask != 0) {
+                i = __builtin_ctzll(mask) + 1;
+                mask &= mask - 1;
                 generate_attack_move_pawn(color_, vec, i, black_pawn_attack);
+            }
         }
     }
 

@@ -1,3 +1,5 @@
+#include <utility>
+
 //
 // Created by fouche_r on 5/16/19.
 //
@@ -81,6 +83,11 @@ namespace chessBoard
         return castlings_;
     }
 
+    int Move::half_move_get() const
+    {
+        return half_move_;
+    }
+
     std::string Move::to_str()  const
     {
         int indexfrom = ffsll(from_get());
@@ -104,75 +111,6 @@ namespace chessBoard
         return s;
     }
 
-    int Move::half_move_get() const {
-        return half_move_;
-    }
-
-    void Move::print() const
-    {
-        static const std::map<INDEX_T, const char> index_to_file{
-                {7, 'a'},
-                {6, 'b'},
-                {5, 'c'},
-                {4, 'd'},
-                {3, 'e'},
-                {2, 'f'},
-                {1, 'g'},
-                {0, 'h'},
-        };
-        static const std::map<INDEX_T, const char> index_to_rank{
-                {0, '1'},
-                {1, '2'},
-                {2, '3'},
-                {3, '4'},
-                {4, '5'},
-                {5, '6'},
-                {6, '7'},
-                {7, '8'},
-        };
-
-        std::cout << index_to_file.at((ffsll(from_get()) - 1) % 8)
-                << index_to_rank.at((ffsll(from_get()) - 1) / 8)
-                << index_to_file.at((ffsll(to_get()) - 1) % 8)
-                << index_to_rank.at((ffsll(to_get()) - 1) / 8)
-                << std::endl;
-
-    }
-
-
-    void Move::print(std::ofstream& ofs) const
-    {
-        static const std::map<INDEX_T, const char> index_to_file{
-                {7, 'a'},
-                {6, 'b'},
-                {5, 'c'},
-                {4, 'd'},
-                {3, 'e'},
-                {2, 'f'},
-                {1, 'g'},
-                {0, 'h'},
-        };
-        static const std::map<INDEX_T, const char> index_to_rank{
-                {0, '1'},
-                {1, '2'},
-                {2, '3'},
-                {3, '4'},
-                {4, '5'},
-                {5, '6'},
-                {6, '7'},
-                {7, '8'},
-        };
-
-        ofs << index_to_file.at((ffsll(from_get()) - 1) % 8)
-                  << index_to_rank.at((ffsll(from_get()) - 1) / 8)
-                  << index_to_file.at((ffsll(to_get()) - 1) % 8)
-                  << index_to_rank.at((ffsll(to_get()) - 1) / 8)
-                  << std::endl;
-
-    }
-
-
-
     Move::Move(INDEX_T from, INDEX_T to, enumPiece pieceType,
                std::optional<enumPiece> captured,
                std::optional<enumPiece> promotion,
@@ -181,8 +119,8 @@ namespace chessBoard
             from_(tab_pos[from]),
             to_(tab_pos[to]),
             pieceType_(pieceType),
-            captured_(captured),
-            promotion_(promotion),
+            captured_(std::move(captured)),
+            promotion_(std::move(promotion)),
             is_castling_(is_castling),
             is_en_passant_(is_en_passant),
             special_move_(special_move),
@@ -198,8 +136,8 @@ namespace chessBoard
             from_(from),
             to_(to),
             pieceType_(pieceType),
-            captured_(captured),
-            promotion_(promotion),
+            captured_(std::move(captured)),
+            promotion_(std::move(promotion)),
             is_castling_(is_castling),
             is_en_passant_(is_en_passant),
             special_move_(special_move),
@@ -218,8 +156,8 @@ namespace chessBoard
             from_(from),
             to_(to),
             pieceType_(pieceType),
-            captured_(captured),
-            promotion_(promotion),
+            captured_(std::move(captured)),
+            promotion_(std::move(promotion)),
             is_castling_(is_castling),
             is_en_passant_(is_en_passant),
             special_move_(special_move),
@@ -227,32 +165,6 @@ namespace chessBoard
             half_move_(half_move)
     {}
 
-    bool Move::cmp_move(const chessBoard::Move& move2) const
-    {
-        if (move2.from_get() != from_)
-        {
-            return false;
-        }
-        if (move2.to_get() != to_)
-        {
-            return false;
-        }
-        if (move2.pieceType_ != pieceType_)
-        {
-            return false;
-        }
-        if (move2.captured_piece_type_get() != captured_)
-        {
-            return false;
-        }
-        if (move2.promotion_type_get() != promotion_)
-        {
-            return false;
-        }
-        if (move2.special_move_get() != special_move_)
-        {
-            return false;
-        }
-        return move2.castlings_get() == castlings_;
-    }
+
 }
+

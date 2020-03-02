@@ -96,20 +96,28 @@ namespace ai::helpers
         for (int i = chessBoard::nPawn; i <= chessBoard::nKing; ++i)
         {
             uint64 pos = b.pieceBB[i] & b.pieceBB[nWhite];
-            while (int j = split_index(pos) != 0)
+            int j = 0;
+            while (pos != 0)
             {
+                j = __builtin_ctzll(pos) + 1;
+                pos &= pos - 1;
                 hash_value = hash_value ^ (position_value[ffsll(j) + i * 65]);
             }
             pos = b.pieceBB[i] & b.pieceBB[nBlack];
-            while (int j = split_index(pos) != 0)
+            while (pos != 0)
             {
+                j = __builtin_ctzll(pos) + 1;
+                pos &= pos - 1;
                 hash_value = hash_value ^ (position_value[ffsll(j) + (i + 6) * 65]);
             }
         }
         hash_value ^= side_to_move * (b.color == nBlack);
         uint64 castlings = b.castlings;
-        while (int i = split_index(castlings))
+        int i = 0;
+        while (castlings)
         {
+            i = __builtin_ctzll(castlings) + 1;
+            castlings &= castlings - 1;
             hash_value ^= position_value[65 + ffsll(i)];
         }
         hash_value ^= position_value[ffsll(b.special_moves)];

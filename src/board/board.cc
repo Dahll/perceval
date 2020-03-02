@@ -96,7 +96,8 @@ namespace chessBoard
         /// update castlings
         castlings = (castlings ^ casts) & castlings;
 
-        hash_board ^= position_value[65 + split_index(casts)];
+        hash_board ^= position_value[65 + __builtin_ctzll(casts) + 1];
+        casts &= casts - 1;
         hash_board ^= position_value[65 + casts];
         return hash_board;
     }
@@ -601,16 +602,19 @@ namespace chessBoard
 
         // Check for knight
         uint64 knight_mask = knight_move[index] & (pieceBB[3] & pieceBB[no_color]);
-        while ((i = split_pos(knight_mask)) != 0)
+        while (knight_mask != 0)
         {
+            i = 1ull << __builtin_ctzll(knight_mask);
+            knight_mask &= knight_mask - 1;
             add_move(no_color, moves,
                      { i, pos, nKnight, type_piece, std::nullopt, false, false,
                        special_moves, castlings, half_move_count_ });
         }
         // check for king
         uint64 king_mask = king_move[index] & (pieceBB[no_color] & pieceBB[7]);
-        if ((i = split_pos(king_mask)) != 0)
+        if (king_mask != 0)
         {
+            i = 1ull << __builtin_ctzll(king_mask);
             add_move(no_color, moves,
                      { i, pos, nKing, type_piece, std::nullopt, false, false,
                        special_moves, castlings, half_move_count_ });
@@ -620,8 +624,10 @@ namespace chessBoard
         //const int pos_magique_tower = ((tower_move[index] & (pieceBB[0] | pieceBB[1])) * magic_number_tower[index]) >> 52ull;
         //uint64 tower_mask = tower_output[index][pos_magique_tower] & tower_pos;
         uint64 tower_mask = rookAttacks(occ, index) & tower_pos;
-        while ((i = split_pos(tower_mask)) != 0)
+        while (tower_mask != 0)
         {
+            i = 1ull << __builtin_ctzll(tower_mask);
+            tower_mask &= tower_mask - 1;
             add_move(no_color, moves,
                      { i, pos, nRook, type_piece, std::nullopt, false, false,
                        special_moves, castlings, half_move_count_ });
@@ -631,8 +637,10 @@ namespace chessBoard
         //const int pos_magique_bishop = (((pieceBB[0] | pieceBB[1]) & bishop_move[index]) * magic_number_bishop[index]) >> 52ull;
         //uint64 bishop_mask = bishop_output[index][pos_magique_bishop] & bishop_pos;
         uint64 bishop_mask = bishopAttacks(occ, index) & bishop_pos;
-        while ((i = split_pos(bishop_mask)) != 0)
+        while (bishop_mask != 0)
         {
+            i = 1ull << __builtin_ctzll(bishop_mask);
+            bishop_mask &= bishop_mask - 1;
             add_move(no_color, moves,
                      { i, pos, nBishop, type_piece, std::nullopt, false, false,
                        special_moves, castlings, half_move_count_ });
@@ -642,8 +650,10 @@ namespace chessBoard
         //const int queen_pos_magique_tower = ((tower_move[index] & (pieceBB[0] | pieceBB[1])) * magic_number_tower[index]) >> 52ull;
         //uint64 queen_tower_mask = tower_output[index][queen_pos_magique_tower] & queen_tower_pos;
         uint64 queen_tower_mask = rookAttacks(occ, index) & queen_tower_pos;
-        while ((i = split_pos(queen_tower_mask)) != 0)
+        while (queen_tower_mask != 0)
         {
+            i = 1ull << __builtin_ctzll(queen_tower_mask);
+            queen_tower_mask &= queen_tower_mask - 1;
             add_move(no_color, moves,
                      { i, pos, nQueen, type_piece, std::nullopt, false, false,
                        special_moves, castlings, half_move_count_ });
@@ -653,8 +663,10 @@ namespace chessBoard
         //const int queen_pos_magique_bishop = (((pieceBB[0] | pieceBB[1]) & bishop_move[index]) * magic_number_bishop[index]) >> 52ull;
         //uint64 queen_bishop_mask = bishop_output[index][queen_pos_magique_bishop] & queen_bishop_pos;
         uint64 queen_bishop_mask = bishopAttacks(occ, index) & queen_bishop_pos;
-        while ((i = split_pos(queen_bishop_mask)) != 0)
+        while (queen_bishop_mask != 0)
         {
+            i = 1ull << __builtin_ctzll(queen_bishop_mask);
+            queen_bishop_mask &= queen_bishop_mask - 1;
             add_move(no_color, moves,
                      { i, pos, nQueen, type_piece, std::nullopt, false, false,
                        special_moves, castlings, half_move_count_ });
@@ -664,8 +676,10 @@ namespace chessBoard
         if (no_color == nBlack)
         {
             uint64  mask_black_pawn = white_pawn_attack[index] & (pieceBB[2] & pieceBB[no_color]);
-            while ((i = split_pos(mask_black_pawn)) != 0)
+            while (mask_black_pawn != 0)
             {
+                i = 1ull << __builtin_ctzll(mask_black_pawn);
+                mask_black_pawn &= mask_black_pawn - 1;
                 if ((index - 1) / 8 == 7)
                 {
                     add_move(no_color, moves,
@@ -693,8 +707,10 @@ namespace chessBoard
         else
         {
             uint64 mask_white_pawn = black_pawn_attack[index] & (pieceBB[2] & pieceBB[no_color]);
-            while ((i = split_pos(mask_white_pawn)) != 0)
+            while (mask_white_pawn != 0)
             {
+                i = 1ull << __builtin_ctzll(mask_white_pawn);
+                mask_white_pawn &= mask_white_pawn - 1;
                 if ((index - 1) / 8 == 0)
                 {
                     add_move(no_color, moves,
@@ -852,13 +868,13 @@ namespace chessBoard
         for (int i = nPawn; i <= nKing; i++)
         {
             uint64 minib = pieceBB[i];
-            uint64 pos = split_pos(minib);
-            while (pos) {
+            while (minib != 0) {
+                uint64 pos = 1ull << (__builtin_ctzll(minib));
+                minib &= minib - 1;
                 if (pos & pieceBB[nWhite])
                     board[ffsll(pos) - 1] = epiece_to_char[i];
                 else if (pos & pieceBB[nBlack])
                     board[ffsll(pos) - 1] = epiece_to_char[i] + 'a' - 'A';
-                pos = split_pos(minib);
             }
         }
         int h = 8;
