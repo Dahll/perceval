@@ -49,34 +49,34 @@ namespace chessBoard
         uint64 casts = 0;
         if (color_ == nWhite)
         {
-            king = tab_pos[4];
-            casts = tab_pos[8] | tab_pos[1];
+            king = tab_pos[3];
+            casts = tab_pos[7] | tab_pos[0];
             if (m.is_castling_queenside()) {
-                rook = tab_pos[8];
-                newking = tab_pos[6];
-                newrook = tab_pos[5];
+                rook = tab_pos[7];
+                newking = tab_pos[5];
+                newrook = tab_pos[4];
             }
             else
             {
-                rook = tab_pos[1];
-                newking = tab_pos[2];
-                newrook = tab_pos[3];
+                rook = tab_pos[0];
+                newking = tab_pos[1];
+                newrook = tab_pos[2];
             }
         }
         else
         {
-            king = tab_pos[60];
-            casts = tab_pos[64] | tab_pos[57];
+            king = tab_pos[59];
+            casts = tab_pos[63] | tab_pos[56];
             if (m.is_castling_queenside()) {
-                rook = tab_pos[64];
-                newking = tab_pos[62];
-                newrook = tab_pos[61];
+                rook = tab_pos[63];
+                newking = tab_pos[61];
+                newrook = tab_pos[60];
             }
             else
             {
-                rook = tab_pos[57];
-                newking = tab_pos[58];
-                newrook = tab_pos[59];
+                rook = tab_pos[56];
+                newking = tab_pos[57];
+                newrook = tab_pos[58];
             }
         }
         /// remove old king
@@ -124,19 +124,19 @@ namespace chessBoard
             if (m.is_promotion())
                 promotion = m.promotion_type_get();
             bool is_castling = false;
-            if (i == nKing && !(m.to_get() & king_move[ffsll(m.from_get())]))
+            if (i == nKing && !(m.to_get() & king_move[__builtin_ctzll(m.from_get())]))
             {
                 is_castling = true;
             }
 
             if (i == nPawn)
             {
-                if (opponent_piece == std::nullopt && (m.to_get() & white_pawn_attack[ffsll(m.from_get())]))
+                if (opponent_piece == std::nullopt && (m.to_get() & white_pawn_attack[__builtin_ctzll(m.from_get())]))
                 {
                     opponent_piece = nPawn;
                     is_en_passant = true;
                 }
-                else if (opponent_piece == std::nullopt && (m.to_get() & black_pawn_attack[ffsll(m.from_get())]))
+                else if (opponent_piece == std::nullopt && (m.to_get() & black_pawn_attack[__builtin_ctzll(m.from_get())]))
                 {
                     opponent_piece = nPawn;
                     is_en_passant = true;
@@ -227,7 +227,7 @@ namespace chessBoard
                 }
             }
         }
-        /// pro;otion
+        /// promotion
         if (m.is_promotion()) {
             pieceBB[m.promotion_type_get()] =
                     pieceBB[m.promotion_type_get()] | m.to_get();
@@ -247,14 +247,14 @@ namespace chessBoard
         else if (m.piece_get() == nKing)
         {
             if (color_ == nWhite) {
-                hash_board ^= position_value[65 + ffsll(tab_pos[1] & castlings)];
-                hash_board ^= position_value[65 + ffsll(castlings & tab_pos[8])];
-                castlings = ((castlings ^ tab_pos[8]) ^ tab_pos[1]) & castlings;
+                hash_board ^= position_value[65 + ffsll(tab_pos[0] & castlings)];
+                hash_board ^= position_value[65 + ffsll(castlings & tab_pos[7])];
+                castlings = ((castlings ^ tab_pos[7]) ^ tab_pos[0]) & castlings;
             }
             else {
-                hash_board ^= position_value[65 + ffsll(castlings & tab_pos[57])];
-                hash_board ^= position_value[65 + ffsll(tab_pos[64] & castlings)];
-                castlings = ((castlings ^ tab_pos[64]) ^ tab_pos[57]) & castlings;
+                hash_board ^= position_value[65 + ffsll(castlings & tab_pos[56])];
+                hash_board ^= position_value[65 + ffsll(tab_pos[63] & castlings)];
+                castlings = ((castlings ^ tab_pos[63]) ^ tab_pos[56]) & castlings;
             }
         }
         /// move the piece
@@ -277,34 +277,34 @@ namespace chessBoard
 
         if (color_ == nWhite)
         {
-            oldking = tab_pos[4];
+            oldking = tab_pos[3];
             if (m.is_castling_queenside())
             {
-                oldrook = tab_pos[8];
-                king = tab_pos[6];
-                rook = tab_pos[5];
+                oldrook = tab_pos[7];
+                king = tab_pos[5];
+                rook = tab_pos[4];
             }
             else
             {
-                oldrook = tab_pos[1];
-                king = tab_pos[2];
-                rook = tab_pos[3];
+                oldrook = tab_pos[0];
+                king = tab_pos[1];
+                rook = tab_pos[2];
             }
         }
         else
         {
-            oldking = tab_pos[60];
+            oldking = tab_pos[59];
             if (m.is_castling_queenside())
             {
-                oldrook = tab_pos[64];
-                king = tab_pos[62];
-                rook = tab_pos[61];
+                oldrook = tab_pos[63];
+                king = tab_pos[61];
+                rook = tab_pos[60];
             }
             else
             {
-                oldrook = tab_pos[57];
-                king = tab_pos[58];
-                rook = tab_pos[59];
+                oldrook = tab_pos[56];
+                king = tab_pos[57];
+                rook = tab_pos[58];
             }
         }
         /// remove king
@@ -368,7 +368,7 @@ namespace chessBoard
             if (m.captured_piece_type_get() == nRook)
                 castlings = m.castlings_get();
         }
-        /// pro;otions
+        /// promotions
         if (m.is_promotion()) {
             if (m.is_capture() && m.promotion_type_get() == m.captured_piece_type_get())
                 pieceBB[m.promotion_type_get()] = pieceBB[m.promotion_type_get()] | m.to_get();
@@ -452,10 +452,10 @@ namespace chessBoard
         add_piece(BlackRook, pos_from_index(56));
 
         castlings = 0;
-        castlings = (castlings | tab_pos[1]);
-        castlings = (castlings | tab_pos[8]);
-        castlings = (castlings | tab_pos[57]);
-        castlings = (castlings | tab_pos[64]);
+        castlings = (castlings | tab_pos[0]);
+        castlings = (castlings | tab_pos[7]);
+        castlings = (castlings | tab_pos[56]);
+        castlings = (castlings | tab_pos[63]);
         special_moves = 0;
     }
 
@@ -542,7 +542,7 @@ namespace chessBoard
     bool Board::square_is_check(const enumPiece& color_, const POSITION_T& pos) const
     {
         uint64 king = pos;
-        int index = ffsll(king);
+        int index = __builtin_ctzll(king);
         const uint64 occ = (pieceBB[0] | pieceBB[1]);
         enumPiece no_color = other_color(color_);
 
@@ -596,7 +596,7 @@ namespace chessBoard
             uint64 pos, const chessBoard::enumPiece& type_piece) const
     {
         uint64 king = pos;
-        int index = ffsll(king);
+        int index = __builtin_ctzll(king);
         const uint64 occ = pieceBB[0] | pieceBB[1];
         uint64 i = 0;
 
@@ -680,7 +680,7 @@ namespace chessBoard
             {
                 i = 1ull << __builtin_ctzll(mask_black_pawn);
                 mask_black_pawn &= mask_black_pawn - 1;
-                if ((index - 1) / 8 == 7)
+                if ((index) / 8 == 7)
                 {
                     add_move(no_color, moves,
                              { i, pos, nPawn, type_piece, nQueen, false, false,
@@ -711,7 +711,7 @@ namespace chessBoard
             {
                 i = 1ull << __builtin_ctzll(mask_white_pawn);
                 mask_white_pawn &= mask_white_pawn - 1;
-                if ((index - 1) / 8 == 0)
+                if ((index) / 8 == 0)
                 {
                     add_move(no_color, moves,
                              { i, pos, nPawn, type_piece, nQueen, false, false,
@@ -740,7 +740,7 @@ namespace chessBoard
     bool Board::player_is_check(const enumPiece& color_) const
     {
         uint64 king = pieceBB[7] & pieceBB[color_];
-        int index = ffsll(king);
+        int index = __builtin_ctzll(king);
         enumPiece no_color = other_color(color_);
         const uint64 occ = pieceBB[0] | pieceBB[1];
         // Check for knight
@@ -1060,22 +1060,22 @@ namespace chessBoard
         }
         ret.push_back(' ');
         int tp = 0;
-        if ((castlings & tab_pos[1]) != 0)
+        if ((castlings & tab_pos[0]) != 0)
         {
             ret.push_back('K');
             tp = 1;
         }
-        if ((castlings & tab_pos[8]) != 0)
+        if ((castlings & tab_pos[7]) != 0)
         {
             ret.push_back('Q');
             tp = 1;
         }
-        if ((castlings & tab_pos[57]) != 0)
+        if ((castlings & tab_pos[56]) != 0)
         {
             ret.push_back('k');
             tp = 1;
         }
-        if ((castlings & tab_pos[64]) != 0)
+        if ((castlings & tab_pos[63]) != 0)
         {
             ret.push_back('q');
             tp = 1;

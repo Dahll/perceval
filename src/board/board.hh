@@ -130,14 +130,14 @@ namespace chessBoard
         void gen_castlings_move(const enumPiece& color_, uint64 destination_pos,
                 POSITION_T start, MOVES_T& vec) const;
         void generate_pawn_move(const enumPiece &color_, MOVES_T& vec,
-                uint64& mask, const uint64 (&attack)[65],
-                const uint64 (&normal)[65], const uint64 (&jump)[65]) const;
+                uint64& mask, const uint64 (&attack)[64],
+                const uint64 (&normal)[64], const uint64 (&jump)[64]) const;
         void generate_attack_move_pawn(const enumPiece &color_,
                 MOVES_T& vec, int index,
-                const uint64 (&attack)[65]) const;
+                const uint64 (&attack)[64]) const;
         void generate_classic_move_pawn(const enumPiece& color_,
                 MOVES_T& vec, const int& index,
-                const uint64 (&normal)[65], const uint64 (&jump)[65]) const;
+                const uint64 (&normal)[64], const uint64 (&jump)[64]) const;
         void get_all_move_square_check(MOVES_T& moves,
                 const enumPiece& color_, Board& board) const;
 

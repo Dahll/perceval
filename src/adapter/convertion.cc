@@ -68,7 +68,7 @@ INDEX_T position_to_index(const Position &position)
             {Rank::EIGHT, 7},
     };
 
-    return file_to_index.at(position.file_get()) + 1 +
+    return file_to_index.at(position.file_get()) +
            rank_to_index.at(position.rank_get()) * 8;
 }
 
@@ -97,8 +97,8 @@ yaka::Position index_to_position(const chessBoard::INDEX_T& index)
     };
 
     return yaka::Position(
-            index_to_file.at((index - 1) % 8),
-            index_to_rank.at((index- 1) / 8));
+            index_to_file.at((index) % 8),
+            index_to_rank.at((index) / 8));
 
 }
 

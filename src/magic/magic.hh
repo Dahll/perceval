@@ -15,8 +15,8 @@ struct SMagic {
 extern uint64 attack_table_rook[102400];
 extern uint64 attack_table_bishop[5248];
 
-extern SMagic mBishopTbl[65];
-extern SMagic mRookTbl[65];
+extern SMagic mBishopTbl[64];
+extern SMagic mRookTbl[64];
 
 
 //uint64 rookAttacks(uint64 occ, int sq);

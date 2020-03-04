@@ -33,8 +33,8 @@ int BBits[64] = {
 uint64 attack_table_rook[102400] = {0ull};
 uint64 attack_table_bishop[5248] = {0ull};
 
-SMagic mBishopTbl[65];
-SMagic mRookTbl[65];
+SMagic mBishopTbl[64];
+SMagic mRookTbl[64];
 
 void print_uint64(uint64 number)
 {
@@ -193,10 +193,10 @@ void find_magic(int sq, int m, int bishop, uint64* ptr) {
   }
 
   SMagic* tbl = bishop? mBishopTbl : mRookTbl;
-  tbl[sq+1].ptr = ptr;
-  tbl[sq+1].mask = mask;
-  tbl[sq+1].magic = magic;
-  tbl[sq+1].shift = 64 - m;
+  tbl[sq].ptr = ptr;
+  tbl[sq].mask = mask;
+  tbl[sq].magic = magic;
+  tbl[sq].shift = 64 - m;
 }
 
 void fill_magic() {

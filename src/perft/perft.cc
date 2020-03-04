@@ -198,16 +198,16 @@ namespace Perft
             switch(c)
             {
                 case 'K':
-                    b.castlings |= tab_pos[1];
+                    b.castlings |= tab_pos[0];
                     break;
                 case 'Q':
-                    b.castlings |= tab_pos[8];
+                    b.castlings |= tab_pos[7];
                     break;
                 case 'k':
-                    b.castlings |= tab_pos[57];
+                    b.castlings |= tab_pos[56];
                     break;
                 case 'q':
-                    b.castlings |= tab_pos[64];
+                    b.castlings |= tab_pos[63];
                     break;
                 default:
                     return;

@@ -12,12 +12,12 @@ namespace chessBoard
     {
         if (color == nWhite)
         {
-            if (index >= 49)
+            if (index >= 48)
                 return true;
         }
         else
         {
-            if (index <= 16)
+            if (index <= 15)
                 return true;
         }
         return false;
@@ -48,7 +48,7 @@ namespace chessBoard
 
     inline POSITION_T pos_from_index(const INDEX_T& index)
     {
-        uint64 l = 1;
+        uint64 l = 1ull;
         POSITION_T pos = l << (index);
         return pos;
     }

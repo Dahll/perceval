@@ -175,7 +175,7 @@ namespace chessBoard
         int i = 0;
         while (mask != 0)
         {
-            i = __builtin_ctzll(mask) + 1;
+            i = __builtin_ctzll(mask);
             mask &= mask - 1;
             const uint64& move = knight_move[i];
             const enumPiece notcolor = other_color(color_);
@@ -197,7 +197,7 @@ namespace chessBoard
         const uint64 occ = pieceBB[0] | pieceBB[1];
         int i = 0;
         while (mask != 0) {
-            i = __builtin_ctzll(mask) + 1;
+            i = __builtin_ctzll(mask);
             mask &= mask - 1;
             //const uint64 &relevant_mask = tower_move[i] & (pieceBB[0] | pieceBB[1]);
             //const uint64 &index = (magic_number_tower[i] * relevant_mask) >> 52ull;
@@ -226,7 +226,7 @@ namespace chessBoard
         //std::cout << std::endl << int_to_string(mask) << std::endl;
         while (mask != 0)
         {
-            i = __builtin_ctzll(mask) + 1;
+            i = __builtin_ctzll(mask);
             mask &= mask - 1;
             //const uint64& relevant_mask = bishop_move[i] & (pieceBB[0] | pieceBB[1]);
             //const uint64& index = (magic_number_bishop[i] * relevant_mask) >> 52ull;
@@ -262,46 +262,38 @@ namespace chessBoard
     void Board::generate_castlings(const enumPiece& color_,
             std::vector<Move>& vec) const
     {
- //       std::cout << "castlings" << std::endl << int_to_string(castlings) << std::endl;
         if (color_ == nWhite)
         {
-            if (castlings & tab_pos[8])
+            if (castlings & tab_pos[7])
             {
-                if (!((pieceBB[1] | pieceBB[0]) & (tab_pos[7] | (tab_pos[6] | tab_pos[5]))))
-                    if (!square_is_check(color_, tab_pos[5]))
-                        gen_castlings_move(color_, tab_pos[6], tab_pos[4], vec);
+                if (!((pieceBB[1] | pieceBB[0]) & (tab_pos[6] | (tab_pos[5] | tab_pos[4]))))
+                    if (!square_is_check(color_, tab_pos[4]))
+                        gen_castlings_move(color_, tab_pos[5], tab_pos[3], vec);
             }
-            if (castlings & tab_pos[1])
+            if (castlings & tab_pos[0])
             {
-                if (!((pieceBB[1] | pieceBB[0]) & (tab_pos[3] | tab_pos[2]))) {
-                    if (!square_is_check(color_, tab_pos[3]))
-                        gen_castlings_move(color_, tab_pos[2], tab_pos[4], vec);
+                if (!((pieceBB[1] | pieceBB[0]) & (tab_pos[2] | tab_pos[1]))) {
+                    if (!square_is_check(color_, tab_pos[2]))
+                        gen_castlings_move(color_, tab_pos[1], tab_pos[3], vec);
                 }
             }
         }
         else
         {
-            //std::cout << std::endl << int_to_string(castlings) << std::endl;
-          //  print();
-        //  std::cout << std::endl << "from" << int_to_string(tab_pos[62]) << std::endl;
-            if (castlings & tab_pos[64])
+            if (castlings & tab_pos[63])
             {
-                if (!((pieceBB[1] | pieceBB[0]) & (tab_pos[63] | (tab_pos[62] | tab_pos[61])))) {
-                    if (!square_is_check(color_, tab_pos[61]))
-                        gen_castlings_move(color_, tab_pos[62], tab_pos[60], vec);
+                if (!((pieceBB[1] | pieceBB[0]) & (tab_pos[62] | (tab_pos[61] | tab_pos[60])))) {
+                    if (!square_is_check(color_, tab_pos[60]))
+                        gen_castlings_move(color_, tab_pos[61], tab_pos[59], vec);
                 }
             }
-            //std::cout << std::endl << "test" << std::endl;
-            //print();
-            if (castlings & tab_pos[57])
+            if (castlings & tab_pos[56])
             {
-                if (!((pieceBB[1] | pieceBB[0]) & (tab_pos[59] | tab_pos[58]))) {
-                    if (!square_is_check(color_, tab_pos[59]))
-                        gen_castlings_move(color_, tab_pos[58], tab_pos[60], vec);
+                if (!((pieceBB[1] | pieceBB[0]) & (tab_pos[58] | tab_pos[57]))) {
+                    if (!square_is_check(color_, tab_pos[58]))
+                        gen_castlings_move(color_, tab_pos[57], tab_pos[59], vec);
                 }
             }
-            //std::cout << std::endl << "test" << std::endl;
-            //print();
         }
 
     }
@@ -310,7 +302,7 @@ namespace chessBoard
     {
         // FIXME castlings
         uint64 king = pieceBB[7] & pieceBB[color_];
-        int i = __builtin_ctzll(king) + 1;
+        int i = __builtin_ctzll(king);
 
         const uint64& move = king_move[i];
         const enumPiece notcolor = other_color(color_);
@@ -332,7 +324,7 @@ namespace chessBoard
         const uint64 occ = pieceBB[0] | pieceBB[1];
         int i = 0;
         while (queen != 0) {
-            i = __builtin_ctzll(queen) + 1;
+            i = __builtin_ctzll(queen);
             queen &= queen - 1;
             /*const uint64 &relevant_diagonals = bishop_move[i] & (pieceBB[0] | pieceBB[1]);
             const uint64 &index_diagonals = (magic_number_bishop[i] * relevant_diagonals) >> 52ull;
@@ -388,7 +380,7 @@ namespace chessBoard
     }
 
     void Board::generate_attack_move_pawn(const enumPiece &color_,
-            std::vector<Move> &vec, int index, const uint64 (&attack)[65]) const
+            std::vector<Move> &vec, int index, const uint64 (&attack)[64]) const
     {
         //normal
         uint64 mask = attack[index] & pieceBB[other_color(color_)];
@@ -477,7 +469,7 @@ namespace chessBoard
 
     void Board::generate_classic_move_pawn(const enumPiece& color_,
             std::vector<Move>& vec, const int& index,
-            const uint64 (&normal)[65], const uint64 (&jump)[65]) const
+            const uint64 (&normal)[64], const uint64 (&jump)[64]) const
     {
         const uint64 mask = normal[index] & (~(pieceBB[0] | pieceBB[1]));
         if (mask != 0)
@@ -523,14 +515,14 @@ namespace chessBoard
 
 
     void Board::generate_pawn_move(const enumPiece &color_, std::vector<Move> &vec,
-            uint64& mask, const uint64 (&attack)[65],
-            const uint64 (&normal)[65], const uint64 (&jump)[65]) const
+            uint64& mask, const uint64 (&attack)[64],
+            const uint64 (&normal)[64], const uint64 (&jump)[64]) const
     {
         int i = 0;
         //std::cout << std::endl << int_to_string(mask) << std::endl;
         while (mask != 0)
         {
-            i = __builtin_ctzll(mask) + 1;
+            i = __builtin_ctzll(mask);
             mask &= mask - 1;
             generate_attack_move_pawn(color_, vec, i, attack);
             generate_classic_move_pawn(color_, vec, i, normal, jump);

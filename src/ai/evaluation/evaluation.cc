@@ -19,14 +19,14 @@ namespace ai::evaluation
 
         if (mask_color != 0)
         {
-            index = __builtin_ctzll(mask_color) + 1;
+            index = __builtin_ctzll(mask_color);
             ret += VAL_KING;
             ret += chessBoard::board_king[color_][index];
         }
         uint64 mask_no_color = b.pieceBB[enumPiece::nKing] & b.pieceBB[not_color_];
         if (mask_no_color != 0)
         {
-            index = __builtin_ctzll(mask_no_color) + 1;
+            index = __builtin_ctzll(mask_no_color);
             ret -= VAL_KING;
             ret -= chessBoard::board_king[not_color_][index];
         }
@@ -40,14 +40,14 @@ namespace ai::evaluation
         uint64 mask = b.pieceBB[enumPiece::nQueen] & b.pieceBB[color_];
         int index = 0;
         while (mask != 0) {
-            index = __builtin_ctzll(mask) + 1;
+            index = __builtin_ctzll(mask);
             mask &= mask - 1;
             ret += VAL_QUEEN;
             ret += chessBoard::board_queen[color_][index];
         }
         uint64 mask_no = b.pieceBB[enumPiece::nQueen] & b.pieceBB[not_color_];
         while (mask_no != 0) {
-            index = __builtin_ctzll(mask_no) + 1;
+            index = __builtin_ctzll(mask_no);
             mask_no &= mask_no - 1;
             ret -= VAL_QUEEN;
             ret -= chessBoard::board_queen[not_color_][index];
@@ -62,14 +62,14 @@ namespace ai::evaluation
         uint64 mask = b.pieceBB[enumPiece::nRook] & b.pieceBB[color_];
         int index = 0;
         while (mask != 0) {
-            index = __builtin_ctzll(mask) + 1;
+            index = __builtin_ctzll(mask);
             mask &= mask - 1;
             ret += VAL_ROOKS;
             ret += chessBoard::board_rooks[color_][index];
         }
         uint64 mask_no = b.pieceBB[enumPiece::nRook] & b.pieceBB[not_color_];
         while (mask_no != 0) {
-            index = __builtin_ctzll(mask_no) + 1;
+            index = __builtin_ctzll(mask_no);
             mask_no &= mask_no - 1;
             ret -= VAL_ROOKS;
             ret -= chessBoard::board_rooks[not_color_][index];
@@ -84,14 +84,14 @@ namespace ai::evaluation
         uint64 mask = b.pieceBB[enumPiece::nBishop] & b.pieceBB[color_];
         int index = 0;
         while (mask != 0) {
-            index = __builtin_ctzll(mask) + 1;
+            index = __builtin_ctzll(mask);
             mask &= mask - 1;
             ret += VAL_BISHOP;
             ret += chessBoard::board_bishop[color_][index];
         }
         uint64 mask_no = b.pieceBB[enumPiece::nBishop] & b.pieceBB[not_color_];
         while (mask_no != 0) {
-            index = __builtin_ctzll(mask_no) + 1;
+            index = __builtin_ctzll(mask_no);
             mask_no &= mask_no - 1;
             ret -= VAL_BISHOP;
             ret -= chessBoard::board_bishop[not_color_][index];
@@ -107,14 +107,14 @@ namespace ai::evaluation
         uint64 mask = b.pieceBB[enumPiece::nKnight] & b.pieceBB[color_];
         int index = 0;
         while (mask != 0) {
-            index = __builtin_ctzll(mask) + 1;
+            index = __builtin_ctzll(mask);
             mask &= mask - 1;
             ret += VAL_KNIGHT;
             ret += chessBoard::board_knight[color_][index];
         }
         uint64 mask_no = b.pieceBB[enumPiece::nKnight] & b.pieceBB[not_color_];
         while (mask_no != 0) {
-            index = __builtin_ctzll(mask_no) + 1;
+            index = __builtin_ctzll(mask_no);
             mask_no &= mask_no - 1;
             ret -= VAL_KNIGHT;
             ret -= chessBoard::board_knight[not_color_][index];
@@ -130,14 +130,14 @@ namespace ai::evaluation
         uint64 mask = b.pieceBB[enumPiece::nPawn] & b.pieceBB[color_];
         int index = 0;
         while (mask != 0) {
-            index = __builtin_ctzll(mask) + 1;
+            index = __builtin_ctzll(mask);
             mask &= mask - 1;
             ret += VAL_PAWN;
             ret += chessBoard::board_pawn[color_][index];
         }
         uint64 mask_no = b.pieceBB[enumPiece::nPawn] & b.pieceBB[not_color_];
         while (mask_no != 0) {
-            index = __builtin_ctzll(mask_no) + 1;
+            index = __builtin_ctzll(mask_no);
             mask_no &= mask_no - 1;
             ret -= VAL_PAWN;
             ret -= chessBoard::board_pawn[not_color_][index];
