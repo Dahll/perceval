@@ -22,8 +22,8 @@ namespace Perft
             s.insert(0, 1, fen[i]);
             i--;
         }
-        depth = stoi(s);
-        b = parse(fen);
+        depth_ = stoi(s);
+        b_ = parse(fen);
 //        ofs.open("non");
     }
 
@@ -58,7 +58,7 @@ namespace Perft
         return n.pat == b.pat;
     }
 
-    uint64 Perft::calculate()
+    uint64 Perft::calculate(chessBoard::Board& b, int depth)
     {
         if (!depth)
             return 1;
@@ -69,21 +69,18 @@ namespace Perft
         for (const auto& m : vect)
         {
             uint64 h = 0;
-            b.apply_move(m, b.color, h);
-            b.switch_color();
-            --depth;
-            uint64 i = calculate();
+            Board cpy = b;
+            cpy.apply_move(m, b.color, h);
+            cpy.switch_color();
+            uint64 i = calculate(cpy, depth - 1);
             n += i;
-            ++depth;
-            b.switch_color();
-            b.revert_move(m, b.color);
         }
         return n;
     }
 
     void Perft::print_board() const
     {
-        b.print();
+        b_.print();
     }
 
     uint64 perft(std::string& path)
@@ -104,7 +101,7 @@ namespace Perft
         Perft p{s};
         //p.print_board();
         //p.print_board();
-        return p.calculate();
+        return p.calculate(p.b_, p.depth_);
         //Board b = parse(s);
         // std::cout << std::endl << "oui" << std::endl;
         // return ;

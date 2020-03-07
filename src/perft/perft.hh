@@ -19,12 +19,10 @@ namespace Perft
     {
     public:
         explicit Perft(std::string fen);
-        uint64 calculate();
+        uint64 calculate(chessBoard::Board& b, int depth);
         void print_board() const;
-    private:
-        chessBoard::Board b;
-        int depth;
- //       ofstream ofs;
+        chessBoard::Board b_;
+        int depth_;
     };
 
     uint64 perft(std::string& path);

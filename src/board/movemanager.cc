@@ -262,6 +262,7 @@ namespace chessBoard
     void Board::generate_castlings(const enumPiece& color_,
             std::vector<Move>& vec) const
     {
+
         if (color_ == nWhite)
         {
             if (castlings & tab_pos[7])
