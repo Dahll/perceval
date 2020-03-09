@@ -61,8 +61,8 @@ namespace chessBoard
 
         uint64 apply_castling(const Move& m, const enumPiece& color, uint64 hash_board);
         uint64 apply_move(const Move &m, const enumPiece& color, uint64 hash_board);
-        void revert_castling(const Move &m, const enumPiece& color);
-        void revert_move(const Move &m, const enumPiece& color);
+        //void revert_castling(const Move &m, const enumPiece& color);
+        //void revert_move(const Move &m, const enumPiece& color);
 
 
         const MOVES_T generate_moves(const enumPiece& color_) const;
@@ -91,35 +91,36 @@ namespace chessBoard
 
 
         void move_attack_square(MOVES_T& moves, const enumPiece& color_,
-                uint64 pos, const enumPiece& type_piece) const;
-        Move ia_apply_move(const Move& m, const enumPiece& color_, uint64& hash_board);
+                uint64 pos) const;
+
+        chessBoard::Move string_to_move(std::string& s, const enumPiece& color_);
+        //Move ia_apply_move(const Move& m, const enumPiece& color_, uint64& hash_board);
         void print() const;
         //void add_move(const enumPiece& color_, std::vector<Move>& vec, const uint64& from, const uint64& to, const enumPiece& type, const std::optional<enumPiece>& capture, const std::optional<enumPiece>& promotion, const bool& is_castling, const bool& is_en_passant, const uint64& report) const;
         void add_move(const enumPiece& color_, MOVES_T& moves, const Move& m) const;
 
         bool is_board_valide(Move& mov, enumPiece& color_);
-        void test_board(std::vector<Move>& vec);
+        //void test_board(std::vector<Move>& vec);
         std::string to_perft() const;
 
-        Board apply_many_moves(const MOVES_T& moves);
-        int get_current_pieces_count() const;
+        //Board apply_many_moves(const MOVES_T& moves);
+        //int get_current_pieces_count() const;
         int get_current_captures_count() const;
         int get_current_moves_count() const;
 
 
         /* Move generation (const) */
-        void generate_captures(const enumPiece& type, const enumPiece& color_,
+        void generate_captures(const enumPiece& color_,
                 uint64& captures_pos, const INDEX_T& index,
                 std::vector<Move>& vec) const;
-        void generate_non_captures(const enumPiece& type,
-                const enumPiece& color_, uint64& captures_pos,
+        void generate_non_captures(const enumPiece& color_, uint64& captures_pos,
                 const INDEX_T& index, MOVES_T& vec) const;
-        void generate_captures_casts(const enumPiece& type,
+        /*void generate_captures_casts(const enumPiece& type,
                 const enumPiece& color_, uint64& destination_pos,
-                const INDEX_T& index, MOVES_T& vec) const;
-        void generate_non_captures_casts(const enumPiece& type,
+                const INDEX_T& index, MOVES_T& vec) const;*/
+        /*void generate_non_captures_casts(const enumPiece& type,
                 const enumPiece& color_, uint64& destination_pos,
-                const INDEX_T& index, MOVES_T& vec) const;
+                const INDEX_T& index, MOVES_T& vec) const;*/
         void get_knight_move(const enumPiece& color_, MOVES_T& vec) const;
         void get_tower_move(const enumPiece& color_, MOVES_T& vec) const;
         void get_bishop_move(const enumPiece& color_, MOVES_T& vec) const;
@@ -127,16 +128,16 @@ namespace chessBoard
         void get_queen_move(const enumPiece& color_, MOVES_T& vec) const;
         void get_pawn_move(const enumPiece& color_, MOVES_T& vec) const;
         void generate_castlings(const enumPiece& color_, MOVES_T& vec) const;
-        void gen_castlings_move(const enumPiece& color_, uint64 destination_pos,
-                POSITION_T start, MOVES_T& vec) const;
+        /*void gen_castlings_move(const enumPiece& color_, uint64 destination_pos,
+                POSITION_T start, MOVES_T& vec) const;*/
         void generate_pawn_move(const enumPiece &color_, MOVES_T& vec,
                 uint64& mask, const uint64 (&attack)[64],
                 const uint64 (&normal)[64], const uint64 (&jump)[64]) const;
         void generate_attack_move_pawn(const enumPiece &color_,
-                MOVES_T& vec, int index,
+                MOVES_T& vec, uint16 index,
                 const uint64 (&attack)[64]) const;
         void generate_classic_move_pawn(const enumPiece& color_,
-                MOVES_T& vec, const int& index,
+                MOVES_T& vec, const uint16 & index,
                 const uint64 (&normal)[64], const uint64 (&jump)[64]) const;
         void get_all_move_square_check(MOVES_T& moves,
                 const enumPiece& color_, Board& board) const;

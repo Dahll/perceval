@@ -7,61 +7,65 @@
 namespace ai::ordering
 {
 
-    int quiescence_calc_move(const chessBoard::Move& move,
+    int quiescence_calc_move(const chessBoard::Board& b, const chessBoard::Move& move,
             const std::optional<chessBoard::Move>& prev_move)
     {
+
         int ret = 0;
-        const chessBoard::enumPiece& type_piece = move.piece_get();
-        const chessBoard::enumPiece& type_capture = move.captured_piece_type_get();
-        if (type_piece == 2)
+
+
+
+        //const chessBoard::enumPiece& type_piece = move.piece_get();
+        //const chessBoard::enumPiece& type_capture = move.captured_piece_type_get();
+        if (b.pieceBB[2] & move.getFromPosition())
         {
             ret -= 10;
         }
-        else if (type_piece == 3)
+        else if (b.pieceBB[3] & move.getFromPosition())
         {
             ret -= VAL_KNIGHT;
         }
-        else if (type_piece == 4)
+        else if (b.pieceBB[4] & move.getFromPosition())
         {
             ret -= VAL_BISHOP;
         }
-        else if (type_piece == 5)
+        else if (b.pieceBB[5] & move.getFromPosition())
         {
             ret -= VAL_ROOKS;
         }
-        else if (type_piece == 6)
+        else if (b.pieceBB[6] & move.getFromPosition())
         {
             ret -= VAL_QUEEN;
         }
-        else if (type_piece == 7)
+        else if (b.pieceBB[7] & move.getFromPosition())
         {
             ret -= 1200;
         }
-        if (type_capture == 2)
+        if (b.pieceBB[2] & move.getToPosition())
         {
             ret += 100;
         }
-        else if (type_capture == 3)
+        else if (b.pieceBB[3] & move.getToPosition())
         {
             ret += VAL_KNIGHT;
         }
-        else if (type_capture == 4)
+        else if (b.pieceBB[4] & move.getToPosition())
         {
             ret += VAL_BISHOP;
         }
-        else if (type_capture == 5)
+        else if (b.pieceBB[5] & move.getToPosition())
         {
             ret += VAL_ROOKS;
         }
-        else if (type_capture == 6)
+        else if (b.pieceBB[6] & move.getToPosition())
         {
             ret += VAL_QUEEN;
         }
-        else if (type_capture == 7)
+        else if (b.pieceBB[7] & move.getToPosition())
         {
             ret += 1200;
         }
-        if ((prev_move.has_value()) && (type_capture == prev_move.value().piece_get()) && (prev_move.value().to_get() == move.to_get()))
+        if ((prev_move.has_value()) /*&& (type_capture == prev_move.value().piece_get())*/ && (prev_move.value().getToIndex() == move.getToIndex()))
         {
             ret += 1001;
         }
@@ -70,64 +74,64 @@ namespace ai::ordering
 
 
 
-    int calc_move(const chessBoard::Move& move, size_t act_depth,
+    int calc_move(const chessBoard::Board& b, const chessBoard::Move& move, size_t act_depth,
             const std::optional<chessBoard::Move>& prev_move, uint64 hash)
     {
         int ret = 0;
-        if (move.is_capture())
+        if (move.isCapture())
         {
-            const chessBoard::enumPiece& type_piece = move.piece_get();
-            const chessBoard::enumPiece& type_capture = move.captured_piece_type_get();
-            if (type_piece == 2)
+            //const chessBoard::enumPiece& type_piece = move.piece_get();
+            //const chessBoard::enumPiece& type_capture = move.captured_piece_type_get();
+            if (b.pieceBB[2] & move.getFromPosition())
             {
                 ret -= 10;
             }
-            else if (type_piece == 3)
+            else if (b.pieceBB[3] & move.getFromPosition())
             {
                 ret -= VAL_KNIGHT;
             }
-            else if (type_piece == 4)
+            else if (b.pieceBB[4] & move.getFromPosition())
             {
                 ret -= VAL_BISHOP;
             }
-            else if (type_piece == 5)
+            else if (b.pieceBB[5] & move.getFromPosition())
             {
                 ret -= VAL_ROOKS;
             }
-            else if (type_piece == 6)
+            else if (b.pieceBB[6] & move.getFromPosition())
             {
                 ret -= VAL_QUEEN;
             }
-            else if (type_piece == 7)
+            else if (b.pieceBB[7] & move.getFromPosition())
             {
                 ret -= 1200;
             }
-            if (type_capture == 2)
+            if (b.pieceBB[2] & move.getToPosition())
             {
                 ret += 100;
             }
-            else if (type_capture == 3)
+            else if (b.pieceBB[3] & move.getToPosition())
             {
                 ret += VAL_KNIGHT;
             }
-            else if (type_capture == 4)
+            else if (b.pieceBB[4] & move.getToPosition())
             {
                 ret += VAL_BISHOP;
             }
-            else if (type_capture == 5)
+            else if (b.pieceBB[5] & move.getToPosition())
             {
                 ret += VAL_ROOKS;
             }
-            else if (type_capture == 6)
+            else if (b.pieceBB[6] & move.getToPosition())
             {
                 ret += VAL_QUEEN;
             }
-            else if (type_capture == 7)
+            else if (b.pieceBB[7] & move.getToPosition())
             {
                 ret += 1200;
             }
 
-            if ((prev_move.has_value()) && (type_capture == prev_move.value().piece_get()) && (prev_move.value().to_get() == move.to_get()))
+            if ((prev_move.has_value()) /*&& (type_capture == prev_move.value().piece_get())*/ && (prev_move.value().getToIndex() == move.getToIndex()))
             {
                 ret += 1001;
             }
@@ -136,8 +140,7 @@ namespace ai::ordering
         if (refutation_table::input_vect.size() > 1)
         {
             const chessBoard::Move& opti_move = refutation_table::input_vect.at(act_depth);
-            if ((move.piece_get() == opti_move.piece_get()) && (move.to_get() == opti_move.to_get()) &&
-                (move.from_get() == opti_move.from_get()))
+            if (opti_move == move)
             {
                 ret += 30000;
             }
@@ -147,8 +150,7 @@ namespace ai::ordering
 
         if (transpo.depth_ != -1 && transpo.hash_ == hash)
         {
-            if (transpo.move_.from_get() == move.from_get() && transpo.move_.to_get() == move.to_get() &&
-                transpo.move_.piece_get() == move.piece_get())
+            if (transpo.move_ == move)
             {
                 ret += 1000;
             }
@@ -161,26 +163,26 @@ namespace ai::ordering
         return pair1.first > pair2.first;
     }
 
-    VECTOR_PAIR moves_set_values(const chessBoard::MOVES_T& vect,
+    VECTOR_PAIR moves_set_values(const chessBoard::Board& b,const chessBoard::MOVES_T& vect,
             const std::optional<chessBoard::Move>& prev_move, int depth, uint64 hash)
     {
         VECTOR_PAIR ret;
         for (const auto& move : vect)
         {
-            ret.emplace_back(calc_move(move, depth, prev_move, hash), move);
+            ret.emplace_back(calc_move(b, move, depth, prev_move, hash), move);
         }
         std::sort(ret.begin(), ret.end(), cmp_pair);
         return ret;
     }
 
-    VECTOR_PAIR moves_set_values_quiescence(const chessBoard::MOVES_T& vect,
+    VECTOR_PAIR moves_set_values_quiescence(const chessBoard::Board& b, const chessBoard::MOVES_T& vect,
             const std::optional<chessBoard::Move>& prev_move)
     {
         VECTOR_PAIR ret;
         //auto ret = std::vector<std::pair<int, const chessBoard::Move>>();
         for (const auto& move : vect)
         {
-            ret.emplace_back(quiescence_calc_move(move, prev_move), move);
+            ret.emplace_back(quiescence_calc_move(b, move, prev_move), move);
         }
         std::sort(ret.begin(), ret.end(), cmp_pair);
         return ret;

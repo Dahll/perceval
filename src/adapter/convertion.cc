@@ -110,7 +110,7 @@ Move PGNmove_to_CBmove(const PgnMove &PGNmove)
         enum_promotion = std::optional<enumPiece>{
                 PieceType_to_enumPiece(*pgnm_promotion)};
 
-    return Move(
+    return Move();/*Move(
             position_to_index(PGNmove.start_get()), //from
             position_to_index(PGNmove.end_get()), // to
             PieceType_to_enumPiece(PGNmove.piece_get()), // pieceType
@@ -119,7 +119,7 @@ Move PGNmove_to_CBmove(const PgnMove &PGNmove)
             PGNmove.is_castling(),
             false, // it is never a en-passant ??
             0ull
-    );
+    );*/
 }
 
 /*PgnMove CBmove_to_PGNmove(const chessBoard::Move& move)

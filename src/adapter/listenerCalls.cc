@@ -151,16 +151,16 @@ namespace adapter
         if (m.has_value())
         {
             chessBoard::Move move1{m.value()};
-            if (disqualify_if_false(move1.is_castling() == ref.is_castling()))
+            if (disqualify_if_false((move1.isQueenCastle() || move1.isKingCastle()) == ref.is_castling()))
                 return true;
-            if (move1.is_castling())
+            if ((move1.isQueenCastle() || move1.isKingCastle()))
             {
                 // Castling done
                 for (auto& l : listeners)
                     l->on_piece_moved(yaka::PieceType::KING,
                                       ref.start_get(),
                                       ref.end_get());
-                if (move1.is_castling_queenside())
+                if (move1.isQueenCastle())
                     for (auto& l : listeners)
                         l->on_queenside_castling(
                                 enumPiece_to_color(boardM.color));
@@ -175,19 +175,34 @@ namespace adapter
                 l->on_piece_moved(ref.piece_get(),
                                   ref.start_get(),
                                   ref.end_get());
-            if (disqualify_if_false(move1.is_capture() == ref.capture_get()))
+            if (disqualify_if_false(move1.isCapture() == ref.capture_get()))
                 return true;
-            if (move1.is_capture())
+            if (move1.isCapture())
                 for (auto& l : listeners)
+                {
+                    int capture_piece_type = 0;
+                    if (boardM.pieceBB[2] & move1.getToPosition())
+                        capture_piece_type = 2;
+                    else if (boardM.pieceBB[3] & move1.getToPosition())
+                        capture_piece_type = 3;
+                    else if (boardM.pieceBB[4] & move1.getToPosition())
+                        capture_piece_type = 4;
+                    else if (boardM.pieceBB[5] & move1.getToPosition())
+                        capture_piece_type = 5;
+                    else if (boardM.pieceBB[6] & move1.getToPosition())
+                        capture_piece_type = 6;
+                    else if (boardM.pieceBB[7] & move1.getToPosition())
+                        capture_piece_type = 7;
                     l->on_piece_taken(
                             enumPiece_to_PieceType(
-                                    move1.captured_piece_type_get()),
+                                    static_cast<const enumPiece>(capture_piece_type)),
                             index_to_position(
                                     ffsll(boardM.captured_piece_position(move1))));
+                }
             if (disqualify_if_false(
-                    move1.is_promotion() == ref.promotion_get().has_value()))
+                    (move1.getFlags() > 7) == ref.promotion_get().has_value()))
                 return true;
-            if (move1.is_promotion()) {
+            if (move1.getFlags() > 7) {
                 for (auto &l : listeners)
                     l->on_piece_promoted(
                             *ref.promotion_get(), ref.end_get());

@@ -38,7 +38,7 @@ namespace uci
      * moves f7f5
      */
 
-    chessBoard::Move string_to_move(std::string& s);
+    //chessBoard::Move string_to_move(std::string& s);
     std::string pop_fen(std::vector<std::string>& input);
     std::string get_input(const std::string& expected = "*");
     void set_position(std::vector<std::string>& input);

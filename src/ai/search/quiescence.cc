@@ -23,7 +23,7 @@ namespace ai::search
         const auto& inv_color = b.other_color(color_act);
         // Generate moves and order them
         const auto& moves = b.generate_capture_moves(color_act);
-        const auto& sorted_moves = ordering::moves_set_values_quiescence(moves, prev_move);//give hash
+        const auto& sorted_moves = ordering::moves_set_values_quiescence(b, moves, prev_move);//give hash
         if (moves.empty())
         {
             return alpha;

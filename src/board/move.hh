@@ -30,79 +30,83 @@ code 	promotion 	capture 	special 1 	special 0 	kind of move         |
 15 	    1 	        1 	        1 	        1 	        queen-promo capture  |
 -----------------------------------------------------------------------------
 */
-class CMove {
 
-    CMove()
+namespace chessBoard
+{
+class Move {
+public:
+    Move()
     {
         m_Move = 0;
     }
 
-    CMove(uint16 from, uint16 to, uint16 flags)
+    Move(uint16 from, uint16 to, uint16 flags)
     {
         m_Move = flags << 12u | (from << 6u) | to;
     }
 
-    void operator=(CMove a) {m_Move = a.m_Move;}
+    void operator=(Move a) {m_Move = a.m_Move;}
 
-    uint8 getTo() const {return m_Move & 0x3fu;}
+    uint8 getToIndex() const {return m_Move & 0x3fu;}
 
-    uint8 getFrom() const {uint8 t = m_Move >> 6u; return t & 0x3fu;}
+    uint64 getToPosition() const {return 1ull << (m_Move & 0x3fu);}
+
+    uint8 getFromIndex() const {uint8 t = m_Move >> 6u; return t & 0x3fu;}
+
+    uint64 getFromPosition() const {uint8 t = m_Move >> 6u; return 1ull << (t & 0x3fu);}
 
     uint8 getFlags() const {return m_Move >> 12u;}
 
-    void setTo(uint8 to) {m_Move &= 0xffc0u; m_Move |= to;}
+    void setTo(uint8 to) {m_Move &= 0xf03fu; m_Move |= to;}
 
-    void setFrom(uint16 from) {m_Move &= 0xf03fu; from = from << 6u; m_Move |= from;}
+    void setFrom(uint16 from) {m_Move &= 0xffc0u; from = from << 6u; m_Move |= from;}
 
-    void setFlags(uint16 flags) {m_Move &= 0xf000u;flags = flags << 12u;m_Move |= flags;}
+    void setFlags(uint16 flags) {m_Move &= 0xfffu;flags = flags << 12u;m_Move |= flags;}
 
-    bool isCapture() const {return (m_Move & 0x2000u) != 0;}
+    bool isCapture() const {return (m_Move & 0x4000u) != 0;}
 
-    bool isPromotion() const {return (m_Move & 0x1000u) != 0;}
+    bool isPromotion() const {return (m_Move & 0x8000u) != 0;}
 
     bool isQuiet() const {uint8 t = m_Move >> 12u; return t == 0;}
 
-    bool isDoublePawnPush() const {uint8 t = m_Move >> 12u; return t == 1;}
+    bool isDoublePawnPush() const {uint8 t = m_Move >> 12u; return t == 1u;}
 
-    bool isKingCastle() const {uint8 t = m_Move >> 12u; return t == 2;}
+    bool isKingCastle() const {uint8 t = m_Move >> 12u; return t == 2u;}
 
-    bool isQueenCastle() const {uint8 t = m_Move >> 12u; return t == 3;}
+    bool isQueenCastle() const {uint8 t = m_Move >> 12u; return t == 3u;}
 
-    bool isSimpleCapture() const {uint8 t = m_Move >> 12u; return t == 4;}
+    bool isSimpleCapture() const {uint8 t = m_Move >> 12u; return t == 4u;}
 
-    bool isEnPassantCapture() const {uint8 t = m_Move >> 12u; return t == 5;}
+    bool isEnPassantCapture() const {uint8 t = m_Move >> 12u; return t == 5u;}
 
-    bool isKnightPromotion() const {uint8 t = m_Move >> 12u; return t == 8;}
+    bool isKnightPromotion() const {uint8 t = m_Move >> 12u; return t == 8u;}
 
-    bool isBishopPromotion() const {uint8 t = m_Move >> 12u; return t == 9;}
+    bool isBishopPromotion() const {uint8 t = m_Move >> 12u; return t == 9u;}
 
-    bool isRookPromotion() const {uint8 t = m_Move >> 12u; return t == 10;}
+    bool isRookPromotion() const {uint8 t = m_Move >> 12u; return t == 10u;}
 
-    bool isQueenPromotion() const {uint8 t = m_Move >> 12u; return t == 11;}
+    bool isQueenPromotion() const {uint8 t = m_Move >> 12u; return t == 11u;}
 
-    bool isKnightPromotionCapture() const {uint8 t = m_Move >> 12u; return t == 12;}
+    bool isKnightPromotionCapture() const {uint8 t = m_Move >> 12u; return t == 12u;}
 
-    bool isBishopPromotionCapture() const {uint8 t = m_Move >> 12u; return t == 13;}
+    bool isBishopPromotionCapture() const {uint8 t = m_Move >> 12u; return t == 13u;}
 
-    bool isRookPromotionCapture() const {uint8 t = m_Move >> 12u; return t == 14;}
+    bool isRookPromotionCapture() const {uint8 t = m_Move >> 12u; return t == 14u;}
 
-    bool isQueenPromotionCapture() const {uint8 t = m_Move >> 12u; return t == 15;}
+    bool isQueenPromotionCapture() const {uint8 t = m_Move >> 12u; return t == 15u;}
 
-    uint16 getButterflyIndex() const {return m_Move & 0x0fffu;}
+    bool operator==(Move a) const {return m_Move == a.m_Move;}
 
-    bool operator==(CMove a) const {return m_Move == a.m_Move;}
+    bool operator!=(Move a) const {return m_Move != a.m_Move;}
 
-    bool operator!=(CMove a) const {return m_Move != a.m_Move;}
-
-    uint16 to_int16() const {return m_Move;}
+    std::string to_str() const ;
 
 protected:
     uint16 m_Move;
 };
 
-namespace chessBoard
-{
-    class Move
+
+    /*class Move
     {
     public:
         Move() = default;
@@ -162,6 +166,6 @@ namespace chessBoard
         uint64 special_move_;
         uint64 castlings_;
         int half_move_; //supr this
-    };
+    };*/
 
 }

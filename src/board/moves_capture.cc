@@ -23,7 +23,7 @@ namespace chessBoard {
             uint64 temp_cap = temp & pieceBB[other_color(color_)];
 
             //move capture
-            generate_captures(nKnight, color_, temp_cap, i, vec);
+            generate_captures(color_, temp_cap, i, vec);
         }
     }
 
@@ -46,7 +46,7 @@ namespace chessBoard {
             uint64 temp_cap = temp & pieceBB[other_color(color_)];
 
             //move capture
-            generate_captures_casts(nRook, color_, temp_cap, i, vec);
+            generate_captures(color_, temp_cap, i, vec);
         }
     }
 
@@ -70,7 +70,7 @@ namespace chessBoard {
             uint64 temp_cap = temp & pieceBB[other_color(color_)];
 
             //move capture
-            generate_captures(nBishop, color_, temp_cap, i, vec);
+            generate_captures(color_, temp_cap, i, vec);
         }
 
     }
@@ -86,7 +86,7 @@ namespace chessBoard {
         uint64 temp_cap = temp & pieceBB[other_color(color_)];
 
         //move capture
-        generate_captures_casts(nKing, color_, temp_cap, i, vec);
+        generate_captures(color_, temp_cap, i, vec);
     }
 
     void Board::get_queen_capture_moves(const enumPiece &color_,
@@ -112,7 +112,7 @@ namespace chessBoard {
             uint64 temp_cap = temp & pieceBB[other_color(color_)];
 
             //move capture
-            generate_captures(nQueen, color_, temp_cap, i, vec);
+            generate_captures(color_, temp_cap, i, vec);
         }
     }
 

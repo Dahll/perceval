@@ -20,7 +20,7 @@
 namespace chessBoard
 {
 
-    POSITION_T Move::from_get() const {
+    /*POSITION_T Move::from_get() const {
         return from_;
     }
 
@@ -86,32 +86,32 @@ namespace chessBoard
     int Move::half_move_get() const
     {
         return half_move_;
-    }
+    }*/
 
     std::string Move::to_str()  const
     {
-        int indexfrom = ffsll(from_get());
-        int indexto = ffsll(to_get());
+        int indexfrom = ffsll(this->getFromPosition());
+        int indexto = ffsll(this->getToPosition());
         std::string s;
         s.push_back(yaka::file_to_char[7 - ((indexfrom -1) % 8)]);
         s.push_back(yaka::rank_to_char[(indexfrom - 1) / 8]);
         s.push_back(yaka::file_to_char[7 - ((indexto -1) % 8)]);
         s.push_back(yaka::rank_to_char[(indexto - 1) / 8]);
-        if (this->promotion_.has_value())
+        if (this->isPromotion())
         {
-            if (this->promotion_.value() == nBishop)
+            if (this->isBishopPromotion() || this->isBishopPromotionCapture())
                 s.push_back('b');
-            else if (this->promotion_.value() == nRook)
+            else if (this->isRookPromotion() || this->isRookPromotionCapture())
                 s.push_back('r');
-            else if (this->promotion_.value() == nQueen)
+            else if (this->isQueenPromotion() || this->isQueenPromotionCapture())
                 s.push_back('q');
-            else if (this->promotion_.value() == nKnight)
+            else if (this->isKnightPromotion() || this->isKnightPromotionCapture())
                 s.push_back('n');
         }
         return s;
     }
 
-    Move::Move(INDEX_T from, INDEX_T to, enumPiece pieceType,
+    /*Move::Move(INDEX_T from, INDEX_T to, enumPiece pieceType,
                std::optional<enumPiece> captured,
                std::optional<enumPiece> promotion,
                bool is_castling, bool is_en_passant,
@@ -163,7 +163,7 @@ namespace chessBoard
             special_move_(special_move),
             castlings_(castling),
             half_move_(half_move)
-    {}
+    {}*/
 
 
 }

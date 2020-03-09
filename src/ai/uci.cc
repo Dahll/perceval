@@ -65,7 +65,7 @@ namespace uci
         return ret;
     }
 
-    chessBoard::Move string_to_move(std::string& s)
+    /*chessBoard::Move string_to_move(std::string& s)
     {
         auto rf = pgn_parser::to_file(s[0]);
         auto ff = pgn_parser::to_rank(s[1]);
@@ -96,7 +96,7 @@ namespace uci
             }
         }
         return chessBoard::Move(indexf, indext, chessBoard::nWhite, std::nullopt, enup, false, false, 0);
-    }
+    }*/
 
     void set_position(std::vector<std::string>& input)
     {

@@ -83,16 +83,16 @@ namespace ai
 
     namespace ordering
     {
-        int quiescence_calc_move(const chessBoard::Move &move,
+        int quiescence_calc_move(const chessBoard::Board& b, const chessBoard::Move &move,
                                  const std::optional<chessBoard::Move> &prev_move);
 
-        int calc_move(const chessBoard::Move &move, size_t act_depth,
+        int calc_move(const chessBoard::Board& b, const chessBoard::Move &move, size_t act_depth,
                       const std::optional<chessBoard::Move> &prev_move, uint64 hash);
 
-        VECTOR_PAIR moves_set_values(const std::vector<chessBoard::Move> &vect,
+        VECTOR_PAIR moves_set_values(const chessBoard::Board& b,const std::vector<chessBoard::Move> &vect,
                                      const std::optional<chessBoard::Move> &prev_move, int depth, uint64 hash);
 
-        VECTOR_PAIR moves_set_values_quiescence(const std::vector<chessBoard::Move> &vect,
+        VECTOR_PAIR moves_set_values_quiescence(const chessBoard::Board& b,const std::vector<chessBoard::Move> &vect,
                                                 const std::optional<chessBoard::Move> &prev_move);
     }
 }

@@ -23,7 +23,7 @@ namespace chessBoard {
     using piece_color_t = std::pair<enumPiece, enumPiece>;
     using opt_piece_t = std::optional<piece_color_t>;
 
-    using INDEX_T = int;
+    using INDEX_T = uint16 ;
     using POSITION_T = uint64;
 
     constexpr enumPiece int_to_enumPiece[] = {nWhite, nBlack, nPawn, nKnight, nBishop, nRook, nQueen, nKing};

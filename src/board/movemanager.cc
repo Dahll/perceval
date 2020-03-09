@@ -23,48 +23,23 @@ namespace chessBoard
         return vec;
     }
 
-    void Board::generate_captures(const enumPiece& type,
+    void Board::generate_captures(
             const enumPiece& color_, uint64& captures_pos,
             const INDEX_T& index, std::vector<Move>& vec) const
     {
         uint64 j = 0;
         while (captures_pos != 0)
         {
-            j = 1ull << (__builtin_ctzll(captures_pos));
+            j = __builtin_ctzll(captures_pos);
             captures_pos &= captures_pos - 1;
-            enumPiece enup;
-            if ((j & pieceBB[2]) != 0)
-            {
-                enup = enumPiece::nPawn;
-            }
-            else if ((j & pieceBB[3]) != 0)
-            {
-                enup = enumPiece::nKnight;
-            }
-            else if ((j & pieceBB[4]) != 0)
-            {
-                enup = enumPiece::nBishop;
-            }
-            else if ((j & pieceBB[5]) != 0)
-            {
-                enup = enumPiece::nRook;
-            }
-            else if ((j & pieceBB[6]) != 0)
-            {
-                enup = enumPiece::nQueen;
-            }
-            else
-            {
-                enup = enumPiece::nKing;
-            }
+
+
             add_move(color_, vec,
-                     { tab_pos[index], j, type, enup, std::nullopt,
-                       false, false,
-                       special_moves, castlings, half_move_count_ });
+                     { index, static_cast<uint16>(j), 4});
         }
     }
 
-    void Board::generate_non_captures(const enumPiece& type,
+    void Board::generate_non_captures(
             const enumPiece& color_, uint64& destination_pos,
             const INDEX_T& index, MOVES_T& vec) const
     {
@@ -72,18 +47,17 @@ namespace chessBoard
         uint64 j = 0;
         while (destination_pos != 0)
         {
-            j = 1ull << (__builtin_ctzll(destination_pos));
+            j = __builtin_ctzll(destination_pos);
             destination_pos &= destination_pos - 1;
+
             add_move(color_, vec,
-                     { tab_pos[index], j, type, std::nullopt, std::nullopt,
-                       false, false,
-                       special_moves, castlings, half_move_count_ });
+                     { index, static_cast<uint16>(j), 0});
         }
 
     }
 
 
-    void Board::generate_captures_casts(const enumPiece& type,
+    /*void Board::generate_captures_casts(const enumPiece& type,
             const enumPiece& color_, uint64& captures_pos,
             const INDEX_T& index, MOVES_T& vec) const
     {
@@ -136,9 +110,9 @@ namespace chessBoard
             if (!ret)
                 vec.emplace_back(move);
         }
-    }
+    }*/
 
-    void Board::generate_non_captures_casts(const enumPiece& type,
+    /*void Board::generate_non_captures_casts(const enumPiece& type,
             const enumPiece& color_, uint64& destination_pos,
             const INDEX_T& index, std::vector<Move>& vec) const
     {
@@ -167,7 +141,7 @@ namespace chessBoard
                 vec.emplace_back(move);
         }
 
-    }
+    }*/
 
     void Board::get_knight_move(const enumPiece& color_, std::vector<Move>& vec) const
     {
@@ -185,9 +159,9 @@ namespace chessBoard
             uint64 temp_norm = temp & (~pieceBB[notcolor]);
 
             //move capture
-            generate_captures(nKnight, color_, temp_cap, i, vec);
+            generate_captures(color_, temp_cap, i, vec);
             //move normal
-            generate_non_captures(nKnight, color_, temp_norm, i, vec);
+            generate_non_captures(color_, temp_norm, i, vec);
         }
     }
 
@@ -199,22 +173,16 @@ namespace chessBoard
         while (mask != 0) {
             i = __builtin_ctzll(mask);
             mask &= mask - 1;
-            //const uint64 &relevant_mask = tower_move[i] & (pieceBB[0] | pieceBB[1]);
-            //const uint64 &index = (magic_number_tower[i] * relevant_mask) >> 52ull;
-            //uint64 temp = tower_output[i][index];
             uint64 temp = rookAttacks(occ, i);
             temp = (temp & pieceBB[color_]) ^ temp;
-            //print();
-            //std::cout << std::endl << int_to_string(temp) << std::endl;
-            //          std::cout << i << std::endl << int_to_string(relevant_mask)<< std::endl <<index << std::endl << int_to_string(temp) << std::endl;
             const enumPiece notcolor = other_color(color_);
             uint64 temp_cap = temp & pieceBB[notcolor];
             uint64 temp_norm = temp & (~pieceBB[notcolor]);
 
             //move capture
-            generate_captures_casts(nRook, color_, temp_cap, i, vec);
+            generate_captures(color_, temp_cap, i, vec);
             //move normal
-            generate_non_captures_casts(nRook, color_, temp_norm, i, vec);
+            generate_non_captures(color_, temp_norm, i, vec);
         }
     }
 
@@ -228,28 +196,22 @@ namespace chessBoard
         {
             i = __builtin_ctzll(mask);
             mask &= mask - 1;
-            //const uint64& relevant_mask = bishop_move[i] & (pieceBB[0] | pieceBB[1]);
-            //const uint64& index = (magic_number_bishop[i] * relevant_mask) >> 52ull;
-            //uint64 temp = bishop_output[i][index];
             uint64 temp = bishopAttacks(occ, i);
-            //std::cout << std::endl << int_to_string(temp) << std::endl <<i << std::endl << index << std::endl;
             temp = (temp & pieceBB[color_]) ^ temp;
-            //std::cout << std::endl << int_to_string(relevant_mask) << std::endl << relevant_mask << std::endl;
-            //std::cout << std::endl << int_to_string(temp) << std::endl << temp << std::endl;
 
             const enumPiece notcolor = other_color(color_);
             uint64 temp_cap = temp & pieceBB[notcolor];
             uint64 temp_norm = temp & (~pieceBB[notcolor]);
 
             //move capture
-            generate_captures(nBishop, color_, temp_cap, i, vec);
+            generate_captures(color_, temp_cap, i, vec);
             //move normal
-            generate_non_captures(nBishop, color_, temp_norm, i, vec);
+            generate_non_captures(color_, temp_norm, i, vec);
         }
 
     }
 
-    void Board::gen_castlings_move(const enumPiece& color_, uint64 destination_pos,
+    /*void Board::gen_castlings_move(const enumPiece& color_, uint64 destination_pos,
             POSITION_T start, std::vector<Move>& vec) const
     {
         add_move(color_, vec,
@@ -257,7 +219,7 @@ namespace chessBoard
                    true, false,
                    special_moves, castlings, half_move_count_ });
          //   std::cout << std::endl << "castling" << std::endl << int_to_string(destination_pos);
-    }
+    }*/
 
     void Board::generate_castlings(const enumPiece& color_,
             std::vector<Move>& vec) const
@@ -269,13 +231,16 @@ namespace chessBoard
             {
                 if (!((pieceBB[1] | pieceBB[0]) & (tab_pos[6] | (tab_pos[5] | tab_pos[4]))))
                     if (!square_is_check(color_, tab_pos[4]))
-                        gen_castlings_move(color_, tab_pos[5], tab_pos[3], vec);
+                        add_move(color_, vec, {3, 5, 3});
+                        //gen_castlings_move(color_, tab_pos[5], tab_pos[3], vec);
+
             }
             if (castlings & tab_pos[0])
             {
                 if (!((pieceBB[1] | pieceBB[0]) & (tab_pos[2] | tab_pos[1]))) {
                     if (!square_is_check(color_, tab_pos[2]))
-                        gen_castlings_move(color_, tab_pos[1], tab_pos[3], vec);
+                        add_move(color_, vec, {3, 1, 2});
+                        //gen_castlings_move(color_, tab_pos[1], tab_pos[3], vec);
                 }
             }
         }
@@ -285,14 +250,16 @@ namespace chessBoard
             {
                 if (!((pieceBB[1] | pieceBB[0]) & (tab_pos[62] | (tab_pos[61] | tab_pos[60])))) {
                     if (!square_is_check(color_, tab_pos[60]))
-                        gen_castlings_move(color_, tab_pos[61], tab_pos[59], vec);
+                        add_move(color_, vec, {59, 61, 3});
+                        //gen_castlings_move(color_, tab_pos[61], tab_pos[59], vec);
                 }
             }
             if (castlings & tab_pos[56])
             {
                 if (!((pieceBB[1] | pieceBB[0]) & (tab_pos[58] | tab_pos[57]))) {
                     if (!square_is_check(color_, tab_pos[58]))
-                        gen_castlings_move(color_, tab_pos[57], tab_pos[59], vec);
+                        add_move(color_, vec, {59, 57, 2});
+                        //gen_castlings_move(color_, tab_pos[57], tab_pos[59], vec);
                 }
             }
         }
@@ -312,9 +279,9 @@ namespace chessBoard
         uint64 temp_norm = (temp & (~pieceBB[notcolor]));
 
         //move capture
-        generate_captures_casts(nKing, color_, temp_cap, i, vec);
+        generate_captures(color_, temp_cap, i, vec);
         //move normal
-        generate_non_captures_casts(nKing, color_, temp_norm, i, vec);
+        generate_non_captures(color_, temp_norm, i, vec);
         if (!player_is_check(color_))
             generate_castlings(color_, vec);
     }
@@ -327,27 +294,16 @@ namespace chessBoard
         while (queen != 0) {
             i = __builtin_ctzll(queen);
             queen &= queen - 1;
-            /*const uint64 &relevant_diagonals = bishop_move[i] & (pieceBB[0] | pieceBB[1]);
-            const uint64 &index_diagonals = (magic_number_bishop[i] * relevant_diagonals) >> 52ull;
-
-            const uint64 &relevant_lignes = tower_move[i] & (pieceBB[0] | pieceBB[1]);
-            const uint64 &index_lignes = (magic_number_tower[i] * relevant_lignes) >> 52ull;
-
-            uint64 temp = tower_output[i][index_lignes] | bishop_output[i][index_diagonals];*/
-            //std::cout << std::endl << int_to_string(relevant_lignes) << std::endl;
 
             uint64 temp = rookAttacks(occ, i) | bishopAttacks(occ, i);
 
             temp = (temp & pieceBB[color_]) ^ temp;
-            //std::cout << std::endl << int_to_string(temp) << std::endl;
             const enumPiece notcolor = other_color(color_);
             uint64 temp_cap = temp & pieceBB[notcolor];
             uint64 temp_norm = temp & (~pieceBB[notcolor]);
 
-
-            generate_captures(nQueen, color_, temp_cap, i, vec);
-            //move normal
-            generate_non_captures(nQueen, color_, temp_norm, i, vec);
+            generate_captures(color_, temp_cap, i, vec);
+            generate_non_captures(color_, temp_norm, i, vec);
         }
     }
 
@@ -360,18 +316,6 @@ namespace chessBoard
             const bool& is_castling, const bool& is_en_passant,
             const uint64& report) const*/
     {
-        /*const auto move = Move(from, to,
-                           type,
-                           capture,
-                           promotion,
-                           is_castling, is_en_passant,
-                           report, castlings, half_move_count_);*/
-     //   if (to_perft() == "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/P2P1RPP/n2Q2K1 w kq - 0 0\n" || to_perft() == "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/P2P1RPP/b2Q2K1 w kq - 0 0\n")
-       //     std::cout << "pute" << std::endl;
-        //this->apply_move(move, color_);
-        //bool ret = this->player_is_check(color_);
-        //this->revert_move(move, color_);
-
         auto b = this->copy_board();
         uint64 h = 0;
         b.apply_move(move, color_, h);
@@ -381,64 +325,31 @@ namespace chessBoard
     }
 
     void Board::generate_attack_move_pawn(const enumPiece &color_,
-            std::vector<Move> &vec, int index, const uint64 (&attack)[64]) const
+            std::vector<Move> &vec, uint16 index, const uint64 (&attack)[64]) const
     {
         //normal
         uint64 mask = attack[index] & pieceBB[other_color(color_)];
         bool is_promotion = pawn_will_promote(index, color_);
-        uint64 i = 0;
+        uint16 i = 0;
         while (mask != 0)
         {
-            i = 1ull << (__builtin_ctzll(mask));
+            i = static_cast<uint16 >(__builtin_ctzll(mask));
             mask &= mask - 1;
-            enumPiece enup;
-            if ((i & pieceBB[nPawn]) != 0)
-            {
-                enup = enumPiece::nPawn;
-            }
-            else if ((i & pieceBB[nKnight]) != 0)
-            {
-                enup = enumPiece::nKnight;
-            }
-            else if ((i & pieceBB[nBishop]) != 0)
-            {
-                enup = enumPiece::nBishop;
-            }
-            else if ((i & pieceBB[nRook]) != 0)
-            {
-                enup = enumPiece::nRook;
-            }
-            else if ((i & pieceBB[nQueen]) != 0)
-            {
-                enup = enumPiece::nQueen;
-            }
-            else
-            {
-                enup = enumPiece::nKing;
-            }
-
-
             if (is_promotion)
             {
                 add_move(color_, vec,
-                        { tab_pos[index], i, nPawn, enup, nQueen, false, false,
-                          special_moves, castlings, half_move_count_ });
+                        { index, i, 15});
                 add_move(color_, vec,
-                        { tab_pos[index], i, nPawn, enup, nRook, false, false,
-                          special_moves, castlings, half_move_count_ });
+                         { index, i, 14});
                 add_move(color_, vec,
-                        { tab_pos[index], i, nPawn, enup, nKnight, false, false,
-                          special_moves, castlings, half_move_count_});
+                         { index, i, 13});
                 add_move(color_, vec,
-                        { tab_pos[index], i, nPawn, enup, nBishop, false, false,
-                          special_moves, castlings, half_move_count_});
+                         { index, i, 12});
             }
             else
             {
                 add_move(color_, vec,
-                         { tab_pos[index], i, nPawn, enup, std::nullopt,
-                           false, false,
-                           special_moves, castlings, half_move_count_});
+                         { index, i, 4});
             }
         }
 
@@ -446,69 +357,52 @@ namespace chessBoard
         uint64 oui_passant = tab_pos[index]; // pos du pion
         oui_passant = (oui_passant << 1ull) | (oui_passant >> 1ull); // les cases juste a cote, la ou se trouve le possible pion mange
         oui_passant = oui_passant & (pieceBB[other_color(color_)] & pieceBB[nPawn]); // on enleve les endroit sans pions adverse
-       // oui_passant = oui_passant; // on garde ceux ou le en passant est possible
         if (!oui_passant)
             return;
         uint64 mask_en_passant = attack[index] & special_moves; // on compare avec les attaques possible
-//        if (index == 31 && special_moves) {
-           //std::cout << "hello" << std::endl << int_to_string(special_moves) << std::endl;
-           //std::cout << int_to_string(tab_pos[index]) << std::endl << int_to_string(oui_passant) << std::endl;
-        //}
         uint64 j = 0;
         while (mask_en_passant != 0)
         {
-            j = 1ull << (__builtin_ctzll(mask_en_passant));
+            j = __builtin_ctzll(mask_en_passant);
             mask_en_passant &= mask_en_passant - 1;
             add_move(color_,vec,
-                     { tab_pos[index], j, nPawn, nPawn, std::nullopt,
-                       false, true,
-                       special_moves, castlings, half_move_count_ });
-       //     std::cout << "12" << std::endl;
+                     { index, static_cast<uint16 >(j), 5});
         }
 
     }
 
     void Board::generate_classic_move_pawn(const enumPiece& color_,
-            std::vector<Move>& vec, const int& index,
+            std::vector<Move>& vec, const uint16 & index,
             const uint64 (&normal)[64], const uint64 (&jump)[64]) const
     {
         const uint64 mask = normal[index] & (~(pieceBB[0] | pieceBB[1]));
         if (mask != 0)
         {
+            uint16 i = static_cast<uint16 >(__builtin_ctzll(mask));
             bool is_promotion = pawn_will_promote(index, color_);
             if (is_promotion)
             {
                 add_move(color_, vec,
-                         { tab_pos[index], mask, nPawn, std::nullopt, nQueen,
-                           false, false,
-                           special_moves, castlings, half_move_count_ });
+                         { index, i, 11});
                 add_move(color_, vec,
-                         { tab_pos[index], mask, nPawn, std::nullopt, nRook,
-                           false, false,
-                           special_moves, castlings, half_move_count_ });
+                         { index, i, 10});
                 add_move(color_, vec,
-                         { tab_pos[index], mask, nPawn, std::nullopt, nBishop,
-                           false, false,
-                           special_moves, castlings, half_move_count_ });
+                         { index, i, 9});
                 add_move(color_, vec,
-                         { tab_pos[index], mask, nPawn, std::nullopt, nKnight,
-                           false, false,
-                           special_moves, castlings, half_move_count_ });
+                         { index, i, 8});
             }
             else
             {
                 add_move(color_, vec,
-                         { tab_pos[index], mask, nPawn,
-                           std::nullopt, std::nullopt, false, false,
-                           special_moves, castlings, half_move_count_ });
+                         { index, i, 0});
+
             }
             const uint64 mask_jump = jump[index] & (~(pieceBB[0] | pieceBB[1]));
             if (mask_jump != 0)
             {
                 add_move(color_, vec,
-                         { tab_pos[index], mask_jump, nPawn,
-                           std::nullopt, std::nullopt, false, false,
-                           special_moves, castlings, half_move_count_ });
+                         { index, static_cast<uint16 >(__builtin_ctzll(mask_jump)), 1});
+
             }
         }
 
@@ -519,7 +413,7 @@ namespace chessBoard
             uint64& mask, const uint64 (&attack)[64],
             const uint64 (&normal)[64], const uint64 (&jump)[64]) const
     {
-        int i = 0;
+        uint16 i = 0;
         //std::cout << std::endl << int_to_string(mask) << std::endl;
         while (mask != 0)
         {
@@ -549,7 +443,7 @@ namespace chessBoard
         if (king_mask != 0)
         {
             i = 1ull << (__builtin_ctzll(king_mask));
-            board.move_attack_square(moves, color_, i, nKing);
+            board.move_attack_square(moves, color_, i);
         }
         // Check for knight
         uint64 knight_mask = board.pieceBB[3] & board.pieceBB[color_];
@@ -557,7 +451,7 @@ namespace chessBoard
         {
             i = 1ull << (__builtin_ctzll(knight_mask));
             knight_mask &= knight_mask - 1;
-            board.move_attack_square(moves, color_, i, nKnight);
+            board.move_attack_square(moves, color_, i);
         }
         // check for tower
         uint64 tower_pos = (board.pieceBB[5] & board.pieceBB[color_]);
@@ -565,7 +459,7 @@ namespace chessBoard
         {
             i = 1ull << (__builtin_ctzll(tower_pos));
             tower_pos &= tower_pos - 1;
-            board.move_attack_square(moves, color_, i, nRook);
+            board.move_attack_square(moves, color_, i);
         }
         // check for bishop
         uint64 bishop_pos = (board.pieceBB[4] & board.pieceBB[color_]);
@@ -573,7 +467,7 @@ namespace chessBoard
         {
             i = 1ull << (__builtin_ctzll(bishop_pos));
             bishop_pos &= bishop_pos - 1;
-            board.move_attack_square(moves, color_, i, nBishop);
+            board.move_attack_square(moves, color_, i);
         }
         // check queen
         uint64 queen_tower_pos = (board.pieceBB[6] & board.pieceBB[color_]);
@@ -581,7 +475,7 @@ namespace chessBoard
         {
             i = 1ull << (__builtin_ctzll(queen_tower_pos));
             queen_tower_pos &= queen_tower_pos - 1;
-            board.move_attack_square(moves, color_, i, nQueen);
+            board.move_attack_square(moves, color_, i);
         }
         // check pawn
 
@@ -590,19 +484,9 @@ namespace chessBoard
         {
             i = 1ull << (__builtin_ctzll(mask_black_pawn));
             mask_black_pawn &= mask_black_pawn - 1;
-            board.move_attack_square(moves, color_, i, nPawn);
+            board.move_attack_square(moves, color_, i);
         }
     }
 
-    std::vector<Move> remove_non_capture_move(std::vector<Move>& vec)
-    {
-        auto ret = std::vector<Move>();
-        for (auto &move : vec)
-        {
-            if (move.is_capture())
-                ret.push_back(move);
-        }
-        return ret;
-    }
 }
 

@@ -134,17 +134,12 @@ namespace ai::helpers
         while (pos < (int)input.size())
         {
             ret = input[pos];
-            chessBoard::Move m = board.ia_apply_move(uci::string_to_move(ret), color_, hash);
+            chessBoard::Move m = board.string_to_move(ret, color_);
+            hash = board.apply_move(m, color_, hash);
+            //chessBoard::Move m = board.ia_apply_move(uci::string_to_move(ret), color_, hash);
             color_ = board.other_color(color_);
             board.color = color_;
-            /*if (m.is_capture()) {
-                vecBoard.clear();
-                vecBoard.emplace_back(hash, 1);
-            }
-            else {
-                threefold(vecBoard, hash, board.half_move_count_, i);
-            }*/
-            if (m.is_capture() || m.piece_get() == chessBoard::nPawn)
+            if (m.isCapture() || m.getToPosition() == board.pieceBB[chessBoard::nPawn])
                 ai::meta.treefold.reset();
             ai::meta.treefold.push(hash);
             pos++;
@@ -206,7 +201,7 @@ namespace ai::helpers
         return false;
     }
 
-    std::vector<chessBoard::Move> remove_move_repetition(const std::vector<chessBoard::Move>& vec,
+    /*std::vector<chessBoard::Move> remove_move_repetition(const std::vector<chessBoard::Move>& vec,
                                                          chessBoard::Board board, std::vector<std::pair<uint64, int>>& vec_board, uint64 hash)
     {
         auto ret = std::vector<chessBoard::Move>();
@@ -225,7 +220,7 @@ namespace ai::helpers
         }
         return ret;
 
-    }
+    }*/
     void swap_vector_values(std::vector<chessBoard::Move>& vect)
     {
         auto tmp = std::vector<chessBoard::Move>();

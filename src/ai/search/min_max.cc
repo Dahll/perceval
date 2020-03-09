@@ -27,7 +27,7 @@ namespace ai::search
         //auto moves = helpers::remove_move_repetition(mov, b, ai::meta.vectBoard, hash);
         /*if (moves.empty())
             return INT32_MIN + 1;*/
-        auto sorted_moves = ordering::moves_set_values(mov, std::nullopt, depth, hash);
+        auto sorted_moves = ordering::moves_set_values(b, mov, std::nullopt, depth, hash);
         output_vect.push_back(sorted_moves[0].second);
         int score = 0;
         for (const auto &move : sorted_moves)
@@ -150,7 +150,7 @@ namespace ai::search
                 return 0;
             return best;
         }
-        const auto &sorted_moves = ordering::moves_set_values(moves, prev_move, depth, hash);//give hash
+        const auto &sorted_moves = ordering::moves_set_values(b, moves, prev_move, depth, hash);//give hash
         const auto &inv_color = b.other_color(colo_act);
         prev_vect_move.push_back(sorted_moves[0].second);
         int score = 0;
