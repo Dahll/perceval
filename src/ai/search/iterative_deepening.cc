@@ -3,11 +3,44 @@
 //
 
 #include "search.hh"
-
-using namespace ai::refutation_table;
+#include "string.h"
 
 namespace ai::search
 {
+
+    PV G_PV = PV();
+
+    std::string PV_to_str(const PV& pv)
+    {
+        std::string tmp = "";
+        for (int i = 0; i < pv.length; i++)
+        {
+            tmp.append(pv.pv[i].to_str());
+            tmp.append(" ");
+        }
+        return tmp;
+    }
+
+    void mergePV(PV& from, PV& to)
+    {
+        to.length = from.length;
+        for (int i = 0; i < from.length; i++)
+        {
+            to.pv[i] = from.pv[i];
+        }
+    }
+
+    void updatePV(Move best_move, PV& parent, PV& child)
+    {
+        parent.pv[0] = best_move;
+        /*for (int i = 0; i < child.length; i++)
+        {
+            parent.pv[i+1] = child.pv[i];
+        }*/
+        memcpy(parent.pv + 1, child.pv, child.length * sizeof(Move));
+        parent.length = child.length + 1;
+    }
+
     void iterative_deepening() // max_time in milliseconds
     {
         //Initialisation des variables
@@ -15,38 +48,25 @@ namespace ai::search
         int i = 1;
 
         const auto& start = system_clock::now();
-        std::cout << "TIME | DEPTH | MOVE" << std::endl;
+        std::cout << "TIME | DEPTH | PV" << std::endl;
         transposition_table::tt_search.increment_age();
-        //ai::transposition_table::tt_search.reset();
 
-        /* Setup input_vect */
-        input_vect = std::vector<chessBoard::Move>();
-        input_vect.insert(input_vect.begin(), chessBoard::Move());
-        input_vect.insert(input_vect.begin(), chessBoard::Move());
-
-        auto output_vect = std::vector<chessBoard::Move>();
+        PV tmp = PV();
 
         auto move = chessBoard::Move();
         bool winning_move = false;
         while (true)
         {
 
-            auto tmp_move = caller_alphabeta(meta.boardM, i, output_vect, meta.hash, winning_move);
+            auto tmp_move = caller_alphabeta(meta.boardM, i, 0, tmp, meta.hash, winning_move);
             if (!ai::meta.running)
                 break;
             move = tmp_move;
-            /* Update input vect */
-            input_vect = output_vect;
-            ai::helpers::swap_vector_values(input_vect);
-            ai::helpers::add_padding_move(input_vect, i + 1);
-            input_vect.insert(input_vect.begin(), chessBoard::Move());
-            //input_vect.insert(input_vect.begin(), chessBoard::Move());
 
-            /* Reset output_vect */
-            output_vect.resize(0);
+            mergePV(tmp, G_PV);
 
-            /// This prints the time spend for this depth
-            std::cout << duration_cast<milliseconds>(system_clock::now()-start).count() << " | " << i << " | " << move.to_str() << std::endl;
+            std::cout << duration_cast<milliseconds>(system_clock::now()-start).count() << " | " << i << " | " << PV_to_str(G_PV) << std::endl;
+
             if (winning_move)
             {
                 break;

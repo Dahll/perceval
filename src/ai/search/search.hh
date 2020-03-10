@@ -16,23 +16,36 @@
 #include "../helpers/helper.hh"
 #include "../uci.hh"
 #include "../../board/board.hh"
-#include "../refutation_table.hh"
 #include "../metadata.hh"
 
 using namespace std::chrono;
+using namespace chessBoard;
 
 namespace ai::search
 {
 
-    int alphabeta(const chessBoard::Board& b, const chessBoard::enumPiece& colo_act, int depth, int alpha,
+    struct PV
+    {
+        uint8 length = 0;
+        Move pv[256];
+    };
+
+    std::string PV_to_str(const PV& pv);
+    void updatePV(Move best_move, PV& parent, PV& child);
+    void mergePV(PV& from, PV& to);
+
+    int alphabeta(const chessBoard::Board& b, const chessBoard::enumPiece& colo_act, int depth, int ply, int alpha,
                 int beta, const chessBoard::Move& prev_move,
-                chessBoard::MOVES_T& prev_vect_move,
+                PV& parent_PV,
                 uint64 hash);
 
-    chessBoard::Move caller_alphabeta(const chessBoard::Board& b, int depth, std::vector<chessBoard::Move>& output_vect, uint64 hash, bool& winning_move);
+    chessBoard::Move caller_alphabeta(const chessBoard::Board& b, int depth, int ply, PV& parent_PV, uint64 hash, bool& winning_move);
 
     int quiesce(const chessBoard::Board& b, const chessBoard::enumPiece& color_act, int alpha, int beta,
                 const chessBoard::Move& prev_move, uint64 hash);
     void iterative_deepening();
+
+    extern PV G_PV;
+
 
 }

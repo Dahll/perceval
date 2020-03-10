@@ -3,6 +3,7 @@
 //
 
 #include "evaluation.hh"
+#include "../search/search.hh"
 
 namespace ai::ordering
 {
@@ -74,7 +75,7 @@ namespace ai::ordering
 
 
 
-    int calc_move(const chessBoard::Board& b, const chessBoard::Move& move, size_t act_depth,
+    int calc_move(const chessBoard::Board& b, const chessBoard::Move& move, int ply,
             const std::optional<chessBoard::Move>& prev_move, uint64 hash)
     {
         int ret = 0;
@@ -137,9 +138,9 @@ namespace ai::ordering
             }
 
         }
-        if (refutation_table::input_vect.size() > 1)
+        if (ply < search::G_PV.length)
         {
-            const chessBoard::Move& opti_move = refutation_table::input_vect.at(act_depth);
+            const chessBoard::Move &opti_move = search::G_PV.pv[ply];
             if (opti_move == move)
             {
                 ret += 30000;
@@ -164,12 +165,12 @@ namespace ai::ordering
     }
 
     VECTOR_PAIR moves_set_values(const chessBoard::Board& b,const chessBoard::MOVES_T& vect,
-            const std::optional<chessBoard::Move>& prev_move, int depth, uint64 hash)
+            const std::optional<chessBoard::Move>& prev_move, int ply, uint64 hash)
     {
         VECTOR_PAIR ret;
         for (const auto& move : vect)
         {
-            ret.emplace_back(calc_move(b, move, depth, prev_move, hash), move);
+            ret.emplace_back(calc_move(b, move, ply, prev_move, hash), move);
         }
         std::sort(ret.begin(), ret.end(), cmp_pair);
         return ret;

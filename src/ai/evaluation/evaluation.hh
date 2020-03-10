@@ -11,7 +11,6 @@
 #include <strings.h>
 #include "stock.hh"
 #include "../transposition_table.hh"
-#include "../refutation_table.hh"
 
 
 namespace ai
@@ -86,11 +85,11 @@ namespace ai
         int quiescence_calc_move(const chessBoard::Board& b, const chessBoard::Move &move,
                                  const std::optional<chessBoard::Move> &prev_move);
 
-        int calc_move(const chessBoard::Board& b, const chessBoard::Move &move, size_t act_depth,
+        int calc_move(const chessBoard::Board& b, const chessBoard::Move &move, int ply,
                       const std::optional<chessBoard::Move> &prev_move, uint64 hash);
 
         VECTOR_PAIR moves_set_values(const chessBoard::Board& b,const std::vector<chessBoard::Move> &vect,
-                                     const std::optional<chessBoard::Move> &prev_move, int depth, uint64 hash);
+                                     const std::optional<chessBoard::Move> &prev_move, int ply, uint64 hash);
 
         VECTOR_PAIR moves_set_values_quiescence(const chessBoard::Board& b,const std::vector<chessBoard::Move> &vect,
                                                 const std::optional<chessBoard::Move> &prev_move);

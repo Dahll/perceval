@@ -145,6 +145,7 @@ namespace ai::helpers
             ai::meta.treefold.push(hash);
             pos++;
         }
+
         return hash;
     }
 
