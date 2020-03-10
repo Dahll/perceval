@@ -9,7 +9,7 @@
 namespace ai::transposition_table
 {
 
-    TT tt_search = TT(8000);
+    TT tt_search = TT(32000);
 
     void TT::update(const chessBoard::Move& move, int score, int depth, uint64 hash, int is_cut_off) noexcept
     {

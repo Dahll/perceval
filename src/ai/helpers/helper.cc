@@ -124,6 +124,7 @@ namespace ai::helpers
         return hash_value;
     }
 
+
     uint64 apply_all_moves(std::vector<std::string>& input, chessBoard::Board& board, chessBoard::enumPiece color_, std::vector<std::pair<uint64, int>>& vecBoard)
     {
         uint64 hash = zobrist(board);

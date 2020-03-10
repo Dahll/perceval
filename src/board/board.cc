@@ -122,19 +122,18 @@ namespace chessBoard
         if (m.getFromPosition() & (pieceBB[nPawn] & pieceBB[color_])) // IsPawn
         {
             // IsEnPassant
-            if (color_ == nWhite &&
-            (m.getToPosition() & white_pawn_attack[m.getFromIndex()] & pieceBB[other_color(color_)]))
+            if (m.getToPosition() & special_moves)
             {
-                flag = 5;
+                flag = 5u;
             }
-            else if (color_ == nBlack &&
+            /*else if (color_ == nBlack &&
                 (m.getToPosition() & black_pawn_attack[m.getFromIndex()] & pieceBB[other_color(color_)]))
             {
-                flag = 5;
-            }
+                flag = 5u;
+            }*/
 
         }
-        else if (m.getToPosition() & pieceBB[other_color(color_)]) // IsCapture
+        if (m.getToPosition() & pieceBB[other_color(color_)]) // IsCapture
         {
             if (m.getFromPosition() & pieceBB[nPawn]) // IsPawn
             {
@@ -142,30 +141,30 @@ namespace chessBoard
                 {
                     if (s[4] == 'q')
                     {
-                        flag = 15;
+                        flag = 15u;
                     }
                     else if (s[4] == 'r')
                     {
-                        flag = 14;
+                        flag = 14u;
                     }
                     else if (s[4] == 'b')
                     {
-                        flag = 13;
+                        flag = 13u;
                     }
                     else if (s[4] == 'n')
                     {
-                        flag = 12;
+                        flag = 12u;
                     }
                 }
                 else
                 {
-                    flag = 4;
+                    flag = 4u;
                 }
 
             }
             else
             {
-                flag = 4;
+                flag = 4u;
             }
         }
         else
@@ -176,28 +175,28 @@ namespace chessBoard
                 {
                     if (s[4] == 'q')
                     {
-                        flag = 11;
+                        flag = 11u;
                     }
                     else if (s[4] == 'r')
                     {
-                        flag = 10;
+                        flag = 10u;
                     }
                     else if (s[4] == 'b')
                     {
-                        flag = 9;
+                        flag = 9u;
                     }
                     else if (s[4] == 'n')
                     {
-                        flag = 8;
+                        flag = 8u;
                     }
                 }
                 else if (color_ == nWhite && (m.getToPosition() & white_pawn_jump[m.getFromIndex()])) // test double pawn push white
                 {
-                    flag = 1;
+                    flag = 1u;
                 }
                 else if (color_ == nBlack && (m.getToPosition() & black_pawn_jump[m.getFromIndex()])) // test double pawn push black
                 {
-                    flag = 1;
+                    flag = 1u;
                 }
             }
             else if (m.getFromPosition() & pieceBB[nKing]) // IsKing
@@ -206,22 +205,22 @@ namespace chessBoard
                 {
                     if (m.getToIndex() == 1)
                     {
-                        flag = 2;
+                        flag = 2u;
                     }
                     else if (m.getToIndex() == 5)
                     {
-                        flag = 3;
+                        flag = 3u;
                     }
                 }
                 if (m.getFromIndex() == 59)
                 {
                     if (m.getToIndex() == 57)
                     {
-                        flag = 2;
+                        flag = 2u;
                     }
                     else if (m.getToIndex() == 61)
                     {
-                        flag = 3;
+                        flag = 3u;
                     }
                 }
             }
