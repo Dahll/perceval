@@ -40,6 +40,7 @@ namespace ai::search
         MAT = 3000000,
         MIN_MAT = 2999000
     };
+    
 
     std::string PV_to_str(const PV& pv);
     void updatePV(Move best_move, PV& parent, PV& child);
@@ -50,7 +51,7 @@ namespace ai::search
                 PV& parent_PV,
                 uint64 hash);
 
-    chessBoard::Move caller_alphabeta(const chessBoard::Board& b, int depth, int ply, PV& parent_PV, uint64 hash, bool& winning_move);
+    chessBoard::Move caller_alphabeta(const chessBoard::Board& b, int depth, PV& parent_PV, uint64 hash, int alpha, int beta, int& score);
 
     int quiesce(const chessBoard::Board& b, const chessBoard::enumPiece& color_act, int alpha, int beta,
                 const chessBoard::Move& prev_move, uint64 hash);

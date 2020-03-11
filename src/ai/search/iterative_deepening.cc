@@ -33,11 +33,11 @@ namespace ai::search
     void updatePV(Move best_move, PV& parent, PV& child)
     {
         parent.pv[0] = best_move;
-        /*for (int i = 0; i < child.length; i++)
+        for (int i = 0; i < child.length; i++)
         {
             parent.pv[i+1] = child.pv[i];
-        }*/
-        memcpy(parent.pv + 1, child.pv, child.length * sizeof(Move));
+        }
+        //memcpy(parent.pv + 1, child.pv, child.length * sizeof(Move));
         parent.length = child.length + 1;
     }
 
@@ -54,20 +54,32 @@ namespace ai::search
         PV tmp = PV();
 
         auto move = chessBoard::Move();
-        bool winning_move = false;
+
+        int alpha = -INF;
+        int beta = INF;
+
         while (true)
         {
-
-            auto tmp_move = caller_alphabeta(meta.boardM, i, 0, tmp, meta.hash, winning_move);
+            int score = -MAT;
+            auto tmp_move = caller_alphabeta(meta.boardM, i, tmp, meta.hash, alpha, beta, score);
             if (!ai::meta.running)
                 break;
+
+            if ((score <= alpha) ||  (score >= beta))
+            {
+                alpha = -INF;
+                beta = INF;
+                continue;
+            }
+            alpha = score - 50;
+            beta = score + 50;
             move = tmp_move;
 
             mergePV(tmp, G_PV);
 
             std::cout << duration_cast<milliseconds>(system_clock::now()-start).count() << " | " << i << " | " << PV_to_str(G_PV) << std::endl;
 
-            if (winning_move)
+            if (score >= MIN_MAT || score <= -MIN_MAT)
             {
                 break;
             }

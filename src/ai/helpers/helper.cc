@@ -146,6 +146,8 @@ namespace ai::helpers
             pos++;
         }
 
+        board.print();
+
         return hash;
     }
 
