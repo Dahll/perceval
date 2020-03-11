@@ -18,6 +18,7 @@
 #include "../../board/board.hh"
 #include "../metadata.hh"
 
+
 using namespace std::chrono;
 using namespace chessBoard;
 
@@ -28,6 +29,16 @@ namespace ai::search
     {
         uint8 length = 0;
         Move pv[256];
+    };
+
+
+    enum Bound : int {
+        INF = INT32_MAX - 1,
+    };
+
+    enum Value : int {
+        MAT = 3000000,
+        MIN_MAT = 2999000
     };
 
     std::string PV_to_str(const PV& pv);

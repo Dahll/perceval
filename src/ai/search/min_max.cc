@@ -10,8 +10,8 @@ namespace ai::search
                          uint64 hash,
                          bool& winning_move)
     {
-        int alpha = INT32_MIN + 1;
-        int beta = INT32_MAX;
+        int alpha = -INF;
+        int beta = INF;
         auto save_alpha = alpha;
         bool foundpv = false;
 
@@ -19,7 +19,7 @@ namespace ai::search
 
         PV child_PV = PV();
 
-        int best = INT32_MIN + 1;
+        int best = -MAT + ply;
         const auto &inv_color = b.other_color(b.color);
         const auto &colo_act = b.color;
 
@@ -62,7 +62,7 @@ namespace ai::search
                 //refutation_table::merge_vect(output_vect, actual_vect);
                 updatePV(move.second, parent_PV, child_PV);
                 transposition_table::tt_search.update(move.second, score, depth, hash, -1);
-                if (score == INT32_MAX)
+                if (score >= MIN_MAT)
                     winning_move = true;
                 return move.second;
             }
@@ -102,7 +102,7 @@ namespace ai::search
         {
             transposition_table::tt_search.update(best_move, best, depth, hash, 1);
         }
-        if (score == INT32_MAX || score == INT32_MIN + 1)
+        if (score <= -MIN_MAT)
             winning_move = true;
         return best_move;
     }
@@ -152,7 +152,7 @@ namespace ai::search
         //auto actual_vect = chessBoard::MOVES_T();
 
         PV child_PV = PV();
-        int best = INT32_MIN + 1;
+        int best = -MAT + ply;
         const auto &moves = b.generate_moves(colo_act);
         if (moves.empty())
         {

@@ -13,6 +13,7 @@ namespace ai::search
         if (!meta.running)
             return 0;
         // Evaluate and break with evaluate result
+
         const int& stand_pat = evaluation::evaluate(b, color_act);
         if (stand_pat >= beta)
         {
