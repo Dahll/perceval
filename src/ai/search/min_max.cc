@@ -14,11 +14,11 @@ namespace ai::search
         bool foundpv = false;
 
         PV child_PV = PV();
+        const auto &inv_color = b.other_color(b.color);
+        const auto &colo_act = b.color;
 
         int best = -INF;
 
-        const auto &inv_color = b.other_color(b.color);
-        const auto &colo_act = b.color;
 
         const auto &mov = b.generate_moves(colo_act);
 
@@ -107,6 +107,8 @@ namespace ai::search
         if (!meta.running)
             return 0;
         //test if the board exist in the hash map and if depth left == depth stocked
+        bool isPV = (beta - alpha) != 1;
+
         auto save_alpha = alpha;
         auto transpo = transposition_table::tt_search.find(hash);
         if (transpo.depth_ != -1 && transpo.hash_ == hash && transpo.depth_ >= depth)
@@ -135,14 +137,15 @@ namespace ai::search
 
 
 
-        if (depth >= 2 && !b.player_is_check(colo_act))
+        if (!isPV && depth >= 2 && !b.player_is_check(colo_act))
         {
+            int R = 2 + (32 * depth +  384) / 128;
             auto tmp_board = b;
             auto tmp_hash = hash;
             tmp_hash ^= position_value[ffsll(tmp_board.special_moves)];
             tmp_board.special_moves = 0;
             tmp_hash ^= side_to_move;
-            int val = -alphabeta(tmp_board, inv_color, depth - 1 - 2, ply, -beta, -beta + 1, prev_move, child_PV,
+            int val = -alphabeta(tmp_board, inv_color, depth - 1 - R, ply, -beta, -beta + 1, prev_move, child_PV,
                                  tmp_hash);
             if (val >= beta)
                 return beta;
@@ -198,30 +201,36 @@ namespace ai::search
             ai::meta.treefold.pop();
             if (score >= beta)
             {
+                //if (isPV)
                 updatePV(move.second, parent_PV, child_PV);
                 transposition_table::tt_search.update(move.second, score, depth, hash, -1);
                 return score;
             }
             if (score > best)
             {
-                updatePV(move.second, parent_PV, child_PV);
                 best = score;
                 if (score > alpha)
                 {
                     foundpv = true;
-                    alpha = score;
+                    if (isPV)
+                    {
+                        updatePV(move.second, parent_PV, child_PV);
+                        alpha = score;
+                    }
                 }
             }
             child_PV.length = 0;
         }
+
         if (save_alpha < alpha && alpha < beta)
         {
             transposition_table::tt_search.update(parent_PV.pv[0], best, depth, hash, 0);
         }
-        else if (alpha <= save_alpha)
+        else if (alpha <= save_alpha && isPV)
         {
             transposition_table::tt_search.update(parent_PV.pv[0], best, depth, hash, 1);
         }
+
         return best;
     }
 }

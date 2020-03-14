@@ -65,7 +65,7 @@ namespace ai::search
             if (!ai::meta.running)
                 break;
 
-            if (i >= 6)
+            /*if (i >= 6)
             {
                 if ((score <= alpha) || (score >= beta))
                 {
@@ -76,7 +76,7 @@ namespace ai::search
                 }
                 alpha = score - 35;
                 beta = score + 35;
-            }
+            }*/
             move = tmp_move;
 
             mergePV(tmp, G_PV);
