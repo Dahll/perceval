@@ -46,15 +46,14 @@ namespace ai::search
     void updatePV(Move best_move, PV& parent, PV& child);
     void mergePV(PV& from, PV& to);
 
-    int alphabeta(const chessBoard::Board& b, const chessBoard::enumPiece& colo_act, int depth, int ply, int alpha,
-                int beta, const chessBoard::Move& prev_move,
-                PV& parent_PV,
-                uint64 hash);
+    int alphabeta(const Board& b, const enumPiece& colo_act, int depth, int ply, int alpha,
+                int beta, const Move& prev_move, PV& parent_PV, uint64 hash);
 
-    chessBoard::Move caller_alphabeta(const chessBoard::Board& b, int depth, PV& parent_PV, uint64 hash, int alpha, int beta, int& score);
+    chessBoard::Move caller_alphabeta(const Board& b, int depth, PV& parent_PV, uint64 hash,
+            int alpha, int beta, int& score);
 
-    int quiesce(const chessBoard::Board& b, const chessBoard::enumPiece& color_act, int alpha, int beta,
-                const chessBoard::Move& prev_move, uint64 hash);
+    int quiesce(const Board& b, const enumPiece& color_act, int alpha, int beta,
+                const Move& prev_move, uint64 hash);
     void iterative_deepening();
 
     extern PV G_PV;

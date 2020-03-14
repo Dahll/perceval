@@ -48,7 +48,7 @@ namespace ai::search
         int i = 1;
 
         const auto& start = system_clock::now();
-        std::cout << "TIME | DEPTH | PV" << std::endl;
+        std::cout << "TIME | DEPTH | SCORE | PV" << std::endl;
         transposition_table::tt_search.increment_age();
 
         PV tmp = PV();
@@ -58,26 +58,30 @@ namespace ai::search
         int alpha = -INF;
         int beta = INF;
 
+        int score = -MAT;
         while (true)
         {
-            int score = -MAT;
             auto tmp_move = caller_alphabeta(meta.boardM, i, tmp, meta.hash, alpha, beta, score);
             if (!ai::meta.running)
                 break;
 
-            if ((score <= alpha) ||  (score >= beta))
+            if (i >= 6)
             {
-                alpha = -INF;
-                beta = INF;
-                continue;
+                if ((score <= alpha) || (score >= beta))
+                {
+                    std::cout << "research from " << score << "\n";
+                    alpha = -INF;
+                    beta = INF;
+                    continue;
+                }
+                alpha = score - 35;
+                beta = score + 35;
             }
-            alpha = score - 50;
-            beta = score + 50;
             move = tmp_move;
 
             mergePV(tmp, G_PV);
 
-            std::cout << duration_cast<milliseconds>(system_clock::now()-start).count() << " | " << i << " | " << PV_to_str(G_PV) << std::endl;
+            std::cout << duration_cast<milliseconds>(system_clock::now()-start).count() << " | " << i << " | " << score << " | " << PV_to_str(G_PV) << std::endl;
 
             if (score >= MIN_MAT || score <= -MIN_MAT)
             {

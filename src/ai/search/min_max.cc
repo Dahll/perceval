@@ -8,32 +8,31 @@ namespace ai::search
     chessBoard::Move caller_alphabeta(const chessBoard::Board& b, int depth,
                          PV& parent_PV,
                          uint64 hash, int alpha, int beta,
-                         int& best)
+                         int& best1)
     {
         auto save_alpha = alpha;
         bool foundpv = false;
 
-        //auto actual_vect = std::vector<chessBoard::Move>();
-
         PV child_PV = PV();
+
+        int best = -INF;
 
         const auto &inv_color = b.other_color(b.color);
         const auto &colo_act = b.color;
 
-        //test if the board exist in the hash map and if depth left == depth stocked
         const auto &mov = b.generate_moves(colo_act);
-        chessBoard::Move best_move = mov[0];
-        //auto moves = helpers::remove_move_repetition(mov, b, ai::meta.vectBoard, hash);
-        /*if (moves.empty())
-            return INT32_MIN + 1;*/
+
+        chessBoard::Move best_move = Move();
+
         auto sorted_moves = ordering::moves_set_values(b, mov, std::nullopt, 0, hash);
 
         updatePV(sorted_moves[0].second, parent_PV, child_PV);
-        //output_vect.push_back(sorted_moves[0].second);
 
         int score = 0;
+
         for (const auto &move : sorted_moves)
         {
+
             auto cpy = b;
             const uint64 &next_hash = cpy.apply_move(move.second, colo_act, hash);
             ai::meta.treefold.push(hash);
@@ -55,9 +54,7 @@ namespace ai::search
             ai::meta.treefold.pop();
             if (score >= beta)
             {
-                //output_vect[0] = move.second;
-                //refutation_table::merge_vect(output_vect, actual_vect);
-                best = score;
+                best1 = score;
                 updatePV(move.second, parent_PV, child_PV);
                 transposition_table::tt_search.update(move.second, score, depth, hash, -1);
                 return move.second;
@@ -66,8 +63,6 @@ namespace ai::search
             {
                 best = score;
                 best_move = move.second;
-                //refutation_table::merge_vect(output_vect, actual_vect);
-                //output_vect[0] = move.second;
                 updatePV(move.second, parent_PV, child_PV);
                 if (score > alpha)
                 {
@@ -76,20 +71,13 @@ namespace ai::search
                 }
             }
             child_PV.length = 0;
-            //actual_vect.resize(0);
+
+            /*if (best < alpha)
+            {
+                best1 = best;
+                return best_move;
+            }*/
         }
-        /*if (best <= save_alpha)
-        {
-            transposition_table::tt_search.update(output_vect[0], best, depth, hash, 1);
-        }
-        else if (best >= beta)
-        {
-            transposition_table::tt_search.update(output_vect[0], best, depth, hash, -1);
-        }
-        else
-        {
-            transposition_table::tt_search.update(output_vect[0], best, depth, hash, 0);
-        }*/
         if (save_alpha < alpha && alpha < beta)
         {
             transposition_table::tt_search.update(best_move, best, depth, hash, 0);
@@ -98,6 +86,7 @@ namespace ai::search
         {
             transposition_table::tt_search.update(best_move, best, depth, hash, 1);
         }
+        best1 = best;
         return best_move;
     }
 
@@ -136,16 +125,34 @@ namespace ai::search
                 return transpo.score_;
         }
 
-        if (depth == 0)
+        if (depth <= 0)
         {
             return quiesce(b, colo_act, alpha, beta, prev_move, hash);
+        }
+
+        const auto &inv_color = b.other_color(colo_act);
+        PV child_PV = PV();
+
+
+
+        if (depth >= 2 && !b.player_is_check(colo_act))
+        {
+            auto tmp_board = b;
+            auto tmp_hash = hash;
+            tmp_hash ^= position_value[ffsll(tmp_board.special_moves)];
+            tmp_board.special_moves = 0;
+            tmp_hash ^= side_to_move;
+            int val = -alphabeta(tmp_board, inv_color, depth - 1 - 2, ply, -beta, -beta + 1, prev_move, child_PV,
+                                 tmp_hash);
+            if (val >= beta)
+                return beta;
+            child_PV.length = 0;
         }
 
         bool foundpv = false;
 
         //auto actual_vect = chessBoard::MOVES_T();
 
-        PV child_PV = PV();
         int best = -MAT + ply;
         const auto &moves = b.generate_moves(colo_act);
         if (moves.empty())
@@ -154,8 +161,13 @@ namespace ai::search
                 return 0;
             return best;
         }
+
+
+
+        //Null move prunning
+
+
         const auto &sorted_moves = ordering::moves_set_values(b, moves, prev_move, ply, hash);//give hash
-        const auto &inv_color = b.other_color(colo_act);
 
         updatePV(sorted_moves[0].second, parent_PV, child_PV);
         //prev_vect_move.push_back(sorted_moves[0].second);
@@ -184,19 +196,14 @@ namespace ai::search
                                    next_hash);
             }
             ai::meta.treefold.pop();
-            //b.revert_move(move.second, colo_act);
             if (score >= beta)
             {
-                //refutation_table::merge_vect(prev_vect_move, actual_vect);
-                //prev_vect_move[0] = move.second;
                 updatePV(move.second, parent_PV, child_PV);
                 transposition_table::tt_search.update(move.second, score, depth, hash, -1);
                 return score;
             }
             if (score > best)
             {
-                //refutation_table::merge_vect(prev_vect_move, actual_vect);
-                //prev_vect_move[0] = move.second;
                 updatePV(move.second, parent_PV, child_PV);
                 best = score;
                 if (score > alpha)
@@ -206,20 +213,7 @@ namespace ai::search
                 }
             }
             child_PV.length = 0;
-            //actual_vect.resize(0);
         }
-        /*if (best <= save_alpha)
-        {
-            transposition_table::tt_search.update(prev_vect_move[0], best, depth, hash, 1);
-        }
-        else if (best >= beta)
-        {
-            transposition_table::tt_search.update(prev_vect_move[0], best, depth, hash, -1);
-        }
-        else
-        {
-            transposition_table::tt_search.update(prev_vect_move[0], best, depth, hash, 0);
-        }*/
         if (save_alpha < alpha && alpha < beta)
         {
             transposition_table::tt_search.update(parent_PV.pv[0], best, depth, hash, 0);
@@ -230,6 +224,4 @@ namespace ai::search
         }
         return best;
     }
-
-
 }

@@ -16,6 +16,19 @@
 namespace chessBoard
 {
 
+    uint64 Board::apply_null_move(uint64 hash_board)
+    {
+        special_moves = 0;
+        hash_board ^= position_value[ffsll(special_moves)];
+        hash_board ^= side_to_move;
+        return hash_board;
+    }
+
+    uint64 Board::revert_null_move(uint64 hash_board)
+    {
+        return hash_board;
+    }
+
 
     Board Board::copy_board() const
     {
@@ -126,11 +139,6 @@ namespace chessBoard
             {
                 flag = 5u;
             }
-            /*else if (color_ == nBlack &&
-                (m.getToPosition() & black_pawn_attack[m.getFromIndex()] & pieceBB[other_color(color_)]))
-            {
-                flag = 5u;
-            }*/
 
         }
         if (m.getToPosition() & pieceBB[other_color(color_)]) // IsCapture
@@ -230,58 +238,6 @@ namespace chessBoard
         return m;
     }
 
-
-    /*Move Board::ia_apply_move(const Move& m, const enumPiece& color_, uint64& hash_board)
-    {
-        // Build Move
-
-        for (int i = nPawn; i <= nKing; ++i)
-        {
-            if (!(m.from_get() & pieceBB[i]))
-                continue;
-            std::optional<enumPiece> opponent_piece = std::nullopt;
-            for (int j = nPawn; j <= nKing; ++j)
-            {
-                if (pieceBB[other_color(color_)] & m.to_get() & pieceBB[j])
-                {
-                    opponent_piece = int_to_enumPiece[j];
-                    break;
-                }
-            }
-            bool is_en_passant = false;
-            std::optional<enumPiece> promotion = std::nullopt;
-            if (m.is_promotion())
-                promotion = m.promotion_type_get();
-            bool is_castling = false;
-            if (i == nKing && !(m.to_get() & king_move[__builtin_ctzll(m.from_get())]))
-            {
-                is_castling = true;
-            }
-
-            if (i == nPawn)
-            {
-                if (opponent_piece == std::nullopt && (m.to_get() & white_pawn_attack[__builtin_ctzll(m.from_get())]))
-                {
-                    opponent_piece = nPawn;
-                    is_en_passant = true;
-                }
-                else if (opponent_piece == std::nullopt && (m.to_get() & black_pawn_attack[__builtin_ctzll(m.from_get())]))
-                {
-                    opponent_piece = nPawn;
-                    is_en_passant = true;
-                }
-            }
-            const auto move = Move(m.from_get(), m.to_get(),
-                                   int_to_enumPiece[i],
-                                   opponent_piece,
-                                   promotion,
-                                   is_castling, is_en_passant, //en passant
-                                   special_moves, castlings, half_move_count_); //special move
-            hash_board = this->apply_move(move, color_, hash_board);
-            return move;
-        }
-        return Move();
-    }*/
 
     uint64 Board::apply_move(const Move& m, const enumPiece& color_, uint64 hash_board)
     {
@@ -437,130 +393,6 @@ namespace chessBoard
         return hash_board;
     }
 
-    /*void Board::revert_castling(const Move &m, const enumPiece& color_)
-    {
-        /// rook to place back
-        uint64 oldrook = 0;
-        /// king to remove
-        uint64 king = 0;
-        /// rook to remove
-        uint64 rook = 0;
-        /// king to place
-        uint64 oldking = 0;
-
-        if (color_ == nWhite)
-        {
-            oldking = tab_pos[3];
-            if (m.is_castling_queenside())
-            {
-                oldrook = tab_pos[7];
-                king = tab_pos[5];
-                rook = tab_pos[4];
-            }
-            else
-            {
-                oldrook = tab_pos[0];
-                king = tab_pos[1];
-                rook = tab_pos[2];
-            }
-        }
-        else
-        {
-            oldking = tab_pos[59];
-            if (m.is_castling_queenside())
-            {
-                oldrook = tab_pos[63];
-                king = tab_pos[61];
-                rook = tab_pos[60];
-            }
-            else
-            {
-                oldrook = tab_pos[56];
-                king = tab_pos[57];
-                rook = tab_pos[58];
-            }
-        }
-        /// remove king
-       // std::cout << std::endl << "oui" << std::endl << int_to_string(pieceBB[nKing]);
-        pieceBB[color_] = pieceBB[color_] ^ king;
-        pieceBB[nKing] = pieceBB[nKing] ^ king;
-        /// remove rook
-        pieceBB[color_] = pieceBB[color_] ^ rook;
-        pieceBB[nRook] = pieceBB[nRook] ^ rook;
-        /// place back king
-        pieceBB[color_] = pieceBB[color_] | oldking;
-        pieceBB[nKing] = pieceBB[nKing] | oldking;
-        /// place back rook
-        //std::cout << std::endl << "oui" << std::endl << int_to_string(pieceBB[nKing]);
-        pieceBB[color_] = pieceBB[color_] | oldrook;
-
-        pieceBB[nRook] = pieceBB[nRook] | oldrook;
-
-        castlings = m.castlings_get();
-        special_moves = m.special_move_get();
-    }*/
-
-    /*void Board::revert_move(const Move &m, const enumPiece& color_)
-    {
-        half_move_count_ = m.half_move_get();
-        if (color_ == nBlack)
-            --turn_count_;
-        // FIXME if move from a tower update castlings
-        // if castling move both king and tower + revert back castling
-        if (m.is_castling())
-        {
-            revert_castling(m, color_);
-            return;
-        }
-        /// en passant
-        else if (m.is_en_passant())
-        {
-            uint64 pos = m.to_get();
-            if (color_ == nWhite) {
-                pos >>= 8ull;
-                pieceBB[nBlack] = pieceBB[nBlack] | pos;
-                pieceBB[nPawn] = pieceBB[nPawn] | pos;
-            }
-            else
-            {
-                pos <<= 8ull;
-                pieceBB[nWhite] = pieceBB[nWhite] | pos;
-                pieceBB[nPawn] = pieceBB[nPawn] | pos;
-            }
-          //  special_moves = special_moves | m.to_get();
-        }
-        /// cpature
-        else if (m.is_capture())
-        {
-            enumPiece c = other_color(color_);
-            pieceBB[c] = pieceBB[c] | m.to_get();
-            if (m.captured_piece_type_get() != m.piece_get())
-                pieceBB[m.captured_piece_type_get()] = pieceBB[m.captured_piece_type_get()] | m.to_get();
-            else
-                pieceBB[m.captured_piece_type_get()] = pieceBB[m.captured_piece_type_get()] ^ m.to_get();
-            if (m.captured_piece_type_get() == nRook)
-                castlings = m.castlings_get();
-        }
-        /// promotions
-        if (m.is_promotion()) {
-            if (m.is_capture() && m.promotion_type_get() == m.captured_piece_type_get())
-                pieceBB[m.promotion_type_get()] = pieceBB[m.promotion_type_get()] | m.to_get();
-            else
-                pieceBB[m.promotion_type_get()] = pieceBB[m.promotion_type_get()] ^ m.to_get();
-        }
-        else
-            pieceBB[m.piece_get()] = pieceBB[m.piece_get()] ^ m.to_get();
-
-        if (m.piece_get() == nRook || m.piece_get() == nKing)
-            castlings = m.castlings_get();
-        // FIXME is if needed here ?
-
-        pieceBB[color_] = pieceBB[color_] ^ m.to_get();
-        pieceBB[color_] = pieceBB[color_] | m.from_get();
-
-        pieceBB[m.piece_get()] = pieceBB[m.piece_get()] | m.from_get();
-        special_moves = m.special_move_get();
-    }*/
 
     opt_piece_t Board::operator[](const INDEX_T &i) const
     {
