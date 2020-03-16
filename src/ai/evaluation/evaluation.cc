@@ -20,14 +20,14 @@ namespace ai::evaluation
         if (mask_color != 0)
         {
             index = __builtin_ctzll(mask_color);
-            ret += VAL_KING;
+            //ret += VAL_KING;
             ret += chessBoard::board_king[color_][index];
         }
         uint64 mask_no_color = b.pieceBB[enumPiece::nKing] & b.pieceBB[not_color_];
         if (mask_no_color != 0)
         {
             index = __builtin_ctzll(mask_no_color);
-            ret -= VAL_KING;
+            //ret -= VAL_KING;
             ret -= chessBoard::board_king[not_color_][index];
         }
         return ret;

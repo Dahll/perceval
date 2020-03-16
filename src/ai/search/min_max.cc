@@ -39,17 +39,17 @@ namespace ai::search
             if (foundpv)
             {
                 score = -alphabeta(cpy, inv_color, depth - 1, 1, -alpha - 1, -alpha, move.second, child_PV,
-                                   next_hash);
+                                   next_hash, true);
                 if ((score > alpha) && (score < beta))
                 {
                     score = -alphabeta(cpy, inv_color, depth - 1, 1, -beta, -alpha, move.second, child_PV,
-                                       next_hash);
+                                       next_hash, true);
                 }
             }
             else
             {
                 score = -alphabeta(cpy, inv_color, depth - 1, 1, -beta, -alpha, move.second, child_PV,
-                                   next_hash);
+                                   next_hash, true);
             }
             ai::meta.treefold.pop();
             if (score >= beta)
@@ -91,10 +91,8 @@ namespace ai::search
     }
 
 
-    int alphabeta(const chessBoard::Board& b, const chessBoard::enumPiece &colo_act,
-                  int depth, int ply, int alpha, int beta, const chessBoard::Move &prev_move,
-                  PV& parent_PV,
-                  uint64 hash)
+    int alphabeta(Board& b, const enumPiece &colo_act, int depth, int ply,
+            int alpha, int beta, const Move &prev_move,PV& parent_PV, uint64 hash, bool null_move)
     {
 
         if (b.half_move_count_ >= 100)
@@ -106,9 +104,18 @@ namespace ai::search
         // Out of time
         if (!meta.running)
             return 0;
-        //test if the board exist in the hash map and if depth left == depth stocked
+
+        if (b.player_is_check(colo_act))
+            depth++;
+
+        if (depth <= 0)
+        {
+            return quiesce(b, colo_act, alpha, beta, prev_move, hash);
+        }
+
         bool isPV = (beta - alpha) != 1;
 
+        //test if the board exist in the hash map and if depth left == depth stocked
         auto save_alpha = alpha;
         auto transpo = transposition_table::tt_search.find(hash);
         if (transpo.depth_ != -1 && transpo.hash_ == hash && transpo.depth_ >= depth)
@@ -127,28 +134,53 @@ namespace ai::search
                 return transpo.score_;
         }
 
-        if (depth <= 0)
-        {
-            return quiesce(b, colo_act, alpha, beta, prev_move, hash);
-        }
 
         const auto &inv_color = b.other_color(colo_act);
         PV child_PV = PV();
 
 
+        int static_eval = evaluation::evaluate(b, colo_act);
 
-        if (!isPV && depth >= 2 && !b.player_is_check(colo_act))
+
+        if (!isPV && !b.player_is_check(colo_act) && depth >= 3 &&
+        /*__builtin_popcountll(b.pieceBB[colo_act]) > 3 && !b.is_only_pawn(colo_act) &&*/
+        null_move && static_eval >= beta)
         {
-            int R = 2 + (32 * depth +  384) / 128;
-            auto tmp_board = b;
-            auto tmp_hash = hash;
-            tmp_hash ^= position_value[ffsll(tmp_board.special_moves)];
-            tmp_board.special_moves = 0;
-            tmp_hash ^= side_to_move;
-            int val = -alphabeta(tmp_board, inv_color, depth - 1 - R, ply, -beta, -beta + 1, prev_move, child_PV,
-                                 tmp_hash);
+            //int R = 2 + (32 * depth + std::min(static_eval - beta, 384)) / 128;
+            int R = 2;
+            if (depth > 6) R = 3;
+            //auto tmp_board = b;
+            //auto tmp_hash = hash;
+
+            // Do null move
+            auto tmp_special_move = b.special_moves;
+            hash ^= position_value[ffsll(b.special_moves)];
+            b.special_moves = 0;
+            hash ^= position_value[ffsll(b.special_moves)];
+            hash ^= side_to_move;
+
+
+            int val = -alphabeta(b, inv_color, depth - 1 - R, ply + 1, -beta, -beta + 1, prev_move, child_PV,
+                                 hash, false);
+
+            // Undo null move
+            hash ^= position_value[ffsll(b.special_moves)];
+            b.special_moves = tmp_special_move;
+            hash ^= position_value[ffsll(b.special_moves)];
+            hash ^= side_to_move;
+
+
             if (val >= beta)
-                return beta;
+            {
+                if (depth >= 10)
+                {
+                    val = alphabeta(b, inv_color, depth - 1 - R, ply + 1, alpha, beta, prev_move, child_PV, hash, false);
+                    if (val >= beta)
+                        return val;
+                }
+                else
+                    return val;
+            }
             child_PV.length = 0;
         }
 
@@ -172,7 +204,7 @@ namespace ai::search
 
         const auto &sorted_moves = ordering::moves_set_values(b, moves, prev_move, ply, hash);//give hash
 
-        updatePV(sorted_moves[0].second, parent_PV, child_PV);
+        //updatePV(sorted_moves[0].second, parent_PV, child_PV);
         //prev_vect_move.push_back(sorted_moves[0].second);
 
         int score = 0;
@@ -186,17 +218,17 @@ namespace ai::search
             if (foundpv)
             {
                 score = -alphabeta(cpy, inv_color, depth - 1, ply + 1, -alpha - 1, -alpha, move.second, child_PV,
-                                   next_hash);
+                                   next_hash, true);
                 if ((score > alpha) && (score < beta))
                 {
                     score = -alphabeta(cpy, inv_color, depth - 1, ply + 1, -beta, -alpha, move.second, child_PV,
-                                       next_hash);
+                                       next_hash, true);
                 }
             }
             else
             {
                 score = -alphabeta(cpy, inv_color, depth - 1, ply + 1, -beta, -alpha, move.second, child_PV,
-                                   next_hash);
+                                   next_hash, true);
             }
             ai::meta.treefold.pop();
             if (score >= beta)
@@ -211,7 +243,7 @@ namespace ai::search
                 best = score;
                 if (score > alpha)
                 {
-                    foundpv = true;
+
                     if (isPV)
                     {
                         updatePV(move.second, parent_PV, child_PV);
@@ -219,6 +251,7 @@ namespace ai::search
                     }
                 }
             }
+            foundpv = true;
             child_PV.length = 0;
         }
 

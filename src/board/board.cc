@@ -16,6 +16,12 @@
 namespace chessBoard
 {
 
+    bool Board::is_only_pawn(chessBoard::enumPiece color_) const
+    {
+        return (((pieceBB[color_] & pieceBB[7]) ^ pieceBB[color_]) & pieceBB[2]) == pieceBB[2];
+    }
+
+
     uint64 Board::apply_null_move(uint64 hash_board)
     {
         special_moves = 0;

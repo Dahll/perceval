@@ -107,6 +107,8 @@ namespace chessBoard
         //int get_current_pieces_count() const;
         int get_current_captures_count() const;
         int get_current_moves_count() const;
+        bool is_only_pawn(chessBoard::enumPiece color) const;
+
 
 
         /* Move generation (const) */
