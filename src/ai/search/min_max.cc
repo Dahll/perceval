@@ -106,9 +106,11 @@ namespace ai::search
             return 0;
 
         if (b.player_is_check(colo_act))
+        {
             depth++;
+        }
 
-        if (depth <= 0)
+        if (depth == 0)
         {
             return quiesce(b, colo_act, alpha, beta, prev_move, hash);
         }
@@ -147,8 +149,10 @@ namespace ai::search
         null_move && static_eval >= beta)
         {
             //int R = 2 + (32 * depth + std::min(static_eval - beta, 384)) / 128;
+            //int R = 3 + depth / 6;
             int R = 2;
-            if (depth > 6) R = 3;
+            if (depth > 6) R = 3 + depth / 6;
+            //if (depth > 6) R = 2 + (32 * depth + std::min(static_eval - beta, 384)) / 128;
             //auto tmp_board = b;
             //auto tmp_hash = hash;
 
@@ -159,9 +163,12 @@ namespace ai::search
             hash ^= position_value[ffsll(b.special_moves)];
             hash ^= side_to_move;
 
-
-            int val = -alphabeta(b, inv_color, depth - 1 - R, ply + 1, -beta, -beta + 1, prev_move, child_PV,
+            int val = 0;
+            if (depth - R - 1 > 0)
+                val = -alphabeta(b, inv_color, depth - 1 - R, ply + 1, -beta, -beta + 1, prev_move, child_PV,
                                  hash, false);
+            else
+                val = -quiesce(b, inv_color, -beta, -beta + 1, prev_move, hash);
 
             // Undo null move
             hash ^= position_value[ffsll(b.special_moves)];
@@ -169,8 +176,9 @@ namespace ai::search
             hash ^= position_value[ffsll(b.special_moves)];
             hash ^= side_to_move;
 
-
             if (val >= beta)
+                return val;
+            /*if (val >= beta)
             {
                 if (depth >= 10)
                 {
@@ -180,7 +188,7 @@ namespace ai::search
                 }
                 else
                     return val;
-            }
+            }*/
             child_PV.length = 0;
         }
 
