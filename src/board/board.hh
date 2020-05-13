@@ -61,8 +61,8 @@ namespace chessBoard
 
         uint64 apply_castling(const Move& m, const enumPiece& color, uint64 hash_board);
         uint64 apply_move(const Move &m, const enumPiece& color, uint64 hash_board);
-        uint64 apply_null_move(uint64 hash_board);
-        uint64 revert_null_move(uint64 hash_board);
+        void apply_null_move(uint64& hash_board);
+        void revert_null_move(uint64& hash_board, uint64 tmp_special_move);
 
 
         const MOVES_T generate_moves(const enumPiece& color_) const;

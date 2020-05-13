@@ -18,21 +18,25 @@ namespace chessBoard
 
     bool Board::is_only_pawn(chessBoard::enumPiece color_) const
     {
-        return (((pieceBB[color_] & pieceBB[7]) ^ pieceBB[color_]) & pieceBB[2]) == pieceBB[2];
+        return __builtin_popcountll(pieceBB[2]) + 1 < __builtin_popcountll(pieceBB[color_]);
+        //return (((pieceBB[color_] & pieceBB[7]) ^ pieceBB[color_]) & pieceBB[2]) == pieceBB[2];
     }
 
 
-    uint64 Board::apply_null_move(uint64 hash_board)
+    void Board::apply_null_move(uint64 &hash_board)
     {
+        hash_board ^= position_value[ffsll(special_moves)];
         special_moves = 0;
         hash_board ^= position_value[ffsll(special_moves)];
         hash_board ^= side_to_move;
-        return hash_board;
     }
 
-    uint64 Board::revert_null_move(uint64 hash_board)
+    void Board::revert_null_move(uint64 &hash_board, uint64 tmp_special_move)
     {
-        return hash_board;
+        hash_board ^= position_value[ffsll(special_moves)];
+        special_moves = tmp_special_move;
+        hash_board ^= position_value[ffsll(special_moves)];
+        hash_board ^= side_to_move;
     }
 
 

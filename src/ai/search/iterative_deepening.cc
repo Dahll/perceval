@@ -100,7 +100,7 @@ namespace ai::search
         {
             ai::meta.btime -= time;
         }
-        transposition_table::tt_search.reset();
+        //transposition_table::tt_search.reset();
         ai::meta.best_move = move;
     }
 
