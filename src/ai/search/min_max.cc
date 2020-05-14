@@ -163,7 +163,7 @@ namespace ai::search
 
 
         int static_eval = evaluation::evaluate(b, colo_act);
-
+        static_eval = static_eval;
         /*int value = static_eval + 125;
         if (value < beta) {
             if (depth == 1) {
@@ -192,23 +192,25 @@ namespace ai::search
 
 
         // Null move pruning
+        null_move = null_move;
         if (null_move && !isPV && !b.player_is_check(colo_act) && __builtin_popcountll(b.pieceBB[colo_act]) > 3 &&
             !b.is_only_pawn(colo_act) && static_eval >= beta)
         {
             //int R = 2 + (32 * depth + std::min(static_eval - beta, 384)) / 128;
             //int R = 3 + depth / 6;
-            int R = 2;
+            int R = 1;
             //if (depth > 6) R = 3;
             //if (depth > 6) R = 3 + depth / 6;
             //if (depth > 6) R = 2 + (32 * depth + std::min(static_eval - beta, 384)) / 128;
 
-            if (depth - R - 1 > 0)
+            //if (depth - R - 1 > 0)
+            if (depth >= 3)
             {
                 // Do null move
                 int val = 0;
                 auto tmp_special_move = b.special_moves;
                 b.apply_null_move(hash);
-                val = -alphabeta(b, inv_color, depth - 1 - R, ply, -alpha, -beta, prev_move, parent_PV, hash,
+                val = -alphabeta(b, inv_color, depth - 1 - R, ply + 1, -beta, -alpha, prev_move, child_PV, hash,
                                  false);
                 //else
                 //val = -quiesce(b, inv_color, -beta, -beta + 1, prev_move, tmp_hash);
@@ -216,16 +218,19 @@ namespace ai::search
 
                 if (val >= beta)
                 {
-                    /*if (depth >= 100)
+                    if (depth >= 10)
                     {
-                        val = alphabeta(b, colo_act, depth - R - 1, ply, beta - 1, beta, prev_move, parent_PV, hash,
+                        val = alphabeta(b, colo_act, depth - R - 1, ply + 1, alpha, beta, prev_move, child_PV, hash,
                                         false);
                         if (val >= beta)
+                        {
                             return val;
-                    } else*/
-                    return val;
+                        }
+                    }
+                    else
+                        return val;
                 }
-                //parent_PV.length = 0;
+                child_PV.length = 0;
             }
         }
 
