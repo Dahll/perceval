@@ -177,28 +177,7 @@ namespace adapter
                                   ref.end_get());
             if (disqualify_if_false(move1.isCapture() == ref.capture_get()))
                 return true;
-            if (move1.isCapture())
-                for (auto& l : listeners)
-                {
-                    int capture_piece_type = 0;
-                    if (boardM.pieceBB[2] & move1.getToPosition())
-                        capture_piece_type = 2;
-                    else if (boardM.pieceBB[3] & move1.getToPosition())
-                        capture_piece_type = 3;
-                    else if (boardM.pieceBB[4] & move1.getToPosition())
-                        capture_piece_type = 4;
-                    else if (boardM.pieceBB[5] & move1.getToPosition())
-                        capture_piece_type = 5;
-                    else if (boardM.pieceBB[6] & move1.getToPosition())
-                        capture_piece_type = 6;
-                    else if (boardM.pieceBB[7] & move1.getToPosition())
-                        capture_piece_type = 7;
-                    l->on_piece_taken(
-                            enumPiece_to_PieceType(
-                                    static_cast<const enumPiece>(capture_piece_type)),
-                            index_to_position(
-                                    ffsll(boardM.captured_piece_position(move1))));
-                }
+
             if (disqualify_if_false(
                     (move1.getFlags() > 7) == ref.promotion_get().has_value()))
                 return true;

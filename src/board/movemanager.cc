@@ -13,6 +13,7 @@ namespace chessBoard
     const MOVES_T Board::generate_moves(const enumPiece& color_) const
     {
         auto vec = std::vector<Move>();
+	vec.reserve(60);
         get_pawn_move(color_, vec);
         get_knight_move(color_,vec);
         get_bishop_move(color_, vec);
@@ -321,7 +322,7 @@ namespace chessBoard
         b.apply_move(move, color_, h);
         bool ret = b.player_is_check(color_);
         if (!ret)
-            vec.emplace_back(move);
+            vec.push_back(move);
     }
 
     void Board::generate_attack_move_pawn(const enumPiece &color_,
