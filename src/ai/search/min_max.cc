@@ -129,8 +129,6 @@ namespace ai::search
         auto transpo = transposition_table::tt_search.find(hash);
         if ( transpo.depth_ != -1 && transpo.hash_ == hash && transpo.depth_ >= depth)
         {
-            //if (!isPV)
-            //    return transpo.score_;
             if (!isPV && ((transpo.is_cut_off_ == 1 && transpo.score_ <= alpha)
                 || (transpo.is_cut_off_ == -1 && transpo.score_ >= beta)
                 || (transpo.is_cut_off_ == 0)))
@@ -196,7 +194,7 @@ namespace ai::search
 
         // Null move pruning
         null_move = null_move;
-        if (null_move && !isPV && !b.player_is_check(colo_act) && __builtin_popcountll(b.pieceBB[colo_act]) > 3 &&
+        if (null_move && !isPV && !b.player_is_check(colo_act) /*&& __builtin_popcountll(b.pieceBB[colo_act]) > 3*/ &&
             !b.is_only_pawn(colo_act) && static_eval >= beta)
         {
             //int R = 2 + (32 * depth + std::min(static_eval - beta, 384)) / 128;
@@ -223,7 +221,7 @@ namespace ai::search
                 {
                     if (depth >= 10)
                     {
-                        val = alphabeta(b, colo_act, depth - R - 1, ply + 1, alpha, beta, prev_move, child_PV, hash,
+                        val = alphabeta(b, colo_act, depth - R - 1, ply, alpha, beta, prev_move, child_PV, hash,
                                         false);
                         if (val >= beta)
                         {
@@ -272,7 +270,7 @@ namespace ai::search
             {
                 score = -alphabeta(cpy, inv_color, depth - 1, ply + 1, -alpha - 1, -alpha, move.second, child_PV,
                                    next_hash, true);
-                if ((score > alpha) && (score < beta))
+                if ((score > alpha) && isPV/*&& (score < beta)*/)
                 {
                     score = -alphabeta(cpy, inv_color, depth - 1, ply + 1, -beta, -alpha, move.second, child_PV,
                                        next_hash, true);
@@ -287,8 +285,9 @@ namespace ai::search
             if (score >= beta)
             {
                 //if (isPV)
-                    updatePV(move.second, parent_PV, child_PV);
-                transposition_table::tt_search.update(move.second, score, depth, hash, -1);
+                updatePV(move.second, parent_PV, child_PV);
+                //if (isPV)
+                    transposition_table::tt_search.update(move.second, score, depth, hash, -1);
 
                 return score;
             }

@@ -17,7 +17,7 @@ namespace ai::search
         const int& stand_pat = evaluation::evaluate(b, color_act);
         if (stand_pat >= beta)
         {
-            return beta;
+            return stand_pat;
         }
         if (alpha < stand_pat)
             alpha = stand_pat;
@@ -27,7 +27,7 @@ namespace ai::search
         const auto& sorted_moves = ordering::moves_set_values_quiescence(b, moves, prev_move);//give hash
         if (moves.empty())
         {
-            return alpha;
+            return stand_pat;
         }
 
         int bestscore = stand_pat;
@@ -43,7 +43,7 @@ namespace ai::search
             //b.revert_move(move.second, color_act);
             if (score >= beta)
             {
-                return beta;
+                return score;
             }
             if (score > bestscore)
             {

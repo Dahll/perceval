@@ -44,10 +44,11 @@ target_sources(chessengine PRIVATE
         src/ai/evaluation/evaluation.cc
         src/ai/search/min_max.cc
         src/board/moves_capture.cc
-        src/board/moves_capture.cc
-        src/ai/evaluation/move_ordering.cc
+        src/ai/move_ordering/move_ordering.cc
         src/ai/transposition_table.cc
         src/magic/magic.cc
+        src/ai/evaluation/mid_game.cc
+        src/ai/evaluation/late_game.cc
 )
 
 target_include_directories(chessengine

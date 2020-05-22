@@ -18,6 +18,7 @@
 #include "../uci.hh"
 #include "../../board/board.hh"
 #include "../metadata.hh"
+#include "../move_ordering/move_ordering.hh"
 
 
 namespace ai::search

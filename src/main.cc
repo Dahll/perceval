@@ -22,6 +22,9 @@ int main(int argc, const char *argv[])
     // FIXME en passant/pion avancer de 2 et revert tout ca
     // FIXME draws 50 half move rule/3 times sqme board
     fill_magic();
+    ai::evaluation::init_values();
+    //ai::evaluation::fill_mid_game_tables();
+    //ai::evaluation::fill_end_game_tables();
     try
     {
         Listeners listeners;

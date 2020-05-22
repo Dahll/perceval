@@ -70,18 +70,25 @@ namespace ai::search
             if (!ai::meta.running)
                 break;
 
-            /*if (i >= 6)
+            if (i >= 4)
             {
-                if ((score <= alpha) || (score >= beta))
+                if (score <= alpha)
                 {
-                    std::cout << "research from " << score << "\n";
+                    std::cout << "research from " << score << "alpha = " << alpha << "\n";
+                    //beta = (alpha + beta) / 2;
+                    //alpha = score - 50;
                     alpha = -INF;
+                    continue;
+                }
+                else if (score >= beta)
+                {
+                    std::cout << "research from " << score << "beta = " << beta <<"\n";
                     beta = INF;
                     continue;
                 }
-                alpha = score - 35;
-                beta = score + 35;
-            }*/
+                alpha = score - 50;
+                beta = score + 50;
+            }
             move = tmp_move;
 
             mergePV(tmp, G_PV);
