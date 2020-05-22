@@ -45,7 +45,7 @@ namespace ai::evaluation
                 //std::cout << psqt_val_eg << std::endl;
                 int mg = piece_val_mg + psqt_val_mg;
                 int eg = piece_val_eg + psqt_val_eg;
-                uint32 score = (((static_cast<uint32>(eg)) << 16) | (static_cast<uint32>(mg) & 0x0000FFFF));
+                uint32 score = (((static_cast<uint32>(eg)) << 16u) | (static_cast<uint32>(mg) & 0x0000FFFFu));
                 //std::cout << score << std::endl;
                 values[0][i][j] = score;
                 values[1][i][(7-(j / 8)) * 8 + j % 8] = score;
@@ -65,8 +65,8 @@ namespace ai::evaluation
                 index = __builtin_ctzll(mask);
                 mask &= mask - 1;
                 uint32 tmp = values[color][i][index];
-                mg.positional_value += (tmp & 0x0000FFFF);
-                eg.positional_value += (tmp >> 16);
+                mg.positional_value += (tmp & 0x0000FFFFu);
+                eg.positional_value += (tmp >> 16u);
             }
             uint64 mask_no = b.pieceBB[i] & b.pieceBB[not_color];
             while (mask_no != 0)
@@ -74,8 +74,8 @@ namespace ai::evaluation
                 index = __builtin_ctzll(mask_no);
                 mask_no &= mask_no - 1;
                 uint32 tmp = values[not_color][i][index];
-                mg.positional_value -= (tmp & 0x0000FFFF);
-                eg.positional_value -= (tmp >> 16);
+                mg.positional_value -= (tmp & 0x0000FFFFu);
+                eg.positional_value -= (tmp >> 16u);
             }
         }
     }
