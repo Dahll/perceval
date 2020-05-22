@@ -2,12 +2,15 @@
 // Created by fouche_r on 5/16/19.
 //
 
+#include <string>
+#include <vector>
 #include "ai/uci.hh"
 #include "perft/perft.hh"
 #include <boost/program_options.hpp>
 #include <iostream>
 #include "adapter/adapter.hh"
 #include "magic/magic.hh"
+
 
 using namespace boost::program_options;
 using Listeners = std::vector<std::string>;

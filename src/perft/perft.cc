@@ -9,7 +9,9 @@
 #include <strings.h>
 #include <iostream>
 
+
 using namespace chessBoard;
+using namespace std;
 
 namespace Perft
 {

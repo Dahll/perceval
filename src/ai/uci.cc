@@ -2,16 +2,17 @@
 #include <iostream>
 #include <fstream>
 #include <thread>
+#include <string>
 #include <sstream>
+#include <vector>
 
-using namespace std;
 
 namespace uci
 {
-    std::vector<string> split(const string &s, char d) {
-        std::vector<string> v;
+    std::vector<std::string> split(const std::string &s, char d) {
+        std::vector<std::string> v;
         std::stringstream ss(s);
-        string item;
+        std::string item;
         while (getline(ss, item, d)) {
             v.push_back(item);
         }
@@ -40,7 +41,7 @@ namespace uci
 
     std::string pop_fen(std::vector<std::string>& input)
     {
-        std::string ret = "";
+        std::string ret;
         ret += input[0];
         input.erase(input.begin());
         ret += " ";

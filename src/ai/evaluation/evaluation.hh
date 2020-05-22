@@ -8,7 +8,9 @@
 
 #include <algorithm>
 #include <map>
+#include <string>
 #include <strings.h>
+#include <optional>
 #include "stock.hh"
 #include "../transposition_table.hh"
 

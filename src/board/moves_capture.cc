@@ -7,7 +7,22 @@
 //#include "../magic/generate.hh"
 #include <strings.h>
 
-namespace chessBoard {
+namespace chessBoard
+{
+
+    MOVES_T Board::generate_capture_moves(const enumPiece &color_) const
+    {
+        auto vec = MOVES_T();
+        vec.reserve(60);
+        get_pawn_capture_moves(color_, vec);
+        get_knight_capture_moves(color_, vec);
+        get_bishop_capture_moves(color_, vec);
+        get_tower_capture_moves(color_, vec);
+        get_queen_capture_moves(color_, vec);
+        get_king_capture_moves(color_, vec);
+        return vec;
+    }
+
 
     void Board::get_knight_capture_moves(const enumPiece &color_,
                                          MOVES_T &vec) const
@@ -138,17 +153,4 @@ namespace chessBoard {
             }
         }
     }
-
-    const std::vector <Move> Board::generate_capture_moves(const enumPiece &color_) const
-    {
-        auto vec = MOVES_T();
-        get_pawn_capture_moves(color_, vec);
-        get_knight_capture_moves(color_, vec);
-        get_bishop_capture_moves(color_, vec);
-        get_tower_capture_moves(color_, vec);
-        get_queen_capture_moves(color_, vec);
-        get_king_capture_moves(color_, vec);
-        return vec;
-    }
-
 }

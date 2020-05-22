@@ -3,9 +3,12 @@
 //
 #include "search.hh"
 
+
+using namespace chessBoard;
+
 namespace ai::search
 {
-    chessBoard::Move caller_alphabeta(const chessBoard::Board& b, int depth,
+    Move caller_alphabeta(const Board& b, int depth,
                          PV& parent_PV,
                          uint64 hash, int alpha, int beta,
                          int& best1)

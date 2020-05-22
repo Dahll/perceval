@@ -3,7 +3,12 @@
 //
 
 #include "search.hh"
-#include "string.h"
+#include <string>
+#include <cstring>
+
+
+using namespace std::chrono;
+using namespace chessBoard;
 
 namespace ai::search
 {
@@ -12,7 +17,7 @@ namespace ai::search
 
     std::string PV_to_str(const PV& pv)
     {
-        std::string tmp = "";
+        std::string tmp;
         for (int i = 0; i < pv.length; i++)
         {
             tmp.append(pv.pv[i].to_str());
@@ -47,7 +52,7 @@ namespace ai::search
 
         int i = 1;
 
-        const auto& start = system_clock::now();
+        const auto& start = std::chrono::system_clock::now();
         std::cout << "TIME | DEPTH | SCORE | PV" << std::endl;
         transposition_table::tt_search.increment_age();
 
@@ -81,7 +86,10 @@ namespace ai::search
 
             mergePV(tmp, G_PV);
 
-            std::cout << duration_cast<milliseconds>(system_clock::now()-start).count() << " | " << i << " | " << score << " | " << PV_to_str(G_PV) << std::endl;
+            std::cout
+                << duration_cast<milliseconds>(system_clock::now()-start).count()
+                << " | " << i << " | " << score << " | " << PV_to_str(G_PV)
+                << std::endl;
 
             if (score >= MIN_MAT || score <= -MIN_MAT)
             {

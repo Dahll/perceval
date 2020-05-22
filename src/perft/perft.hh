@@ -9,10 +9,9 @@
 #include "chessBoard.hh"
 #include <string>
 
+
 namespace Perft
 {
-    using namespace std;
-    using namespace pgn_parser;
     using my64 = uint64;
 
     class Perft
@@ -28,8 +27,8 @@ namespace Perft
     uint64 perft(std::string& path);
     void update(chessBoard::Board& b, const std::string& s);
     chessBoard::Board parse(std::string& input);
-    void set_color(chessBoard::Board& b, const string& s);
-    void set_castlings(chessBoard::Board& b, const string& input);
+    void set_color(chessBoard::Board& b, const std::string& s);
+    void set_castlings(chessBoard::Board& b, const std::string& input);
     void print_board(chessBoard::Board& b);
     void print_bitboard(uint64 p);
 }

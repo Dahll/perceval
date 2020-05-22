@@ -8,6 +8,7 @@
 #include <chrono>
 #include <vector>
 #include <algorithm>
+#include <string>
 
 #include "../transposition_table.hh"
 #include "../evaluation/evaluation.hh"
@@ -19,16 +20,13 @@
 #include "../metadata.hh"
 
 
-using namespace std::chrono;
-using namespace chessBoard;
-
 namespace ai::search
 {
 
     struct PV
     {
         uint8 length = 0;
-        Move pv[256];
+        chessBoard::Move pv[256];
     };
 
 
@@ -43,17 +41,17 @@ namespace ai::search
     
 
     std::string PV_to_str(const PV& pv);
-    void updatePV(Move best_move, PV& parent, PV& child);
+    void updatePV(chessBoard::Move best_move, PV& parent, PV& child);
     void mergePV(PV& from, PV& to);
 
-    int alphabeta(Board& b, const enumPiece& colo_act, int depth, int ply, int alpha,
-                int beta, const Move& prev_move, PV& parent_PV, uint64 hash, bool null_move);
+    int alphabeta(chessBoard::Board& b, const chessBoard::enumPiece& colo_act, int depth, int ply, int alpha,
+                int beta, const chessBoard::Move& prev_move, PV& parent_PV, uint64 hash, bool null_move);
 
-    chessBoard::Move caller_alphabeta(const Board& b, int depth, PV& parent_PV, uint64 hash,
+    chessBoard::Move caller_alphabeta(const chessBoard::Board& b, int depth, PV& parent_PV, uint64 hash,
             int alpha, int beta, int& score);
 
-    int quiesce(const Board& b, const enumPiece& color_act, int alpha, int beta,
-                const Move& prev_move, uint64 hash);
+    int quiesce(const chessBoard::Board& b, const chessBoard::enumPiece& color_act, int alpha, int beta,
+                const chessBoard::Move& prev_move, uint64 hash);
     void iterative_deepening();
 
     extern PV G_PV;

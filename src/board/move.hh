@@ -37,7 +37,7 @@ class Move {
 public:
     Move()
     {
-        m_Move = 0;
+        m_Move = 0u;
     }
 
     Move(uint16 from, uint16 to, uint16 flags)
@@ -45,7 +45,9 @@ public:
         m_Move = flags << 12u | (from << 6u) | to;
     }
 
-    void operator=(Move a) {m_Move = a.m_Move;}
+    constexpr Move(const chessBoard::Move&) = default;
+
+    Move& operator=(Move a) {m_Move = a.m_Move; return *this; }
 
     uint8 getToIndex() const {return m_Move & 0x3fu;}
 

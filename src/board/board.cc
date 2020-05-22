@@ -528,14 +528,14 @@ namespace chessBoard
                     promotion_m = 3;
 
                 int promotion_move = 0;
-                int tmp_move = move.getFlags() & 3u;
-                if (tmp_move == 3)
+                auto tmp_move = move.getFlags() & 3u;
+                if (tmp_move == 3u)
                     promotion_move = 6;
-                else if (tmp_move == 2)
+                else if (tmp_move == 2u)
                     promotion_move = 5;
-                else if (tmp_move == 1)
+                else if (tmp_move == 1u)
                     promotion_move = 4;
-                else if (tmp_move == 0)
+                else if (tmp_move == 0u)
                     promotion_move = 3;
 
                 return promotion_m == promotion_move;

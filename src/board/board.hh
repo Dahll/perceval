@@ -138,7 +138,7 @@ namespace chessBoard
 
 
         /* Captures only */
-        const std::vector<Move> generate_capture_moves(const enumPiece& color_) const;
+        MOVES_T generate_capture_moves(const enumPiece& color_) const;
         void get_knight_capture_moves(const enumPiece& color_, MOVES_T& vec) const;
         void get_tower_capture_moves(const enumPiece& color_, MOVES_T& vec) const;
         void get_bishop_capture_moves(const enumPiece& color_,MOVES_T& vec) const;

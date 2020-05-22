@@ -13,7 +13,7 @@ namespace chessBoard
     const MOVES_T Board::generate_moves(const enumPiece& color_) const
     {
         auto vec = std::vector<Move>();
-	vec.reserve(60);
+	    vec.reserve(60);
         get_pawn_move(color_, vec);
         get_knight_move(color_,vec);
         get_bishop_move(color_, vec);
@@ -379,7 +379,7 @@ namespace chessBoard
         const uint64 mask = normal[index] & (~(pieceBB[0] | pieceBB[1]));
         if (mask != 0)
         {
-            uint16 i = static_cast<uint16 >(__builtin_ctzll(mask));
+            auto i = static_cast<uint16 >(__builtin_ctzll(mask));
             bool is_promotion = pawn_will_promote(index, color_);
             if (is_promotion)
             {

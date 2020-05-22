@@ -1,14 +1,15 @@
 #pragma once
 
-#include "search/search.hh"
-#include <string>
-#include <fnmatch.h>
-#include <iostream>
 #include "../adapter/pgn-parser.hh"
 #include "../adapter/convertion.hh"
+#include "search/search.hh"
+#include <fnmatch.h>
 #include <fstream>
+#include <iostream>
 #include <ios>
 #include <iostream>
+#include <string>
+#include <vector>
 
 namespace uci
 {
