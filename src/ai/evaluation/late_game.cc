@@ -6,7 +6,8 @@
 namespace ai::evaluation
 {
 
-    int pieces_values_eg[6] = {138, 320, 330, 500, 900, 200};
+    int pieces_values_eg[6] = {120, 320, 330, 500, 900, 200};
+    //int pieces_values_eg[6] = {138, 410, 461, 766, 1497, 200};
 
     int psqt_values_eg[6][64] = {
             //pawn

@@ -57,93 +57,6 @@ namespace chessBoard
 
     }
 
-
-    /*void Board::generate_captures_casts(const enumPiece& type,
-            const enumPiece& color_, uint64& captures_pos,
-            const INDEX_T& index, MOVES_T& vec) const
-    {
-        uint64 j = 0;
-        while (captures_pos != 0)
-        {
-            j = 1ull << (__builtin_ctzll(captures_pos));
-            captures_pos &= captures_pos - 1;
-            enumPiece enup;
-            if ((j & pieceBB[2]) != 0)
-            {
-                enup = enumPiece::nPawn;
-            }
-            else if ((j & pieceBB[3]) != 0)
-            {
-                enup = enumPiece::nKnight;
-            }
-            else if ((j & pieceBB[4]) != 0)
-            {
-                enup = enumPiece::nBishop;
-            }
-            else if ((j & pieceBB[5]) != 0)
-            {
-                enup = enumPiece::nRook;
-            }
-            else if ((j & pieceBB[6]) != 0)
-            {
-                enup = enumPiece::nQueen;
-            }
-            else
-            {
-                enup = enumPiece::nKing;
-            }
-
-            const auto move = Move(tab_pos[index], j,
-                                   type,
-                                   enup,
-                                   std::nullopt,
-                                   false, false,
-                                   special_moves,
-                                   castlings,
-                                   half_move_count_);
-            //this->apply_move(move, color_);
-            //bool ret = this->player_is_check(color_);
-            //this->revert_move(move, color_);
-            uint64 h = 0;
-            auto b = this->copy_board();
-            b.apply_move(move, color_, h);
-            bool ret = b.player_is_check(color_);
-            if (!ret)
-                vec.emplace_back(move);
-        }
-    }*/
-
-    /*void Board::generate_non_captures_casts(const enumPiece& type,
-            const enumPiece& color_, uint64& destination_pos,
-            const INDEX_T& index, std::vector<Move>& vec) const
-    {
-        uint64 j = 0;
-        while (destination_pos != 0)
-        {
-            j = 1ull << (__builtin_ctzll(destination_pos));
-            destination_pos &= destination_pos - 1;
-            const auto move = Move(tab_pos[index], j,
-                                   type,
-                                   std::nullopt,
-                                   std::nullopt,
-                                   false, false,
-                                   special_moves,
-                                   castlings,
-                                   half_move_count_);
-            //this->apply_move(move, color_);
-            //bool ret = player_is_check(color_);
-            //this->revert_move(move, color_);
-
-            auto b = this->copy_board();
-            uint64 h = 0;
-            b.apply_move(move, color_, h);
-            bool ret = b.player_is_check(color_);
-            if (!ret)
-                vec.emplace_back(move);
-        }
-
-    }*/
-
     void Board::get_knight_move(const enumPiece& color_, std::vector<Move>& vec) const
     {
         uint64 mask = pieceBB[3] & pieceBB[color_];
@@ -211,16 +124,6 @@ namespace chessBoard
         }
 
     }
-
-    /*void Board::gen_castlings_move(const enumPiece& color_, uint64 destination_pos,
-            POSITION_T start, std::vector<Move>& vec) const
-    {
-        add_move(color_, vec,
-                 { start, destination_pos, nKing, std::nullopt, std::nullopt,
-                   true, false,
-                   special_moves, castlings, half_move_count_ });
-         //   std::cout << std::endl << "castling" << std::endl << int_to_string(destination_pos);
-    }*/
 
     void Board::generate_castlings(const enumPiece& color_,
             std::vector<Move>& vec) const

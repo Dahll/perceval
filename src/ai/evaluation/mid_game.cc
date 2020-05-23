@@ -7,6 +7,7 @@
 namespace ai::evaluation
 {
     int pieces_values_mg[6] = {100, 320, 330, 500, 900, 200};
+    //int pieces_values_mg[6] = {100, 405, 452, 720, 1379, 200};
 
     int psqt_values_mg[6][64] = {
         //pawn
@@ -49,7 +50,7 @@ namespace ai::evaluation
                 -5,  0,  0,  0,  0,  0,  0, -5,
                 -5,  0,  0,  0,  0,  0,  0, -5,
                 -5,  0,  0,  0,  0,  0,  0, -5,
-                0,  0,  0,  5,  5,  0,  0,  0
+                0,  0,  5,  10,  10,  5,  0,  0
         }
         ,
         //queen
