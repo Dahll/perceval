@@ -35,7 +35,7 @@ SMagic mRookTbl[64];
 
 void print_uint64(uint64 number)
 {
-    std::string str = "";
+    std::string str;
     int j = 1;
     while (j < 65)
     {
@@ -55,9 +55,12 @@ void print_uint64(uint64 number)
 
 }
 
-int count_1s(uint64 b) {
-    int r;
-    for(r = 0; b; r++, b &= b - 1);
+unsigned count_1s(uint64 b) {
+    unsigned r = 0;
+    while (b) {
+        r++;
+        b &= b - 1;
+    }
     return r;
 }
 
@@ -70,18 +73,18 @@ const int BitTable[64] = {
 
 int pop_1st_bit(uint64 *bb) {
     uint64 b = *bb ^ (*bb - 1);
-    unsigned int fold = (unsigned) ((b & 0xffffffff) ^ (b >> 32));
+    unsigned int fold = (b & 0xffffffff) ^ (b >> 32u);
     *bb &= (*bb - 1);
-    return BitTable[(fold * 0x783a9b23) >> 26];
+    return BitTable[(fold * 0x783a9b23u) >> 26u];
 }
 
-uint64 index_to_uint64(int index, int bits, uint64 m) {
-    int i, j;
+uint64 index_to_uint64(unsigned index, unsigned bits, uint64 m) {
+    unsigned i, j;
     uint64 result = 0ULL;
     for(i = 0; i < bits; i++)
     {
         j = pop_1st_bit(&m);
-        if(index & (1 << i)) result |= (1ULL << j);
+        if(index & (1u << i)) result |= (1ULL << j);
     }
     return result;
 }
@@ -167,24 +170,24 @@ uint64 batt(int sq, uint64 block) {
 }
 
 
-int transform(uint64 b, uint64 magic, int bits) {
-  return (int)((b * magic) >> (64 - bits));
+unsigned transform(uint64 b, uint64 magic, int bits) {
+  return (b * magic) >> (64u - bits);
 }
 
 void find_magic(int sq, int m, int bishop, uint64* ptr) {
   uint64 mask, b[4096], a[4096], magic;
-  int i, j, n;
+  unsigned i, j, n;
   mask = bishop? bmask(sq) : rmask(sq);
   n = count_1s(mask);
 
-  for(i = 0; i < (1 << n); i++) {
+  for(i = 0; i < (1u << n); i++) {
     b[i] = index_to_uint64(i, n, mask);
     a[i] = bishop? batt(sq, b[i]) : ratt(sq, b[i]);
   }
 
   magic = bishop? BMagic[sq] : RMagic[sq];
   
-  for(i = 0; i < (1 << n); i++) {
+  for(i = 0; i < (1u << n); i++) {
     j = transform(b[i], magic, m);
     ptr[j] = a[i];
   }
