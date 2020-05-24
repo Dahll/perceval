@@ -65,11 +65,13 @@ namespace Perft
         if (!depth)
             return 1;
         uint64 n = 0;
-        auto vect = b.generate_moves(b.color);
-        if (vect.empty())
+        auto vect = VMove();
+        b.generate_moves(b.color, vect);
+        if (vect.len == 0)
             return 0;
-        for (const auto& m : vect)
+        for (int j = 0; j < vect.len; j++)
         {
+            const auto& m = vect.move_tab[j];
             uint64 h = 0;
             Board cpy = b;
             cpy.apply_move(m, b.color, h);

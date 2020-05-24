@@ -29,9 +29,9 @@ namespace ai::ordering
     int calc_move(const chessBoard::Board& b, const chessBoard::Move &move, int ply,
                   const std::optional<chessBoard::Move> &prev_move, uint64 hash);
 
-    VECTOR_PAIR moves_set_values(const chessBoard::Board& b,const std::vector<chessBoard::Move> &vect,
+    VECTOR_PAIR moves_set_values(const chessBoard::Board& b, const chessBoard::VMove &vect,
                                  const std::optional<chessBoard::Move> &prev_move, int ply, uint64 hash);
 
-    VECTOR_PAIR moves_set_values_quiescence(const chessBoard::Board& b,const std::vector<chessBoard::Move> &vect,
+    VECTOR_PAIR moves_set_values_quiescence(const chessBoard::Board& b,const chessBoard::VMove &vect,
                                             const std::optional<chessBoard::Move> &prev_move);
 }

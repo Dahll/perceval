@@ -164,25 +164,27 @@ namespace ai::ordering
         return pair1.first > pair2.first;
     }
 
-    VECTOR_PAIR moves_set_values(const chessBoard::Board& b,const chessBoard::MOVES_T& vect,
+    VECTOR_PAIR moves_set_values(const chessBoard::Board& b, const chessBoard::VMove& vect,
             const std::optional<chessBoard::Move>& prev_move, int ply, uint64 hash)
     {
         VECTOR_PAIR ret;
-        for (const auto& move : vect)
+        for (int i = 0; i < vect.len; i++)
         {
+            const auto & move = vect.move_tab[i];
             ret.emplace_back(calc_move(b, move, ply, prev_move, hash), move);
         }
         std::sort(ret.begin(), ret.end(), cmp_pair);
         return ret;
     }
 
-    VECTOR_PAIR moves_set_values_quiescence(const chessBoard::Board& b, const chessBoard::MOVES_T& vect,
+    VECTOR_PAIR moves_set_values_quiescence(const chessBoard::Board& b, const chessBoard::VMove& vect,
             const std::optional<chessBoard::Move>& prev_move)
     {
         VECTOR_PAIR ret;
         //auto ret = std::vector<std::pair<int, const chessBoard::Move>>();
-        for (const auto& move : vect)
+        for (int i = 0; i < vect.len ; i++)
         {
+            const auto& move = vect.move_tab[i];
             ret.emplace_back(quiescence_calc_move(b, move, prev_move), move);
         }
         std::sort(ret.begin(), ret.end(), cmp_pair);

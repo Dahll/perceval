@@ -35,7 +35,8 @@
 
 namespace chessBoard
 {
-    using MOVES_T = std::vector<Move>;
+
+    //using MOVES_T = std::vector<Move>;
     class Board
     {
     private:
@@ -65,7 +66,7 @@ namespace chessBoard
         void revert_null_move(uint64& hash_board, uint64 tmp_special_move);
 
 
-        const MOVES_T generate_moves(const enumPiece& color_) const;
+
 
         void add_piece(const piece_color_t& piece, const POSITION_T& index);
         opt_piece_t operator[](const INDEX_T& index) const;
@@ -79,25 +80,25 @@ namespace chessBoard
         std::optional<Move> check_apply_move(Move& move);
         bool game_is_draw(const Move& move);
 
-        void set_check_mat_pat(enumPiece color_, const MOVES_T& valid_moves);
+        void set_check_mat_pat(enumPiece color_, const VMove& valid_moves);
         bool player_is_check(const enumPiece& color_) const;
         bool square_is_check(const enumPiece& color_, const POSITION_T& pos) const;
 
-        bool player_is_mat(enumPiece color_, const MOVES_T& moves);
-        bool player_is_pat(enumPiece color_, const MOVES_T& moves);
+        bool player_is_mat(enumPiece color_, const VMove& moves) const;
+        bool player_is_pat(enumPiece color_, const VMove& moves) const;
 
 
         POSITION_T captured_piece_position(const Move& move);
 
 
-        void move_attack_square(MOVES_T& moves, const enumPiece& color_,
+        void move_attack_square(VMove& moves, const enumPiece& color_,
                 uint64 pos) const;
 
         chessBoard::Move string_to_move(std::string& s, const enumPiece& color_);
         //Move ia_apply_move(const Move& m, const enumPiece& color_, uint64& hash_board);
         void print() const;
         //void add_move(const enumPiece& color_, std::vector<Move>& vec, const uint64& from, const uint64& to, const enumPiece& type, const std::optional<enumPiece>& capture, const std::optional<enumPiece>& promotion, const bool& is_castling, const bool& is_en_passant, const uint64& report) const;
-        void add_move(const enumPiece& color_, MOVES_T& moves, const Move& m) const;
+        void add_move(const enumPiece& color_, VMove& moves, const Move& m) const;
 
         bool is_board_valide(Move& mov, enumPiece& color_);
         //void test_board(std::vector<Move>& vec);
@@ -105,46 +106,46 @@ namespace chessBoard
 
         //Board apply_many_moves(const MOVES_T& moves);
         //int get_current_pieces_count() const;
-        int get_current_captures_count() const;
-        int get_current_moves_count() const;
         bool is_only_pawn(chessBoard::enumPiece color) const;
 
 
 
         /* Move generation (const) */
+        void generate_moves(const enumPiece& color_, VMove& vec) const;
+
         void generate_captures(const enumPiece& color_,
                 uint64& captures_pos, const INDEX_T& index,
-                std::vector<Move>& vec) const;
+                VMove& vec) const;
         void generate_non_captures(const enumPiece& color_, uint64& captures_pos,
-                const INDEX_T& index, MOVES_T& vec) const;
-        void get_knight_move(const enumPiece& color_, MOVES_T& vec) const;
-        void get_tower_move(const enumPiece& color_, MOVES_T& vec) const;
-        void get_bishop_move(const enumPiece& color_, MOVES_T& vec) const;
-        void get_king_move(const enumPiece& color_, MOVES_T& vec) const;
-        void get_queen_move(const enumPiece& color_, MOVES_T& vec) const;
-        void get_pawn_move(const enumPiece& color_, MOVES_T& vec) const;
-        void generate_castlings(const enumPiece& color_, MOVES_T& vec) const;
-        void generate_pawn_move(const enumPiece &color_, MOVES_T& vec,
+                const INDEX_T& index, VMove& vec) const;
+        void get_knight_move(const enumPiece& color_, VMove& vec) const;
+        void get_tower_move(const enumPiece& color_, VMove& vec) const;
+        void get_bishop_move(const enumPiece& color_, VMove& vec) const;
+        void get_king_move(const enumPiece& color_, VMove& vec) const;
+        void get_queen_move(const enumPiece& color_, VMove& vec) const;
+        void get_pawn_move(const enumPiece& color_, VMove& vec) const;
+        void generate_castlings(const enumPiece& color_, VMove& vec) const;
+        void generate_pawn_move(const enumPiece &color_, VMove& vec,
                 uint64& mask, const uint64 (&attack)[64],
                 const uint64 (&normal)[64], const uint64 (&jump)[64]) const;
         void generate_attack_move_pawn(const enumPiece &color_,
-                MOVES_T& vec, uint16 index,
+                VMove& vec, uint16 index,
                 const uint64 (&attack)[64]) const;
         void generate_classic_move_pawn(const enumPiece& color_,
-                MOVES_T& vec, const uint16 & index,
+                VMove& vec, const uint16 & index,
                 const uint64 (&normal)[64], const uint64 (&jump)[64]) const;
-        void get_all_move_square_check(MOVES_T& moves,
+        void get_all_move_square_check(VMove& moves,
                 const enumPiece& color_, Board& board) const;
 
 
         /* Captures only */
-        MOVES_T generate_capture_moves(const enumPiece& color_) const;
-        void get_knight_capture_moves(const enumPiece& color_, MOVES_T& vec) const;
-        void get_tower_capture_moves(const enumPiece& color_, MOVES_T& vec) const;
-        void get_bishop_capture_moves(const enumPiece& color_,MOVES_T& vec) const;
-        void get_king_capture_moves(const enumPiece& color_, MOVES_T& vec) const;
-        void get_queen_capture_moves(const enumPiece& color_, MOVES_T& vec) const;
-        void get_pawn_capture_moves(const enumPiece& color_, MOVES_T& vec) const;
+        void generate_capture_moves(const enumPiece& color_ ,VMove& vec) const;
+        void get_knight_capture_moves(const enumPiece& color_, VMove& vec) const;
+        void get_tower_capture_moves(const enumPiece& color_, VMove& vec) const;
+        void get_bishop_capture_moves(const enumPiece& color_,VMove& vec) const;
+        void get_king_capture_moves(const enumPiece& color_, VMove& vec) const;
+        void get_queen_capture_moves(const enumPiece& color_, VMove& vec) const;
+        void get_pawn_capture_moves(const enumPiece& color_, VMove& vec) const;
 
         /* Static */
     };

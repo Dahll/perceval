@@ -23,9 +23,10 @@ namespace ai::search
             alpha = stand_pat;
         const auto& inv_color = b.other_color(color_act);
         // Generate moves and order them
-        const auto& moves = b.generate_capture_moves(color_act);
+        auto moves = chessBoard::VMove();
+        b.generate_capture_moves(color_act, moves);
         const auto& sorted_moves = ordering::moves_set_values_quiescence(b, moves, prev_move);//give hash
-        if (moves.empty())
+        if (moves.len == 0)
         {
             return stand_pat;
         }

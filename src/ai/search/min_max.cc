@@ -23,7 +23,8 @@ namespace ai::search
         int best = -INF;
 
 
-        const auto &mov = b.generate_moves(colo_act);
+        auto mov = VMove();
+        b.generate_moves(colo_act, mov);
 
         chessBoard::Move best_move = Move();
 
@@ -240,8 +241,9 @@ namespace ai::search
         //auto actual_vect = chessBoard::MOVES_T();
 
         int best = -MAT + ply;
-        const auto &moves = b.generate_moves(colo_act);
-        if (moves.empty())
+        auto moves = chessBoard::VMove();
+        b.generate_moves(colo_act, moves);
+        if (moves.len == 0)
         {
             if (!b.player_is_check(colo_act))
                 return 0;

@@ -10,22 +10,22 @@
 namespace chessBoard
 {
 
-    MOVES_T Board::generate_capture_moves(const enumPiece &color_) const
+    void Board::generate_capture_moves(const enumPiece &color_, VMove& vec) const
     {
-        auto vec = MOVES_T();
-        vec.reserve(60);
+        //auto vec = MOVES_T();
+        //vec.reserve(60);
         get_pawn_capture_moves(color_, vec);
         get_knight_capture_moves(color_, vec);
         get_bishop_capture_moves(color_, vec);
         get_tower_capture_moves(color_, vec);
         get_queen_capture_moves(color_, vec);
         get_king_capture_moves(color_, vec);
-        return vec;
+        //return vec;
     }
 
 
     void Board::get_knight_capture_moves(const enumPiece &color_,
-                                         MOVES_T &vec) const
+                                         VMove &vec) const
     {
         uint64 mask = pieceBB[nKnight] & pieceBB[color_];
         int i = 0;
@@ -43,7 +43,7 @@ namespace chessBoard
     }
 
     void Board::get_tower_capture_moves(const enumPiece &color_,
-                                        MOVES_T &vec) const
+                                        VMove &vec) const
     {
         uint64 mask = pieceBB[nRook] & pieceBB[color_];
         const uint64 occ = pieceBB[0] | pieceBB[1];
@@ -66,7 +66,7 @@ namespace chessBoard
     }
 
     void Board::get_bishop_capture_moves(const enumPiece &color_,
-                                         MOVES_T &vec) const
+                                         VMove &vec) const
     {
         uint64 mask = pieceBB[nBishop] & pieceBB[color_];
         const uint64 occ = pieceBB[0] | pieceBB[1];
@@ -91,7 +91,7 @@ namespace chessBoard
     }
 
     void Board::get_king_capture_moves(const enumPiece &color_,
-                                       MOVES_T &vec) const
+                                       VMove &vec) const
     {
         uint64 king = pieceBB[nKing] & pieceBB[color_];
         //int i = split_index(king);
@@ -105,7 +105,7 @@ namespace chessBoard
     }
 
     void Board::get_queen_capture_moves(const enumPiece &color_,
-                                        MOVES_T &vec) const
+                                        VMove &vec) const
     {
         uint64 queen = pieceBB[6] & pieceBB[color_];
         const uint64 occ = pieceBB[0] | pieceBB[1];
@@ -132,7 +132,7 @@ namespace chessBoard
     }
 
     void Board::get_pawn_capture_moves(const chessBoard::enumPiece& color_,
-            MOVES_T &vec) const
+            VMove &vec) const
     {
         uint64 mask = pieceBB[nPawn] & pieceBB[color_];
         if (color_ == nWhite) {

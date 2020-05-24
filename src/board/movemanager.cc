@@ -10,10 +10,10 @@
 namespace chessBoard
 {
 
-    const MOVES_T Board::generate_moves(const enumPiece& color_) const
+    void Board::generate_moves(const enumPiece& color_ ,VMove& vec) const
     {
-        auto vec = std::vector<Move>();
-	    vec.reserve(60);
+        //auto vec = std::vector<Move>();
+	    //vec.reserve(60);
         get_pawn_move(color_, vec);
         get_knight_move(color_,vec);
         get_bishop_move(color_, vec);
@@ -21,12 +21,12 @@ namespace chessBoard
         get_queen_move(color_, vec);
         get_king_move(color_, vec);
 
-        return vec;
+        //return vec;
     }
 
     void Board::generate_captures(
             const enumPiece& color_, uint64& captures_pos,
-            const INDEX_T& index, std::vector<Move>& vec) const
+            const INDEX_T& index, VMove& vec) const
     {
         uint64 j = 0;
         while (captures_pos != 0)
@@ -42,7 +42,7 @@ namespace chessBoard
 
     void Board::generate_non_captures(
             const enumPiece& color_, uint64& destination_pos,
-            const INDEX_T& index, MOVES_T& vec) const
+            const INDEX_T& index, VMove& vec) const
     {
 
         uint64 j = 0;
@@ -57,7 +57,7 @@ namespace chessBoard
 
     }
 
-    void Board::get_knight_move(const enumPiece& color_, std::vector<Move>& vec) const
+    void Board::get_knight_move(const enumPiece& color_, VMove& vec) const
     {
         uint64 mask = pieceBB[3] & pieceBB[color_];
         int i = 0;
@@ -79,7 +79,7 @@ namespace chessBoard
         }
     }
 
-    void Board::get_tower_move(const enumPiece& color_, std::vector<Move>& vec) const
+    void Board::get_tower_move(const enumPiece& color_, VMove& vec) const
     {
         uint64 mask = pieceBB[5] & pieceBB[color_];
         const uint64 occ = pieceBB[0] | pieceBB[1];
@@ -100,7 +100,7 @@ namespace chessBoard
         }
     }
 
-    void Board::get_bishop_move(const enumPiece& color_, std::vector<Move>& vec) const
+    void Board::get_bishop_move(const enumPiece& color_, VMove& vec) const
     {
         uint64 mask = pieceBB[4] & pieceBB[color_];
         const uint64 occ = pieceBB[0] | pieceBB[1];
@@ -126,7 +126,7 @@ namespace chessBoard
     }
 
     void Board::generate_castlings(const enumPiece& color_,
-            std::vector<Move>& vec) const
+            VMove& vec) const
     {
 
         if (color_ == nWhite)
@@ -170,7 +170,7 @@ namespace chessBoard
 
     }
 
-    void Board::get_king_move(const enumPiece& color_, std::vector<Move>& vec) const
+    void Board::get_king_move(const enumPiece& color_, VMove& vec) const
     {
         // FIXME castlings
         uint64 king = pieceBB[7] & pieceBB[color_];
@@ -190,7 +190,7 @@ namespace chessBoard
             generate_castlings(color_, vec);
     }
 
-    void Board::get_queen_move(const enumPiece& color_, std::vector<Move>& vec) const
+    void Board::get_queen_move(const enumPiece& color_, VMove& vec) const
     {
         uint64 queen = pieceBB[6] & pieceBB[color_];
         const uint64 occ = pieceBB[0] | pieceBB[1];
@@ -212,7 +212,7 @@ namespace chessBoard
     }
 
 
-    void Board::add_move(const enumPiece& color_, MOVES_T& vec,
+    void Board::add_move(const enumPiece& color_, VMove& vec,
             const Move& move) const
             /*const uint64& from, const uint64& to, const enumPiece& type,
             const std::optional<enumPiece>& capture,
@@ -225,11 +225,11 @@ namespace chessBoard
         b.apply_move(move, color_, h);
         bool ret = b.player_is_check(color_);
         if (!ret)
-            vec.push_back(move);
+            vec.add_move(move);
     }
 
     void Board::generate_attack_move_pawn(const enumPiece &color_,
-            std::vector<Move> &vec, uint16 index, const uint64 (&attack)[64]) const
+            VMove& vec, uint16 index, const uint64 (&attack)[64]) const
     {
         //normal
         uint64 mask = attack[index] & pieceBB[other_color(color_)];
@@ -276,7 +276,7 @@ namespace chessBoard
     }
 
     void Board::generate_classic_move_pawn(const enumPiece& color_,
-            std::vector<Move>& vec, const uint16 & index,
+            VMove& vec, const uint16 & index,
             const uint64 (&normal)[64], const uint64 (&jump)[64]) const
     {
         const uint64 mask = normal[index] & (~(pieceBB[0] | pieceBB[1]));
@@ -313,7 +313,7 @@ namespace chessBoard
     }
 
 
-    void Board::generate_pawn_move(const enumPiece &color_, std::vector<Move> &vec,
+    void Board::generate_pawn_move(const enumPiece &color_, VMove& vec,
             uint64& mask, const uint64 (&attack)[64],
             const uint64 (&normal)[64], const uint64 (&jump)[64]) const
     {
@@ -328,7 +328,7 @@ namespace chessBoard
         }
     }
 
-    void Board::get_pawn_move(const enumPiece &color_, std::vector<Move> &vec) const
+    void Board::get_pawn_move(const enumPiece &color_, VMove& vec) const
     {
         uint64 mask = pieceBB[2] & pieceBB[color_];
         if (color_ == nWhite)
@@ -337,7 +337,7 @@ namespace chessBoard
             generate_pawn_move(color_, vec, mask, black_pawn_attack, black_pawn_normal_move, black_pawn_jump);
     }
 
-    void Board::get_all_move_square_check(std::vector<chessBoard::Move>& moves,
+    void Board::get_all_move_square_check(VMove& moves,
             const enumPiece& color_, Board& board) const
     {
         uint64 i = 0;

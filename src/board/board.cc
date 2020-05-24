@@ -492,7 +492,9 @@ namespace chessBoard
 
     int Board::moves_count()
     {
-        return generate_moves(this->color).size();
+        auto moves = VMove();
+        generate_moves(this->color, moves);
+        return moves.len;
     }
 
     enumPiece Board::other_color(const enumPiece& color_) const
@@ -553,12 +555,14 @@ namespace chessBoard
 
         if (!move.getToPosition() || !move.getFromPosition())
             return std::nullopt;
-        auto& moves = generate_moves(this->color);
+        auto moves = VMove();
+        generate_moves(this->color, moves);
         // FIXME set check mat pat
-        if (moves.empty())
+        if (moves.len == 0)
             return std::nullopt;
-        for (auto& m : moves)
+        for (int i = 0; i < moves.len; i++)
         {
+            auto m = moves.move_tab[i];
             if (m.getFromPosition() == move.getFromPosition() && m.getToPosition() == move.getToPosition())
             {
                 if ((m.isQueenCastle() || m.isKingCastle()) && !(move.isQueenCastle() || move.isKingCastle()))
@@ -567,7 +571,9 @@ namespace chessBoard
                 if (check_promotion(move, m)) {
                     apply_move(m, color, h);
                     enumPiece c = other_color(color);
-                    set_check_mat_pat(c, generate_moves(c));
+                    auto gen_move = VMove();
+                    generate_moves(c, gen_move);
+                    set_check_mat_pat(c, gen_move);
                     return m;
                 }
             }
@@ -631,7 +637,7 @@ namespace chessBoard
         return false;
     }
 
-    void Board::move_attack_square(MOVES_T& moves, const enumPiece& no_color,
+    void Board::move_attack_square(VMove& moves, const enumPiece& no_color,
             uint64 pos) const
     {
         uint64 king = pos;
@@ -813,30 +819,30 @@ namespace chessBoard
         return false;
     }
 
-    bool Board::player_is_mat(enumPiece color_, const std::vector<Move>& moves)
+    bool Board::player_is_mat(enumPiece color_, const VMove& moves) const
     {
 
-        return moves.empty() && player_is_check(color_);
+        return (moves.len == 0) && player_is_check(color_);
     }
 
-    bool Board::player_is_pat(enumPiece color_, const std::vector<Move>& moves)
+    bool Board::player_is_pat(enumPiece color_, const VMove& moves) const
     {
-        return moves.empty() && !player_is_check(color_);
+        return (moves.len == 0) && !player_is_check(color_);
     }
 
-    void Board::set_check_mat_pat(enumPiece color_, const std::vector<Move>& moves)
+    void Board::set_check_mat_pat(enumPiece color_, const VMove& moves)
     {
         if (player_is_check(color_))
         {
             check = true;
             pat = false;
-            mat = moves.empty();
+            mat = (moves.len == 0);
         }
         else
         {
             check = false;
             mat = false;
-            pat = moves.empty();
+            pat = (moves.len == 0);
         }
     }
 
@@ -1140,15 +1146,6 @@ namespace chessBoard
         return _popcnt64(pieceBB[nWhite] | pieceBB[nBlack]);
     }*/
 
-    int Board::get_current_captures_count() const
-    {
-        return generate_capture_moves(this->color).size();
-    }
-
-    int Board::get_current_moves_count() const
-    {
-        return generate_moves(this->color).size();
-    }
 
     /*Board Board::apply_many_moves(const MOVES_T& moves)
     {
