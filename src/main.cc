@@ -32,8 +32,8 @@ int main(int argc, const char *argv[])
         options_description desc{"Options"};
         desc.add_options()
                 ("help,h", "help")
-                ("pgn", value<std::string>(), "pgn")
-                ("listeners,l", value<Listeners >(&listeners)->multitoken(), "listeners")
+                //("pgn", value<std::string>(), "pgn")
+                //("listeners,l", value<Listeners >(&listeners)->multitoken(), "listeners")
                 ("perft", value<std::string>(), "perft");
 
         variables_map vm;
