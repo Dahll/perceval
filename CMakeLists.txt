@@ -29,17 +29,18 @@ target_sources(chessengine PRIVATE
         src/ai/search/quiescence.cc
         src/ai/helpers/helper.cc
         src/ai/search/iterative_deepening.cc
-        src/adapter/pgn-exception.cc
-        src/adapter/pgn-move.cc
-        src/adapter/pgn-parser.cc
+        #src/adapter/pgn-exception.cc
+        #src/adapter/pgn-move.cc
+        #src/adapter/pgn-parser.cc
         src/ai/uci.cc
         src/board/board.cc
         src/board/move.cc
-        src/adapter/adapter.cc
+        #src/adapter/adapter.cc
         src/perft/perft.cc
         src/board/movemanager.cc
-        src/adapter/convertion.cc
-        src/adapter/listenerCalls.cc
+        #src/adapter/convertion.cc
+        #src/adapter/listenerCalls.cc
+        src/board/parser.cc
         src/main.cc
         src/ai/evaluation/evaluation.cc
         src/ai/search/min_max.cc

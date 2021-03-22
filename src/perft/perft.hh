@@ -5,7 +5,8 @@
 #pragma once
 
 #include "../board/board.hh"
-#include "../adapter/pgn-parser.hh"
+//#include "../adapter/pgn-parser.hh"
+#include "../board/parser.hh"
 #include "chessBoard.hh"
 #include <string>
 

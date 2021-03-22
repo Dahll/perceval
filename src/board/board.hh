@@ -8,6 +8,7 @@
 #include "move.hh"
 #include "position.hh"
 #include "chessBoard.hh"
+#include "parser.hh"
 //#include "../magic/generate.hh"
 #include "../magic/magic.hh"
 #include <iostream>
@@ -69,7 +70,7 @@ namespace chessBoard
 
 
         void add_piece(const piece_color_t& piece, const POSITION_T& index);
-        opt_piece_t operator[](const INDEX_T& index) const;
+        //opt_piece_t operator[](const INDEX_T& index) const;
         int moves_count();
 
         enumPiece other_color(const enumPiece& color) const;
@@ -77,7 +78,7 @@ namespace chessBoard
 
         /* Checks */
         bool check_promotion(const Move& move, const Move& m) const;
-        std::optional<Move> check_apply_move(Move& move);
+        //std::optional<Move> check_apply_move(Move& move);
         bool game_is_draw(const Move& move);
 
         void set_check_mat_pat(enumPiece color_, const VMove& valid_moves);

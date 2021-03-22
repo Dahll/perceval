@@ -195,13 +195,13 @@ namespace ai::search
 
         // Null move pruning
         null_move = null_move;
-        if (null_move && !isPV && !b.player_is_check(colo_act) /*&& __builtin_popcountll(b.pieceBB[colo_act]) > 3*/ &&
+        if (null_move && !isPV && !b.player_is_check(colo_act) &&// __builtin_popcountll(b.pieceBB[colo_act]) > 3 &&
             !b.is_only_pawn(colo_act) && static_eval >= beta)
         {
             //int R = 2 + (32 * depth + std::min(static_eval - beta, 384)) / 128;
             //int R = 3 + depth / 6;
             int R = 1;
-            //if (depth > 6) R = 3;
+            if (depth > 6) R = 2;
             //if (depth > 6) R = 3 + depth / 6;
             //if (depth > 6) R = 2 + (32 * depth + std::min(static_eval - beta, 384)) / 128;
 

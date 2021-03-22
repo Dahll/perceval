@@ -92,7 +92,6 @@ namespace ai::search
             move = tmp_move;
 
             mergePV(tmp, G_PV);
-
             std::cout
                 << duration_cast<milliseconds>(system_clock::now()-start).count()
                 << " | " << i << " | " << score << " | " << PV_to_str(G_PV)

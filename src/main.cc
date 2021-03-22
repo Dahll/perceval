@@ -8,7 +8,7 @@
 #include "perft/perft.hh"
 #include <boost/program_options.hpp>
 #include <iostream>
-#include "adapter/adapter.hh"
+//#include "adapter/adapter.hh"
 #include "magic/magic.hh"
 
 
@@ -41,7 +41,7 @@ int main(int argc, const char *argv[])
         notify(vm);
         if (vm.count("help"))
             std::cout << desc << '\n';
-        else if (vm.count("pgn"))
+        /*else if (vm.count("pgn"))
         {
             std::string path = vm["pgn"].as<std::string>();
             for (auto& l : listeners)
@@ -49,7 +49,7 @@ int main(int argc, const char *argv[])
                     l.insert(0, "./");
             adapter::Adapter(listeners, path);
 
-        }
+        }*/
         else if (vm.count("perft"))
         {
             std::string path = vm["perft"].as<std::string>();

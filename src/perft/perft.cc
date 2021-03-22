@@ -3,7 +3,7 @@
 //
 
 #include "perft.hh"
-#include "../adapter/convertion.hh"
+//#include "../adapter/convertion.hh"
 #include "stock.hh"
 #include <fstream>
 #include <strings.h>
@@ -221,10 +221,10 @@ namespace Perft
         if (input == "-") {
             return;
         }
-        auto f = pgn_parser::to_file(input[0]);
-        auto r = pgn_parser::to_rank(input[1]);
+        auto f = parser::to_file(input[0]);
+        auto r = parser::to_rank(input[1]);
         auto pos = yaka::Position(f, r);
-        INDEX_T index = position_to_index(pos);
+        INDEX_T index = parser::position_to_index(pos);
         my64 p = index_to_uint64(index);
         b.special_moves = b.special_moves | p;
     }

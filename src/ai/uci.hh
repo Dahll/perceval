@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../adapter/pgn-parser.hh"
-#include "../adapter/convertion.hh"
+//#include "../adapter/pgn-parser.hh"
+//#include "../adapter/convertion.hh"
 #include "search/search.hh"
 #include <fnmatch.h>
 #include <fstream>

@@ -8,8 +8,11 @@
 #include <stock.hh>
 #include <strings.h>
 #include "board.hh"
-#include "../adapter/pgn-parser.hh"
-#include "../adapter/convertion.hh"
+//#include "../adapter/convertion.hh"
+#include <map>
+
+//#include "../adapter/pgn-parser.hh"
+//#include "../adapter/convertion.hh"
 //#include <x86intrin.h>
 
 
@@ -127,16 +130,18 @@ namespace chessBoard
         return hash_board;
     }
 
+
+
     chessBoard::Move Board::string_to_move(std::string& s, const enumPiece& color_)
     {
-        auto rf = pgn_parser::to_file(s[0]);
-        auto ff = pgn_parser::to_rank(s[1]);
+        auto rf = parser::to_file(s[0]);
+        auto ff = parser::to_rank(s[1]);
         auto posf = yaka::Position(rf, ff);
-        chessBoard::INDEX_T indexf = position_to_index(posf);
-        auto rt = pgn_parser::to_file(s[2]);
-        auto ft = pgn_parser::to_rank(s[3]);
+        chessBoard::INDEX_T indexf = parser::position_to_index(posf);
+        auto rt = parser::to_file(s[2]);
+        auto ft = parser::to_rank(s[3]);
         auto post = yaka::Position(rt, ft);
-        chessBoard::INDEX_T indext = position_to_index(post);
+        chessBoard::INDEX_T indext = parser::position_to_index(post);
 
         auto m = Move(indexf, indext, 0);
 
@@ -404,7 +409,7 @@ namespace chessBoard
     }
 
 
-    opt_piece_t Board::operator[](const INDEX_T &i) const
+    /*opt_piece_t Board::operator[](const INDEX_T &i) const
     {
         enumPiece c = nWhite;
         if (pieceBB[nBlack] & tab_pos[i])
@@ -421,7 +426,7 @@ namespace chessBoard
                 type = int_to_enumPiece[i];
         }
         return opt_piece_t(std::pair<enumPiece, enumPiece >(type, c));
-    }
+    }*/
 
     Board::Board(bool empty)
     {
@@ -548,7 +553,7 @@ namespace chessBoard
     }
 
     // Returns true if move is valid (and applied)
-    std::optional<Move> Board::check_apply_move(Move& move)
+    /*std::optional<Move> Board::check_apply_move(Move& move)
     {
         // FIXME check if our castlings are done the same way as pgn castlings
         // (first are pgn castlings always the same way, if yes is it the king that moves or the rook)
@@ -578,10 +583,11 @@ namespace chessBoard
                 }
             }
         }
+
         // FIXME set check mat pat here ?
 
         return std::nullopt;
-    }
+    }*/
 
 
     bool Board::square_is_check(const enumPiece& color_, const POSITION_T& pos) const

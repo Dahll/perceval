@@ -28,7 +28,6 @@ namespace ai
     {
     public:
 
-
         /* Description option*/
         const std::string my_name = "Perceval";
 
@@ -36,7 +35,7 @@ namespace ai
 
         /* Treefold and 50 moves repetition */
         TreefoldStack treefold = TreefoldStack();
-        std::vector<std::pair<uint64, int>> vectBoard = std::vector<std::pair<uint64, int>>{};
+        std::vector<std::pair<uint64, int>> vectBoard = std::vector<std::pair<uint64, int>>{}; //#TODO ?
 
 
 
